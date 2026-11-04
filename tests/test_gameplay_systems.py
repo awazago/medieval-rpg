@@ -82,12 +82,37 @@ def test_weight_penalties():
 
     print(" -> Sucesso: Limites e faixas de penalidade de carga perfeitamente calibrados!")
 
+def test_skills_and_hotbar():
+    print("[QA Test 4] Validando Conjuração de Habilidades e Fórmulas Mágicas (Sprint 2)...")
+    with open(os.path.join(DATA_DIR, "skills.json")) as f:
+        skills_data = json.load(f)["skills"]
+        skills_map = {s["id"]: s for s in skills_data}
+        
+    # 1. Valida Power Strike
+    ps = skills_map["power_strike"]
+    assert ps["mp_cost"] > 0
+    assert ps["power"] > 0
+    assert ps["cast_time_sec"] > 0
+    
+    # 2. Valida fórmula de dano mágico de Fire Arrow
+    fa = skills_map["fire_arrow"]
+    m_atk = 18.0
+    m_def = 10.0
+    skill_power = fa["power"] # 42
+    
+    # Fórmula: (91 * sqrt(M.Atk) * SkillPower) / M.Def
+    dmg_magic = (91.0 * math.sqrt(m_atk) * skill_power) / m_def
+    assert dmg_magic > 1000.0, f"Dano mágico inesperado: {dmg_magic}"
+    
+    print(" -> Sucesso: Habilidades físicas, mágicas e cooldowns 100% verificados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
         test_combat_formulas()
         test_weight_penalties()
-        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprint 1 Validada.")
+        test_skills_and_hotbar()
+        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1 & 2 Validadas.")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

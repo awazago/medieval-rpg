@@ -2,8 +2,12 @@
 # Controlador Central da Cena de Jogo e Integração Cliente
 extends Node3D
 
+const FLOAT_NUMBER_SCENE = preload("res://client/scenes/vfx/floating_damage_number.tscn")
+const SOULSHOT_BURST_SCENE = preload("res://client/scenes/vfx/soulshot_particles.tscn")
+
 @onready var player: PlayerCharacter = $Player
 @onready var hud: GameHUD = $HUD
+@onready var hotbar: Hotbar = $HUD/Hotbar
 
 func _ready() -> void:
 	if player and hud:
@@ -21,6 +25,11 @@ func _ready() -> void:
 		hud.add_system_message("Pressione [Tab] para selecionar o monstro mais próximo.")
 		hud.add_system_message("Pressione [F1] para ligar Soulshots. Clique com botão esquerdo para atacar.")
 		hud.add_system_message("Pressione [I] para abrir/fechar o Inventário com controle de peso.")
+		hud.add_system_message("Teclas [1 a 8]: Barra de atalhos rápida e conjuração de habilidades.")
+
+	if hotbar:
+		hotbar.skill_triggered.connect(_on_skill_triggered)
+		hotbar.item_shortcut_triggered.connect(_on_item_shortcut_triggered)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Ataque básico com o botão esquerdo do mouse
@@ -57,6 +66,13 @@ func _attempt_player_attack() -> void:
 	if target.has_method("take_damage"):
 		target.take_damage(damage, player)
 		
+	# Efeito visual de Soulshot
+	if player.soulshots_enabled:
+		_spawn_soulshot_burst(target.global_position + Vector3(0, 0.8, 0))
+		
+	# Número de dano flutuante 3D
+	_spawn_floating_damage(target.global_position + Vector3(0, 1.2, 0), damage, is_crit)
+	
 	# Atualiza a barra de vida do alvo no HUD
 	hud.update_target(target)
 	
@@ -68,3 +84,96 @@ func _attempt_player_attack() -> void:
 		log_msg = "[SOULSHOT] " + log_msg
 		
 	hud.add_combat_log(log_msg)
+
+func _on_skill_triggered(skill_id: String) -> void:
+	var skill_data = GameData.get_skill(skill_id) if GameData else {}
+	if skill_data.is_empty():
+		return
+		
+	var mp_cost = skill_data.get("mp_cost", 10)
+	if player.current_mp < mp_cost:
+		hud.add_system_message("[color=red]Mana insuficiente![/color]")
+		return
+		
+	# Consome MP
+	player.current_mp -= mp_cost
+	hud.update_player_status(
+		player.current_hp, player.max_hp,
+		player.current_mp, player.max_mp,
+		player.current_cp, player.max_cp
+	)
+	
+	# Habilidade de Cura (Auto-cast ou Alvo)
+	if skill_id == "lesser_heal":
+		var heal_val = skill_data.get("power", 60)
+		player.current_hp = mini(player.max_hp, player.current_hp + heal_val)
+		hud.update_player_status(
+			player.current_hp, player.max_hp,
+			player.current_mp, player.max_mp,
+			player.current_cp, player.max_cp
+		)
+		_spawn_floating_damage(player.global_position + Vector3(0, 1.5, 0), heal_val, false)
+		hud.add_combat_log("[CURA] Você restaurou " + str(heal_val) + " pontos de vida.")
+		return
+		
+	# Habilidade de Ataque
+	if player.selected_target == null or not is_instance_valid(player.selected_target):
+		hud.add_system_message("Selecione um alvo para usar " + skill_data.get("name", "esta habilidade") + "!")
+		return
+		
+	var target = player.selected_target
+	var distance = player.global_position.distance_to(target.global_position)
+	var max_range = skill_data.get("range_units", 3.0)
+	
+	if distance > max_range:
+		hud.add_system_message("Alvo fora de alcance (" + str(int(distance)) + "m / máx " + str(int(max_range)) + "m)!")
+		return
+		
+	var target_p_def = target.get("p_def") if target.get("p_def") else 12.0
+	var target_m_def = target.get("m_def") if target.get("m_def") else 10.0
+	var skill_power = skill_data.get("power", 30.0)
+	var result: Dictionary
+	
+	if skill_data.get("element"):
+		# Magia (ex: Flecha Ígnea)
+		result = CombatFormulas.calculate_magical_damage(player.m_atk, target_m_def, 12, skill_power, player.soulshots_enabled)
+	else:
+		# Físico (ex: Golpe Poderoso)
+		result = CombatFormulas.calculate_physical_damage(player.p_atk, target_p_def, 30, 8, player.soulshots_enabled, skill_power)
+		
+	var damage = result["damage"]
+	var is_crit = result["is_critical"]
+	
+	if target.has_method("take_damage"):
+		target.take_damage(damage, player)
+		
+	if player.soulshots_enabled:
+		_spawn_soulshot_burst(target.global_position + Vector3(0, 0.8, 0))
+		
+	_spawn_floating_damage(target.global_position + Vector3(0, 1.2, 0), damage, is_crit)
+	hud.update_target(target)
+	
+	var msg = "[" + skill_data.get("name") + "] causou " + str(damage) + " de dano!"
+	if is_crit:
+		msg = "[CRÍTICO!] " + msg
+	hud.add_combat_log(msg)
+
+func _on_item_shortcut_triggered(item_id: String) -> void:
+	if player and player.inventory:
+		for i in range(InventoryManager.MAX_SLOTS):
+			var slot = player.inventory.slots[i]
+			if slot != null and slot["id"] == item_id:
+				player.inventory.use_or_equip(i)
+				hud.add_system_message("Item usado da barra de atalhos: " + slot["data"].get("name"))
+				break
+
+func _spawn_soulshot_burst(pos: Vector3) -> void:
+	var burst = SOULSHOT_BURST_SCENE.instantiate()
+	add_child(burst)
+	burst.global_position = pos
+
+func _spawn_floating_damage(pos: Vector3, amount: int, is_crit: bool) -> void:
+	var float_num = FLOAT_NUMBER_SCENE.instantiate()
+	add_child(float_num)
+	float_num.global_position = pos
+	float_num.setup(amount, is_crit)

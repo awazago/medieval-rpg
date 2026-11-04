@@ -9,6 +9,8 @@
 [ext_resource type="Script" path="res://client/ui/inventory_window.gd" id="6_inv_ui"]
 [ext_resource type="Script" path="res://client/scripts/npc_character.gd" id="7_npc"]
 [ext_resource type="Script" path="res://client/ui/dialog_window.gd" id="8_dialog"]
+[ext_resource type="PackedScene" path="res://client/scenes/environment/highstone_village.tscn" id="9_village"]
+[ext_resource type="Script" path="res://client/ui/hotbar.gd" id="10_hotbar"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.55, 0.85, 1.0)
@@ -62,6 +64,8 @@ mesh = SubResource("PlaneMesh_ground")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TerrainGround"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape_ground")
+
+[node name="HighstoneVillage" parent="." instance=ExtResource("9_village")]
 
 [node name="Player" type="CharacterBody3D" parent="." groups=["players"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -342,3 +346,60 @@ text = "Saudações, forasteiro..."
 
 [node name="OptionsContainer" type="VBoxContainer" parent="HUD/DialogWindow/Margin/VBox"]
 layout_mode = 2
+
+[node name="CastBarContainer" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = 80.0
+offset_right = 150.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="HUD/CastBarContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CastLabel" type="Label" parent="HUD/CastBarContainer/VBox"]
+layout_mode = 2
+text = "Conjurando Habilidade..."
+horizontal_alignment = 1
+
+[node name="CastBar" type="ProgressBar" parent="HUD/CastBarContainer/VBox"]
+modulate = Color(0.2, 0.75, 1, 1)
+layout_mode = 2
+value = 50.0
+
+[node name="Hotbar" type="PanelContainer" parent="HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -80.0
+offset_right = 240.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("10_hotbar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/Hotbar"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Hotbar/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
