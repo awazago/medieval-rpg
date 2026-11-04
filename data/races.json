@@ -1,0 +1,82 @@
+{
+  "human": {
+    "name": "Humano",
+    "description": "Equilibrados, adaptáveis e resilientes em todas as frentes de batalha.",
+    "base_stats": {
+      "str": 40,
+      "dex": 30,
+      "con": 43,
+      "int": 21,
+      "wit": 11,
+      "men": 25
+    },
+    "base_hp": 120,
+    "base_mp": 80,
+    "base_speed": 125,
+    "available_archetypes": ["warrior", "mystic"]
+  },
+  "light_elf": {
+    "name": "Elfo da Luz",
+    "description": "Ágeis e conectados à luz divina. Possuem alta velocidade de movimento e conjuração rápida.",
+    "base_stats": {
+      "str": 36,
+      "dex": 35,
+      "con": 36,
+      "int": 23,
+      "wit": 14,
+      "men": 26
+    },
+    "base_hp": 100,
+    "base_mp": 100,
+    "base_speed": 135,
+    "available_archetypes": ["warrior", "mystic"]
+  },
+  "dark_elf": {
+    "name": "Elfo Negro",
+    "description": "Mestres da letalidade e feitiçaria sombria. Máximo poder ofensivo com menor resistência física.",
+    "base_stats": {
+      "str": 41,
+      "dex": 34,
+      "con": 32,
+      "int": 25,
+      "wit": 12,
+      "men": 26
+    },
+    "base_hp": 95,
+    "base_mp": 110,
+    "base_speed": 130,
+    "available_archetypes": ["warrior", "mystic"]
+  },
+  "orc": {
+    "name": "Orc",
+    "description": "Guerreiros titânicos com força esmagadora e a maior reserva vital de Aethelgard.",
+    "base_stats": {
+      "str": 43,
+      "dex": 26,
+      "con": 47,
+      "int": 19,
+      "wit": 9,
+      "men": 27
+    },
+    "base_hp": 150,
+    "base_mp": 70,
+    "base_speed": 115,
+    "available_archetypes": ["warrior", "mystic"]
+  },
+  "dwarf": {
+    "name": "Anão",
+    "description": "Mestres da forja, alta resistência e habilidade exclusiva de coletar materiais raros de carcaças.",
+    "base_stats": {
+      "str": 39,
+      "dex": 29,
+      "con": 45,
+      "int": 18,
+      "wit": 10,
+      "men": 27
+    },
+    "base_hp": 130,
+    "base_mp": 75,
+    "base_speed": 120,
+    "available_archetypes": ["artisan", "scavenger"]
+  }
+}

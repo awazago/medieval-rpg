@@ -1,0 +1,50 @@
+{
+  "quests": [
+    {
+      "id": "quest_first_steps",
+      "title": "Primeiros Passos em Highstone",
+      "required_level": 1,
+      "giver_npc": "sentinel_marcus",
+      "dialogue": "Bem-vindo à Ilha do Alvorecer, recruta. As raposas e feras estão avançando sobre as plantações da vila. Traga 5 peles de raposa para provar seu valor.",
+      "objectives": [
+        {
+          "type": "kill_and_collect",
+          "target_monster": "young_fox",
+          "required_count": 5,
+          "item_name": "Pele de Raposa Jovem"
+        }
+      ],
+      "rewards": {
+        "exp": 120,
+        "sp": 25,
+        "adena": 450,
+        "items": [
+          {"id": "soulshot_none", "count": 100},
+          {"id": "lesser_healing_potion", "count": 10}
+        ]
+      }
+    },
+    {
+      "id": "quest_crypt_purification",
+      "title": "A Purificação da Cripta",
+      "required_level": 8,
+      "giver_npc": "priest_elion",
+      "dialogue": "Esqueletos inquietos começaram a despertar nas ruínas do velho santuário. Precisamos de guerreiros corajosos para conter a corrupção antes que atinja a vila.",
+      "objectives": [
+        {
+          "type": "kill",
+          "target_monster": "skeleton_warrior",
+          "required_count": 10
+        }
+      ],
+      "rewards": {
+        "exp": 1200,
+        "sp": 180,
+        "adena": 2500,
+        "items": [
+          {"id": "leather_tunic", "count": 1}
+        ]
+      }
+    }
+  ]
+}

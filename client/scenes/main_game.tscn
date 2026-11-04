@@ -1,0 +1,219 @@
+[gd_scene load_steps=12 format=3 uid="uid://bvyek38k7qmlw"]
+
+[ext_resource type="Script" path="res://client/scripts/player_character.gd" id="1_player"]
+[ext_resource type="Script" path="res://client/scenes/main_game.gd" id="1_maingame"]
+[ext_resource type="Script" path="res://client/scripts/hybrid_camera.gd" id="2_camera"]
+[ext_resource type="Script" path="res://server/monster_entity.gd" id="3_monster"]
+[ext_resource type="Script" path="res://client/ui/hud.gd" id="4_hud"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.35, 0.55, 0.85, 1.0)
+sky_horizon_color = Color(0.65, 0.75, 0.85, 1.0)
+ground_bottom_color = Color(0.2, 0.18, 0.15, 1.0)
+ground_horizon_color = Color(0.5, 0.55, 0.5, 1.0)
+
+[sub_resource type="Sky" id="Sky_env"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_env")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
+ssao_enabled = true
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="Mat_Ground"]
+albedo_color = Color(0.28, 0.42, 0.22, 1.0)
+roughness = 0.85
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+material = SubResource("Mat_Ground")
+size = Vector2(250, 250)
+
+[sub_resource type="BoxShape3D" id="BoxShape_ground"]
+size = Vector3(250, 1, 250)
+
+[sub_resource type="CapsuleShape3D" id="Capsule_player"]
+radius = 0.45
+height = 1.85
+
+[node name="MainGame" type="Node3D"]
+script = ExtResource("1_maingame")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 40, 0)
+shadow_enabled = true
+directional_shadow_max_distance = 150.0
+
+[node name="TerrainGround" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TerrainGround"]
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TerrainGround"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape_ground")
+
+[node name="Player" type="CharacterBody3D" parent="." groups=["players"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+shape = SubResource("Capsule_player")
+
+[node name="VisualMesh" type="Node3D" parent="Player"]
+
+[node name="BodyMesh" type="CSGCapsule3D" parent="Player/VisualMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+radius = 0.4
+height = 1.8
+
+[node name="ShoulderPads" type="CSGBox3D" parent="Player/VisualMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+size = Vector3(1.1, 0.2, 0.5)
+
+[node name="CameraPivot" type="SpringArm3D" parent="Player" node_paths=PackedStringArray("character_mesh_node")]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 1.6, 0)
+spring_length = 4.5
+script = ExtResource("2_camera")
+character_mesh_node = NodePath("../VisualMesh")
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.5)
+current = true
+
+[node name="Monster_YoungFox" type="CharacterBody3D" parent="." groups=["monsters"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.5, -6)
+script = ExtResource("3_monster")
+monster_name = "Raposa Jovem"
+level = 1
+max_hp = 45
+
+[node name="MeshInstance3D" type="CSGBox3D" parent="Monster_YoungFox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+size = Vector3(0.8, 0.8, 1.2)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Monster_YoungFox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("Capsule_player")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("4_hud")
+
+[node name="TopLeftStatus" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 260.0
+offset_bottom = 120.0
+
+[node name="VBox" type="VBoxContainer" parent="HUD/TopLeftStatus"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LabelName" type="Label" parent="HUD/TopLeftStatus/VBox"]
+layout_mode = 2
+text = "Aventureiro (Nv. 1)"
+
+[node name="BarCP" type="ProgressBar" parent="HUD/TopLeftStatus/VBox"]
+modulate = Color(1, 0.6, 0, 1)
+layout_mode = 2
+value = 100.0
+
+[node name="BarHP" type="ProgressBar" parent="HUD/TopLeftStatus/VBox"]
+modulate = Color(0.9, 0.1, 0.1, 1)
+layout_mode = 2
+value = 100.0
+
+[node name="BarMP" type="ProgressBar" parent="HUD/TopLeftStatus/VBox"]
+modulate = Color(0.1, 0.5, 1, 1)
+layout_mode = 2
+value = 100.0
+
+[node name="TopCenterTarget" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 20.0
+offset_right = 120.0
+offset_bottom = 80.0
+grow_horizontal = 2
+
+[node name="VBox" type="VBoxContainer" parent="HUD/TopCenterTarget"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LabelTargetName" type="Label" parent="HUD/TopCenterTarget/VBox"]
+layout_mode = 2
+text = "Alvo"
+horizontal_alignment = 1
+
+[node name="BarTargetHP" type="ProgressBar" parent="HUD/TopCenterTarget/VBox"]
+modulate = Color(0.85, 0.2, 0.2, 1)
+layout_mode = 2
+value = 100.0
+
+[node name="BottomBar" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -60.0
+offset_right = 200.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SoulshotIndicator" type="Label" parent="HUD/BottomBar"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "[F1: Alternar Soulshots]"
+horizontal_alignment = 1
+
+[node name="BottomLeftChat" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -180.0
+offset_right = 360.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="ChatLog" type="RichTextLabel" parent="HUD/BottomLeftChat"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+scroll_following = true

@@ -1,0 +1,53 @@
+{
+  "skills": [
+    {
+      "id": "power_strike",
+      "name": "Golpe Poderoso",
+      "target_type": "single_enemy",
+      "power": 35,
+      "mp_cost": 8,
+      "cast_time_sec": 1.2,
+      "cooldown_sec": 4.0,
+      "range_units": 2.5,
+      "requires_weapon": ["sword_1h", "dagger_1h", "blunt_1h"],
+      "description": "Concentra força na lâmina para desferir um impacto devastador que sobrepuja a defesa física do alvo."
+    },
+    {
+      "id": "fire_arrow",
+      "name": "Flecha Ígnea",
+      "target_type": "single_enemy",
+      "power": 42,
+      "mp_cost": 14,
+      "cast_time_sec": 2.0,
+      "cooldown_sec": 3.0,
+      "range_units": 22.0,
+      "element": "fire",
+      "requires_weapon": ["staff_2h"],
+      "description": "Conjura uma flecha de chamas puras que queima o inimigo à distância."
+    },
+    {
+      "id": "lesser_heal",
+      "name": "Cura Menor",
+      "target_type": "target_or_self",
+      "power": 60,
+      "mp_cost": 16,
+      "cast_time_sec": 2.2,
+      "cooldown_sec": 5.0,
+      "range_units": 20.0,
+      "description": "Restaura os pontos de vida do conjurador ou do aliado selecionado usando o poder primordial da luz."
+    },
+    {
+      "id": "mortal_blow",
+      "name": "Golpe Mortal",
+      "target_type": "single_enemy",
+      "power": 75,
+      "mp_cost": 15,
+      "cast_time_sec": 0.8,
+      "cooldown_sec": 6.0,
+      "range_units": 2.0,
+      "requires_weapon": ["dagger_1h"],
+      "lethal_chance_pct": 20,
+      "description": "Ataque rápido e traiçoeiro visando pontos vitais com chance elevada de acerto crítico e dano letal."
+    }
+  ]
+}

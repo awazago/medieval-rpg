@@ -1,0 +1,75 @@
+{
+  "monsters": [
+    {
+      "id": "young_fox",
+      "name": "Raposa Jovem",
+      "level": 1,
+      "hp": 45,
+      "mp": 20,
+      "p_atk": 8,
+      "p_def": 12,
+      "m_def": 8,
+      "aggro": false,
+      "exp_reward": 35,
+      "sp_reward": 4,
+      "drops": [
+        {"item_id": "lesser_healing_potion", "chance_pct": 15},
+        {"item_id": "soulshot_none", "chance_pct": 40, "min": 2, "max": 6}
+      ]
+    },
+    {
+      "id": "prairie_wolf",
+      "name": "Lobo das Campinas",
+      "level": 4,
+      "hp": 95,
+      "mp": 35,
+      "p_atk": 16,
+      "p_def": 18,
+      "m_def": 14,
+      "aggro": false,
+      "exp_reward": 95,
+      "sp_reward": 12,
+      "drops": [
+        {"item_id": "leather_tunic", "chance_pct": 5},
+        {"item_id": "bone_dagger", "chance_pct": 3},
+        {"item_id": "soulshot_none", "chance_pct": 50, "min": 4, "max": 10}
+      ]
+    },
+    {
+      "id": "skeleton_warrior",
+      "name": "Esqueleto Guerreiro",
+      "level": 10,
+      "hp": 260,
+      "mp": 60,
+      "p_atk": 38,
+      "p_def": 34,
+      "m_def": 22,
+      "aggro": true,
+      "exp_reward": 380,
+      "sp_reward": 48,
+      "drops": [
+        {"item_id": "short_sword", "chance_pct": 8},
+        {"item_id": "iron_breastplate", "chance_pct": 4},
+        {"item_id": "spiritshot_none", "chance_pct": 35, "min": 5, "max": 12}
+      ]
+    },
+    {
+      "id": "fallen_knight_valthor",
+      "name": "Valthor, o Cavaleiro Caído (Raid Boss)",
+      "level": 20,
+      "hp": 4800,
+      "mp": 800,
+      "p_atk": 120,
+      "p_def": 95,
+      "m_def": 70,
+      "aggro": true,
+      "exp_reward": 8500,
+      "sp_reward": 1200,
+      "drops": [
+        {"item_id": "iron_breastplate", "chance_pct": 100},
+        {"item_id": "short_sword", "chance_pct": 80},
+        {"item_id": "soulshot_none", "chance_pct": 100, "min": 100, "max": 250}
+      ]
+    }
+  ]
+}
