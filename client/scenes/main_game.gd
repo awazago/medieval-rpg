@@ -14,6 +14,8 @@ func _ready() -> void:
 		player.stats_updated.connect(hud.update_player_status)
 		player.target_changed.connect(hud.update_target)
 		player.soulshot_toggled.connect(hud.set_soulshot_active)
+		player.exp_updated.connect(hud.update_exp)
+		player.leveled_up.connect(hud.update_level_display)
 		
 		# Emite estado inicial
 		hud.update_player_status(
@@ -21,6 +23,7 @@ func _ready() -> void:
 			player.current_mp, player.max_mp,
 			player.current_cp, player.max_cp
 		)
+		hud.update_exp(player.current_exp, player.required_exp, 0.0, player.current_sp)
 		hud.add_system_message("Pressione [Scroll do Mouse] para alternar entre 1ª Pessoa e 3ª Pessoa Livre.")
 		hud.add_system_message("Pressione [Tab] para selecionar o monstro mais próximo.")
 		hud.add_system_message("Pressione [F1] para ligar Soulshots. Clique com botão esquerdo para atacar.")

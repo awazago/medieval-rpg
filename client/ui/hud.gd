@@ -15,6 +15,9 @@ extends CanvasLayer
 @onready var label_soulshot: Label = $BottomBar/SoulshotIndicator
 @onready var chat_log: RichTextLabel = $BottomLeftChat/ChatLog
 
+@onready var bar_xp: ProgressBar = $BottomXPBar/BarXP
+@onready var label_xp: Label = $BottomXPBar/LabelXP
+
 func _ready() -> void:
 	if target_box:
 		target_box.visible = false
@@ -63,3 +66,14 @@ func add_combat_log(message: String) -> void:
 func add_system_message(message: String) -> void:
 	if chat_log:
 		chat_log.append_text("[color=aqua]" + message + "[/color]\n")
+
+func update_exp(current: int, required: int, pct: float, sp: int) -> void:
+	if bar_xp:
+		bar_xp.max_value = 100.0
+		bar_xp.value = pct
+	if label_xp:
+		label_xp.text = "XP: %.2f%% (%d / %d) | SP: %d" % [pct, current, required, sp]
+
+func update_level_display(new_level: int) -> void:
+	if label_name:
+		label_name.text = "Aventureiro (Nv. " + str(new_level) + ")"

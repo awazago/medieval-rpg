@@ -11,6 +11,9 @@
 [ext_resource type="Script" path="res://client/ui/dialog_window.gd" id="8_dialog"]
 [ext_resource type="PackedScene" path="res://client/scenes/environment/highstone_village.tscn" id="9_village"]
 [ext_resource type="Script" path="res://client/ui/hotbar.gd" id="10_hotbar"]
+[ext_resource type="PackedScene" path="res://client/scenes/environment/ancient_crypt_ruins.tscn" id="11_crypt"]
+[ext_resource type="PackedScene" path="res://server/skeleton_warrior.tscn" id="12_skel"]
+[ext_resource type="Script" path="res://client/ui/network_menu.gd" id="13_netmenu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.55, 0.85, 1.0)
@@ -66,6 +69,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape_ground")
 
 [node name="HighstoneVillage" parent="." instance=ExtResource("9_village")]
+
+[node name="AncientCryptRuins" parent="." instance=ExtResource("11_crypt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+
+[node name="SkeletonWarrior_1" parent="." instance=ExtResource("12_skel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -42)
+
+[node name="SkeletonWarrior_2" parent="." instance=ExtResource("12_skel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0, 0, -45)
 
 [node name="Player" type="CharacterBody3D" parent="." groups=["players"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -150,6 +162,62 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 260.0
 offset_bottom = 120.0
+
+[node name="NetworkMenu" type="PanelContainer" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 155.0
+grow_horizontal = 0
+script = ExtResource("13_netmenu")
+
+[node name="Margin" type="MarginContainer" parent="HUD/NetworkMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="HUD/NetworkMenu/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/NetworkMenu/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "CONEXÃO MULTIPLAYER"
+horizontal_alignment = 1
+
+[node name="InputIP" type="LineEdit" parent="HUD/NetworkMenu/Margin/VBox"]
+layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "IP do Servidor"
+
+[node name="InputPort" type="LineEdit" parent="HUD/NetworkMenu/Margin/VBox"]
+layout_mode = 2
+text = "7777"
+placeholder_text = "Porta"
+
+[node name="HBox" type="HBoxContainer" parent="HUD/NetworkMenu/Margin/VBox"]
+layout_mode = 2
+
+[node name="BtnHost" type="Button" parent="HUD/NetworkMenu/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Host"
+
+[node name="BtnJoin" type="Button" parent="HUD/NetworkMenu/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join"
+
+[node name="LabelStatus" type="Label" parent="HUD/NetworkMenu/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Status: Modo Offline"
+horizontal_alignment = 1
 
 [node name="VBox" type="VBoxContainer" parent="HUD/TopLeftStatus"]
 layout_mode = 1
@@ -403,3 +471,35 @@ theme_override_constants/margin_bottom = 6
 [node name="HBox" type="HBoxContainer" parent="HUD/Hotbar/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 6
+
+[node name="BottomXPBar" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -14.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BarXP" type="ProgressBar" parent="HUD/BottomXPBar"]
+modulate = Color(1, 0.85, 0.2, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+show_percentage = false
+
+[node name="LabelXP" type="Label" parent="HUD/BottomXPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 11
+text = "XP: 0.0% (0 / 68)"
+horizontal_alignment = 1
+vertical_alignment = 1

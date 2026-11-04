@@ -100,8 +100,20 @@ func _die() -> void:
 	current_state = State.DEAD
 	monster_died.emit(self)
 	print("[Monstro] ", monster_name, " foi derrotado!")
+	_reward_player()
 	_spawn_loot_drops()
 	queue_free()
+
+func _reward_player() -> void:
+	if target_player and is_instance_valid(target_player) and target_player.has_method("add_exp_and_sp"):
+		var mob_data = GameData.get_monster(monster_id) if GameData else {}
+		var exp_reward = mob_data.get("exp_reward", 35)
+		var sp_reward = mob_data.get("sp_reward", 5)
+		target_player.add_exp_and_sp(exp_reward, sp_reward)
+		
+		var hud = get_tree().get_first_node_in_group("hud")
+		if hud and hud.has_method("add_combat_log"):
+			hud.add_combat_log("Você ganhou [color=yellow]" + str(exp_reward) + " XP[/color] e [color=aqua]" + str(sp_reward) + " SP[/color].")
 
 func _spawn_loot_drops() -> void:
 	if not GameData:

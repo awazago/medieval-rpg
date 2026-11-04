@@ -106,13 +106,42 @@ def test_skills_and_hotbar():
     
     print(" -> Sucesso: Habilidades físicas, mágicas e cooldowns 100% verificados!")
 
+def test_exp_and_progression_sprint3():
+    print("[QA Test 5] Validando Curva de XP, Level Up e Esqueleto Guerreiro (Sprint 3)...")
+    
+    # 1. Valida tabela de XP
+    with open(os.path.join(DATA_DIR, "exp_table.json")) as f:
+        exp_table = json.load(f)["exp_table"]
+    
+    levels = sorted([int(k) for k in exp_table.keys()])
+    assert len(levels) >= 20, "Tabela de XP deve cobrir pelo menos 20 níveis."
+    
+    # Valida que o XP necessário cresce de forma monótona estrita
+    for i in range(len(levels) - 1):
+        lvl_curr = str(levels[i])
+        lvl_next = str(levels[i + 1])
+        assert exp_table[lvl_next] > exp_table[lvl_curr], f"Erro: XP do nível {lvl_next} deve ser maior que {lvl_curr}"
+        
+    # 2. Valida estatísticas do Esqueleto Guerreiro
+    with open(os.path.join(DATA_DIR, "monsters.json")) as f:
+        mobs = {m["id"]: m for m in json.load(f)["monsters"]}
+        
+    skel = mobs["skeleton_warrior"]
+    assert skel["aggro"] is True, "Esqueleto Guerreiro deve ser agressivo!"
+    assert skel["level"] == 10
+    assert skel["hp"] == 260
+    assert skel["p_atk"] > mobs["prairie_wolf"]["p_atk"], "Esqueleto deve ser muito mais forte que o Lobo."
+    
+    print(" -> Sucesso: Curva de XP e monstro agressivo da Cripta 100% verificados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
         test_combat_formulas()
         test_weight_penalties()
         test_skills_and_hotbar()
-        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1 & 2 Validadas.")
+        test_exp_and_progression_sprint3()
+        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1, 2 & 3 Validadas.")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

@@ -24,6 +24,33 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
+	_check_cli_arguments()
+
+func _check_cli_arguments() -> void:
+	var args = OS.get_cmdline_args()
+	for arg in args:
+		if arg == "--server" or arg == "--dedicated":
+			print("[NetworkManager] Argumento detectado: Iniciando Servidor Dedicado Headless...")
+			call_deferred("start_server", DEFAULT_PORT)
+			break
+
+## RPC para sincronizar posição e rotação dos jogadores
+@rpc("any_peer", "call_remote", "unreliable")
+func update_remote_transform(pos: Vector3, rot_y: float) -> void:
+	var sender_id = multiplayer.get_remote_sender_id()
+	connected_players[sender_id] = {
+		"position": pos,
+		"rotation_y": rot_y
+	}
+
+## RPC para o servidor notificar dano em monstro
+@rpc("authority", "call_remote", "reliable")
+func broadcast_monster_damage(mob_name: String, dmg: int, new_hp: int) -> void:
+	var main_scene = get_tree().current_scene
+	if main_scene:
+		var mob = main_scene.find_child(mob_name, true, false)
+		if mob and mob.has_method("take_damage"):
+			mob.current_hp = new_hp
 
 ## Inicia o servidor autoritativo (Headless ou com interface)
 func start_server(port: int = DEFAULT_PORT) -> Error:

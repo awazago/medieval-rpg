@@ -6,6 +6,10 @@ extends CharacterBody3D
 signal stats_updated(hp: int, max_hp: int, mp: int, max_mp: int, cp: int, max_cp: int)
 signal target_changed(new_target: Node3D)
 signal soulshot_toggled(active: bool)
+signal exp_updated(current_exp: int, required_exp: int, pct: float, sp: int)
+signal leveled_up(new_level: int)
+
+const LEVEL_UP_SCENE = preload("res://client/scenes/vfx/level_up_burst.tscn")
 
 @export_category("Identidade")
 @export var character_name: String = "Guerreiro"
@@ -36,6 +40,10 @@ var p_def: float = 20.0
 var m_atk: float = 12.0
 var m_def: float = 15.0
 
+var current_exp: int = 0
+var required_exp: int = 68
+var current_sp: int = 0
+
 var soulshots_enabled: bool = false
 var selected_target: Node3D = null
 
@@ -48,12 +56,59 @@ func _ready() -> void:
 	current_mp = max_mp
 	current_cp = max_cp
 	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
+	_emit_exp_update()
 	
 	if inventory:
 		inventory.setup_weight_limit(43) # Constituição base humana
 		inventory.item_equipped.connect(_on_item_equipped)
 		inventory.item_used.connect(_on_item_used)
 		inventory.weight_changed.connect(_on_weight_penalty_changed)
+
+func add_exp_and_sp(exp_gain: int, sp_gain: int) -> void:
+	current_exp += exp_gain
+	current_sp += sp_gain
+	
+	# Verifica múltiplos level-ups se receber muito XP
+	while current_exp >= required_exp:
+		current_exp -= required_exp
+		level += 1
+		# Incremento de stats do Lineage II
+		max_hp += 35
+		max_mp += 20
+		max_cp += 25
+		base_p_atk += 4.0
+		base_m_atk += 3.0
+		base_p_def += 3.0
+		base_m_def += 2.5
+		
+		# Restaura vida e mana totais
+		current_hp = max_hp
+		current_mp = max_mp
+		current_cp = max_cp
+		
+		# Próximo patamar de XP
+		required_exp = int(round(required_exp * 2.3))
+		
+		# Efeito visual de pilar dourado
+		var burst = LEVEL_UP_SCENE.instantiate()
+		add_child(burst)
+		burst.global_position = global_position
+		
+		leveled_up.emit(level)
+		stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
+		
+		var hud = get_tree().get_first_node_in_group("hud")
+		if hud and hud.has_method("add_system_message"):
+			hud.add_system_message("[color=gold]★ [NÍVEL SUPERIOR!] Parabéns, você alcançou o Nível " + str(level) + "! Seus atributos aumentaram e seu HP foi restaurado.[/color]")
+			
+	_emit_exp_update()
+
+func _emit_exp_update() -> void:
+	var pct = (float(current_exp) / float(max_exp_target())) * 100.0
+	exp_updated.emit(current_exp, required_exp, pct, current_sp)
+
+func max_exp_target() -> int:
+	return maxi(1, required_exp)
 
 func _on_item_equipped(item_data: Dictionary, slot_type: String) -> void:
 	if slot_type == "weapon":
