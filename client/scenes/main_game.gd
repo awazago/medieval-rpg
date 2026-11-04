@@ -20,6 +20,7 @@ func _ready() -> void:
 		hud.add_system_message("Pressione [Scroll do Mouse] para alternar entre 1ª Pessoa e 3ª Pessoa Livre.")
 		hud.add_system_message("Pressione [Tab] para selecionar o monstro mais próximo.")
 		hud.add_system_message("Pressione [F1] para ligar Soulshots. Clique com botão esquerdo para atacar.")
+		hud.add_system_message("Pressione [I] para abrir/fechar o Inventário com controle de peso.")
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Ataque básico com o botão esquerdo do mouse

@@ -25,6 +25,12 @@ var current_mp: int = 90
 @export var max_cp: int = 100 # Combat Points (Escudo de PVP/Combate clássico do L2)
 var current_cp: int = 100
 
+var base_walk_speed: float = 5.0
+var base_p_atk: float = 24.0
+var base_p_def: float = 20.0
+var base_m_atk: float = 12.0
+var base_m_def: float = 15.0
+
 var p_atk: float = 24.0
 var p_def: float = 20.0
 var m_atk: float = 12.0
@@ -35,12 +41,57 @@ var selected_target: Node3D = null
 
 @onready var visual_mesh: Node3D = $VisualMesh
 @onready var camera_pivot: SpringArm3D = $CameraPivot
+@onready var inventory: InventoryManager = $InventoryManager
 
 func _ready() -> void:
 	current_hp = max_hp
 	current_mp = max_mp
 	current_cp = max_cp
 	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
+	
+	if inventory:
+		inventory.setup_weight_limit(43) # Constituição base humana
+		inventory.item_equipped.connect(_on_item_equipped)
+		inventory.item_used.connect(_on_item_used)
+		inventory.weight_changed.connect(_on_weight_penalty_changed)
+
+func _on_item_equipped(item_data: Dictionary, slot_type: String) -> void:
+	if slot_type == "weapon":
+		if not item_data.is_empty():
+			p_atk = base_p_atk + item_data.get("p_atk", 0)
+			m_atk = base_m_atk + item_data.get("m_atk", 0)
+			print("[Personagem] Arma equipada: ", item_data.get("name"), " | P.Atk: ", p_atk)
+		else:
+			p_atk = base_p_atk
+			m_atk = base_m_atk
+			print("[Personagem] Arma desequipada. P.Atk restaurado: ", p_atk)
+	elif slot_type == "chest":
+		if not item_data.is_empty():
+			p_def = base_p_def + item_data.get("p_def", 0)
+			print("[Personagem] Armadura equipada: ", item_data.get("name"), " | P.Def: ", p_def)
+		else:
+			p_def = base_p_def
+			print("[Personagem] Armadura desequipada. P.Def restaurado: ", p_def)
+
+func _on_item_used(item_data: Dictionary) -> void:
+	if item_data.get("effect") == "heal_over_time":
+		var heal = item_data.get("heal_amount", 50)
+		current_hp = mini(max_hp, current_hp + heal)
+		stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
+		print("[Personagem] Poção usada! Recuperou ", heal, " HP.")
+	elif item_data.get("id") == "soulshot_none":
+		toggle_soulshots()
+
+func _on_weight_penalty_changed(_current: int, _max_w: int, _pct: float, penalty_tier: int) -> void:
+	match penalty_tier:
+		0, 1:
+			walk_speed = base_walk_speed
+		2:
+			walk_speed = base_walk_speed * 0.8 # -20% Move Speed
+			print("[Inventário] Penalidade de Peso: -20% Velocidade.")
+		3:
+			walk_speed = base_walk_speed * 0.3 # Sobrecarregado severo
+			print("[Inventário] Penalidade Severa: Sobrecarregado!")
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():

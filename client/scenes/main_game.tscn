@@ -5,6 +5,10 @@
 [ext_resource type="Script" path="res://client/scripts/hybrid_camera.gd" id="2_camera"]
 [ext_resource type="Script" path="res://server/monster_entity.gd" id="3_monster"]
 [ext_resource type="Script" path="res://client/ui/hud.gd" id="4_hud"]
+[ext_resource type="Script" path="res://client/scripts/inventory_manager.gd" id="5_inventory"]
+[ext_resource type="Script" path="res://client/ui/inventory_window.gd" id="6_inv_ui"]
+[ext_resource type="Script" path="res://client/scripts/npc_character.gd" id="7_npc"]
+[ext_resource type="Script" path="res://client/ui/dialog_window.gd" id="8_dialog"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.55, 0.85, 1.0)
@@ -67,6 +71,9 @@ script = ExtResource("1_player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
 shape = SubResource("Capsule_player")
 
+[node name="InventoryManager" type="Node" parent="Player"]
+script = ExtResource("5_inventory")
+
 [node name="VisualMesh" type="Node3D" parent="Player"]
 
 [node name="BodyMesh" type="CSGCapsule3D" parent="Player/VisualMesh"]
@@ -103,7 +110,33 @@ size = Vector3(0.8, 0.8, 1.2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 shape = SubResource("Capsule_player")
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="NPC_SentinelMarcus" type="CharacterBody3D" parent="." groups=["npcs"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -2)
+script = ExtResource("7_npc")
+
+[node name="BodyMesh" type="CSGCapsule3D" parent="NPC_SentinelMarcus"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+radius = 0.4
+height = 1.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_SentinelMarcus"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Capsule_player")
+
+[node name="LabelName" type="Label3D" parent="NPC_SentinelMarcus"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+billboard = 1
+text = "Sentinela Marcus\n<Guarda de Highstone>"
+font_size = 26
+modulate = Color(0.3, 0.8, 1, 1)
+
+[node name="InteractionArea" type="Area3D" parent="NPC_SentinelMarcus"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_SentinelMarcus/InteractionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Capsule_player")
+
+[node name="HUD" type="CanvasLayer" parent="." groups=["hud"]]
 script = ExtResource("4_hud")
 
 [node name="TopLeftStatus" type="Control" parent="HUD"]
@@ -217,3 +250,95 @@ grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
 scroll_following = true
+
+[node name="InventoryWindow" type="PanelContainer" parent="HUD" node_paths=PackedStringArray("inventory_manager")]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -220.0
+offset_right = -20.0
+offset_bottom = 220.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("6_inv_ui")
+inventory_manager = NodePath("../../Player/InventoryManager")
+
+[node name="Margin" type="MarginContainer" parent="HUD/InventoryWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="HUD/InventoryWindow/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+text = "INVENTÁRIO (Tecla I)"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+columns = 4
+
+[node name="LabelDescription" type="Label" parent="HUD/InventoryWindow/Margin/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Selecione um item..."
+autowrap_mode = 2
+
+[node name="WeightContainer" type="VBoxContainer" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="LabelWeight" type="Label" parent="HUD/InventoryWindow/Margin/VBox/WeightContainer"]
+layout_mode = 2
+text = "Peso: 0 / 68000 (0.0%)"
+
+[node name="BarWeight" type="ProgressBar" parent="HUD/InventoryWindow/Margin/VBox/WeightContainer"]
+layout_mode = 2
+value = 0.0
+
+[node name="DialogWindow" type="PanelContainer" parent="HUD" groups=["dialog_window"]]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -140.0
+offset_right = 220.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_dialog")
+
+[node name="Margin" type="MarginContainer" parent="HUD/DialogWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBox" type="VBoxContainer" parent="HUD/DialogWindow/Margin"]
+layout_mode = 2
+
+[node name="LabelSpeaker" type="Label" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+text = "NPC Nome"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="TextBody" type="RichTextLabel" parent="HUD/DialogWindow/Margin/VBox"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+bbcode_enabled = true
+text = "Saudações, forasteiro..."
+
+[node name="OptionsContainer" type="VBoxContainer" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2

@@ -94,8 +94,33 @@ func take_damage(damage_amount: int, attacker: Node3D = null) -> void:
 	if current_hp <= 0:
 		_die()
 
+const DROP_SCENE = preload("res://client/scenes/item_drop_3d.tscn")
+
 func _die() -> void:
 	current_state = State.DEAD
 	monster_died.emit(self)
 	print("[Monstro] ", monster_name, " foi derrotado!")
+	_spawn_loot_drops()
 	queue_free()
+
+func _spawn_loot_drops() -> void:
+	if not GameData:
+		return
+	var mob_data = GameData.get_monster(monster_id)
+	var drops: Array = mob_data.get("drops", [])
+	
+	for drop_entry in drops:
+		var chance = drop_entry.get("chance_pct", 100)
+		if randf() * 100.0 <= chance:
+			var item_id = drop_entry.get("item_id", "soulshot_none")
+			var min_c = drop_entry.get("min", 1)
+			var max_c = drop_entry.get("max", 1)
+			var count = randi_range(min_c, max_c)
+			
+			var drop_instance = DROP_SCENE.instantiate()
+			drop_instance.init_drop(item_id, count)
+			get_parent().add_child(drop_instance)
+			
+			# Espalha levemente o drop ao redor do corpo
+			var offset = Vector3(randf_range(-0.8, 0.8), 0.3, randf_range(-0.8, 0.8))
+			drop_instance.global_position = global_position + offset

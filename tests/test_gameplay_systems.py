@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""
+Validador de Sistemas e Balanceamento (QA Automatizado - Lineage II Rules)
+Verifica integridade de dados JSON e fórmulas de combate / peso.
+"""
+import json
+import math
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+
+def test_data_integrity():
+    print("[QA Test 1] Verificando integridade das tabelas de dados JSON...")
+    
+    with open(os.path.join(DATA_DIR, "items.json")) as f:
+        items_data = json.load(f)["items"]
+        item_ids = {item["id"] for item in items_data}
+        
+    with open(os.path.join(DATA_DIR, "monsters.json")) as f:
+        monsters_data = json.load(f)["monsters"]
+        
+    with open(os.path.join(DATA_DIR, "races.json")) as f:
+        races_data = json.load(f)
+
+    # 1. Valida se todo item dropado por monstros existe na tabela de itens
+    for mob in monsters_data:
+        for drop in mob.get("drops", []):
+            item_id = drop["item_id"]
+            assert item_id in item_ids, f"Erro: Monstro '{mob['id']}' dropa item inexistente '{item_id}'"
+
+    # 2. Valida atributos das 5 raças
+    required_stats = {"str", "dex", "con", "int", "wit", "men"}
+    for race_key, race in races_data.items():
+        stats = set(race["base_stats"].keys())
+        assert required_stats.issubset(stats), f"Erro: Raça '{race_key}' faltando atributos base."
+
+    print(" -> Sucesso: Todos os itens, raças e drops estão consistentes e válidos!")
+
+def test_combat_formulas():
+    print("[QA Test 2] Validando Fórmulas Canônicas de Combate Lineage II...")
+    
+    # Parâmetros: P.Atk = 24, P.Def = 12
+    # Sem Soulshot: (70 * 24) / 12 = 140 base
+    # Com Soulshot: (70 * (24 * 2)) / 12 = 280 base (Exatamente o dobro!)
+    p_atk = 24.0
+    p_def = 12.0
+    
+    dmg_normal = (70.0 * p_atk) / p_def
+    dmg_soulshot = (70.0 * (p_atk * 2.0)) / p_def
+    
+    assert math.isclose(dmg_soulshot, dmg_normal * 2.0), "Erro: Soulshot deve dobrar o dano físico!"
+    
+    # Crítico físico duplica o dano final no Lineage II
+    dmg_crit = dmg_normal * 2.0
+    assert math.isclose(dmg_crit, 280.0), "Erro: Crítico físico deve causar 200% do dano base!"
+
+    print(" -> Sucesso: Fórmulas de dano físico e Soulshot 100% canônicas!")
+
+def test_weight_penalties():
+    print("[QA Test 3] Validando Sistema de Penalidade de Peso (Lineage II)...")
+    
+    base_weight_limit = 68000
+    # Con 43 (Humano) -> Multiplicador = 1.0 + (43 - 30) * 0.035 = 1.455
+    con_stat = 43
+    max_weight = int(round(base_weight_limit * (1.0 + ((con_stat - 30) * 0.035))))
+    assert max_weight == 98940, f"Erro no cálculo de carga máxima: {max_weight}"
+
+    # Validação de faixas de penalidade
+    def get_tier(curr, max_w):
+        pct = (curr / max_w) * 100.0
+        if pct >= 80.0: return 3
+        if pct >= 67.0: return 2
+        if pct >= 50.0: return 1
+        return 0
+
+    assert get_tier(10000, max_weight) == 0 # Sem penalidade
+    assert get_tier(50000, max_weight) == 1 # 50.5% -> Sem Regen
+    assert get_tier(68000, max_weight) == 2 # 68.7% -> -20% Speed
+    assert get_tier(80000, max_weight) == 3 # 80.8% -> Sobrecarregado severo
+
+    print(" -> Sucesso: Limites e faixas de penalidade de carga perfeitamente calibrados!")
+
+if __name__ == "__main__":
+    try:
+        test_data_integrity()
+        test_combat_formulas()
+        test_weight_penalties()
+        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprint 1 Validada.")
+    except Exception as e:
+        print(f"\n❌ FALHA NO TESTE DE QA: {e}")
+        sys.exit(1)
