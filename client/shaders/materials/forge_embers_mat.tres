@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://f3e4m5p6forgeembers"]
+
+[ext_resource type="Shader" path="res://client/shaders/forge_embers.gdshader" id="1_embers_shader"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_embers_shader")
+shader_parameter/color_coal = Color(0.12, 0.08, 0.06, 1)
+shader_parameter/color_ember_deep = Color(0.95, 0.22, 0.04, 1)
+shader_parameter/color_ember_hot = Color(1, 0.72, 0.15, 1)
+shader_parameter/color_ember_white = Color(1, 0.98, 0.85, 1)
+shader_parameter/pulse_speed = 1.8
+shader_parameter/ember_scale = 8.0
+shader_parameter/base_emission_energy = 4.5
+shader_parameter/pulse_amplitude = 1.8

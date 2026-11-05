@@ -10,6 +10,7 @@ signal exp_updated(current_exp: int, required_exp: int, pct: float, sp: int)
 signal leveled_up(new_level: int)
 
 const LEVEL_UP_SCENE = preload("res://client/scenes/vfx/level_up_burst.tscn")
+const PRIVATE_STORE_SIGN_SCENE = preload("res://client/scenes/ui/private_store_sign_3d.tscn")
 
 const WEAPON_MODELS = {
 	"sword_1h": preload("res://client/scenes/weapons/sword_1h.tscn"),
@@ -17,6 +18,9 @@ const WEAPON_MODELS = {
 	"staff_2h": preload("res://client/scenes/weapons/staff_2h.tscn"),
 	"bow_2h": preload("res://client/scenes/weapons/bow_2h.tscn")
 }
+
+var is_sitting: bool = false
+var active_store_sign: Node3D = null
 
 @export_category("Identidade")
 @export var character_name: String = "Guerreiro"
@@ -55,9 +59,10 @@ var soulshots_enabled: bool = false
 var selected_target: Node3D = null
 
 @onready var visual_mesh: Node3D = $VisualMesh
-@onready var body_mesh: CSGCapsule3D = $VisualMesh/BodyMesh
-@onready var shoulder_pads: CSGBox3D = $VisualMesh/ShoulderPads
-@onready var right_hand_socket: Node3D = $VisualMesh/RightHandSocket
+@onready var body_mesh: CSGCapsule3D = $VisualMesh/BodyMesh if has_node("VisualMesh/BodyMesh") else null
+@onready var shoulder_pads: CSGBox3D = $VisualMesh/ShoulderPads if has_node("VisualMesh/ShoulderPads") else null
+@onready var right_hand_socket: Node3D = $VisualMesh/RightHandSocket if has_node("VisualMesh/RightHandSocket") else null
+@onready var rig: HumanoidCharacterRig = $VisualMesh/HumanoidCharacterRig if has_node("VisualMesh/HumanoidCharacterRig") else null
 @onready var camera_pivot: SpringArm3D = $CameraPivot
 @onready var inventory: InventoryManager = $InventoryManager
 
@@ -67,6 +72,12 @@ func _ready() -> void:
 	current_cp = max_cp
 	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
 	_emit_exp_update()
+	
+	if rig:
+		var sock = rig.get_right_hand_socket()
+		if sock:
+			right_hand_socket = sock
+		rig.play_anim("idle")
 	
 	if inventory:
 		inventory.setup_weight_limit(43) # Constituição base humana
@@ -163,34 +174,43 @@ func _update_weapon_mesh(item_data: Dictionary) -> void:
 
 ## Paperdoll: Atualiza as texturas e malha da armadura
 func _update_armor_mesh(item_data: Dictionary) -> void:
-	if not body_mesh:
-		return
-		
 	var mat = StandardMaterial3D.new()
 	var item_id = item_data.get("id", "")
+	var pads_sz = Vector3(1.0, 0.2, 0.45)
 	
 	match item_id:
 		"leather_tunic":
 			mat.albedo_color = Color(0.4, 0.28, 0.16)
 			mat.roughness = 0.85
 			mat.metallic = 0.0
-			body_mesh.material = mat
-			if shoulder_pads:
-				shoulder_pads.size = Vector3(0.9, 0.15, 0.4)
+			pads_sz = Vector3(0.9, 0.15, 0.4)
 		"iron_breastplate":
 			mat.albedo_color = Color(0.8, 0.84, 0.88)
 			mat.metallic = 0.95
 			mat.roughness = 0.2
-			body_mesh.material = mat
-			if shoulder_pads:
-				shoulder_pads.size = Vector3(1.2, 0.25, 0.55)
+			pads_sz = Vector3(1.2, 0.25, 0.55)
+		"brigandine_tunic":
+			mat.albedo_color = Color(0.28, 0.32, 0.38)
+			mat.metallic = 0.75
+			mat.roughness = 0.35
+			pads_sz = Vector3(1.25, 0.28, 0.6)
+		"mithril_tunic":
+			mat.albedo_color = Color(0.65, 0.82, 0.95)
+			mat.metallic = 0.4
+			mat.roughness = 0.45
+			pads_sz = Vector3(0.95, 0.18, 0.42)
 		_:
 			# Roupa inicial básica
 			mat.albedo_color = Color(0.5, 0.52, 0.55)
 			mat.roughness = 0.7
-			body_mesh.material = mat
-			if shoulder_pads:
-				shoulder_pads.size = Vector3(1.0, 0.2, 0.45)
+			
+	if body_mesh:
+		body_mesh.material = mat
+	if shoulder_pads:
+		shoulder_pads.size = pads_sz
+		shoulder_pads.material = mat
+	if rig:
+		rig.update_armor(mat, pads_sz)
 
 ## Aplica os dados, atributos e silhueta 3D da Raça escolhida
 func apply_race_data(race_key: String) -> void:
@@ -258,6 +278,13 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
+	# Se estiver sentado montando loja, permanece imóvel
+	if is_sitting:
+		velocity.x = 0
+		velocity.z = 0
+		move_and_slide()
+		return
+
 	# Pulo
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = jump_velocity
@@ -274,6 +301,57 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, walk_speed)
 
 	move_and_slide()
+	
+	# Animações de Locomoção via Rig Humanoide
+	if rig and not is_sitting:
+		if direction != Vector3.ZERO:
+			rig.play_anim("run", walk_speed / 5.0)
+		else:
+			rig.play_anim("idle")
+
+func play_attack_animation() -> void:
+	if rig and not is_sitting:
+		rig.play_anim("attack", 1.2)
+
+func play_cast_animation() -> void:
+	if rig and not is_sitting:
+		rig.play_anim("cast", 1.0)
+
+## Inicia a postura de Loja Pessoal (senta no chão e afixa plaquinha flutuante 3D)
+func start_sitting_shop(store_type: int, store_title: String) -> void:
+	is_sitting = true
+	velocity = Vector3.ZERO
+	if rig:
+		rig.play_sit_shop()
+		
+	if active_store_sign:
+		active_store_sign.queue_free()
+		
+	active_store_sign = PRIVATE_STORE_SIGN_SCENE.instantiate()
+	add_child(active_store_sign)
+	active_store_sign.position = Vector3(0, 1.45, 0)
+	if active_store_sign.has_method("setup"):
+		active_store_sign.setup(store_type, store_title)
+	print("[Private Store] Jogador sentou e abriu loja: ", store_title)
+
+## Encerra a postura de Loja Pessoal (levanta e remove plaquinha 3D)
+func stop_sitting_shop() -> void:
+	is_sitting = false
+	if rig:
+		rig.stop_sit()
+	if active_store_sign:
+		active_store_sign.queue_free()
+		active_store_sign = null
+	print("[Private Store] Jogador encerrou a loja e levantou.")
+
+func toggle_private_store_window() -> void:
+	var store_win = get_tree().get_first_node_in_group("private_store_window")
+	var store_mgr = get_tree().get_first_node_in_group("private_store_manager")
+	if store_win:
+		if store_win.visible:
+			store_win.close_window()
+		else:
+			store_win.open_for_player(self, store_mgr)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Ativação rápida de Soulshots (Auto-Shot)
@@ -283,6 +361,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Tecla de Atalho para ligar/desligar Soulshots
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F1:
 		toggle_soulshots()
+
+	# Tecla P: Abre a janela de Loja Pessoal (Private Store)
+	if event is InputEventKey and event.pressed and event.keycode == KEY_P:
+		toggle_private_store_window()
 
 func toggle_soulshots() -> void:
 	soulshots_enabled = not soulshots_enabled

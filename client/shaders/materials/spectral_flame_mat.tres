@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://s2f3m4p5spectralflame"]
+
+[ext_resource type="Shader" path="res://client/shaders/spectral_flame.gdshader" id="1_flame_shader"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_flame_shader")
+shader_parameter/flame_color_base = Color(0.08, 0.45, 0.32, 0.9)
+shader_parameter/flame_color_hot = Color(0.25, 0.98, 0.68, 1)
+shader_parameter/flame_color_core = Color(0.85, 1, 0.92, 1)
+shader_parameter/emission_energy = 4.8
+shader_parameter/flame_speed = 2.8
+shader_parameter/flame_turbulence = 0.35

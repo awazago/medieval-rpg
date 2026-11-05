@@ -1,87 +1,202 @@
-[gd_scene load_steps=7 format=3 uid="uid://b6g78p31m9q4w"]
+[gd_scene load_steps=9 format=3 uid="uid://b6g78p31m9q4w"]
 
-[sub_resource type="StandardMaterial3D" id="Mat_DarkCryptStone"]
-albedo_color = Color(0.25, 0.27, 0.28, 1)
-roughness = 0.95
+[ext_resource type="Material" uid="uid://c1g2s3t4cryptstone" path="res://client/shaders/materials/crypt_gothic_stone_mat.tres" id="1_crypt_stone"]
+[ext_resource type="Material" uid="uid://s2f3m4p5spectralflame" path="res://client/shaders/materials/spectral_flame_mat.tres" id="2_spectral_flame"]
+[ext_resource type="Material" uid="uid://m3m4p5s6spectralmist" path="res://client/shaders/materials/spectral_mist_mat.tres" id="3_spectral_mist"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_GothicIron"]
+albedo_color = Color(0.16, 0.17, 0.18, 1)
+metallic = 0.9
+roughness = 0.35
 
 [sub_resource type="StandardMaterial3D" id="Mat_MossyRubble"]
-albedo_color = Color(0.22, 0.3, 0.22, 1)
-roughness = 0.9
+albedo_color = Color(0.2, 0.26, 0.22, 1)
+roughness = 0.92
 
-[sub_resource type="StandardMaterial3D" id="Mat_SpectralFire"]
-albedo_color = Color(0.1, 0.9, 0.6, 1)
-emission_enabled = true
-emission = Color(0.15, 0.95, 0.65, 1)
-emission_energy_multiplier = 4.0
+[sub_resource type="BoxMesh" id="BoxMesh_tomb_lid"]
+material = ExtResource("1_crypt_stone")
+size = Vector3(1.5, 0.3, 2.6)
 
-[sub_resource type="BoxMesh" id="BoxMesh_tomb"]
-material = SubResource("Mat_DarkCryptStone")
-size = Vector3(1.4, 0.8, 2.4)
+[sub_resource type="PlaneMesh" id="PlaneMesh_mist"]
+material = ExtResource("3_spectral_mist")
+size = Vector2(35, 35)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_flame"]
+material = ExtResource("2_spectral_flame")
+top_radius = 0.05
+bottom_radius = 0.35
+height = 0.9
 
 [node name="AncientCryptRuins" type="Node3D"]
+
+[node name="SpectralMistPlane" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -6)
+mesh = SubResource("PlaneMesh_mist")
 
 [node name="CryptArchway" type="CSGCombiner3D" parent="."]
 use_collision = true
 
+[node name="LeftPillarBase" type="CSGBox3D" parent="CryptArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.8, 0.5, 0)
+size = Vector3(1.8, 1.0, 1.8)
+material = ExtResource("1_crypt_stone")
+
 [node name="LeftPillar" type="CSGCylinder3D" parent="CryptArchway"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 3, 0)
-radius = 0.7
-height = 6.0
-sides = 8
-material = SubResource("Mat_DarkCryptStone")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.8, 3.8, 0)
+radius = 0.75
+height = 5.6
+sides = 12
+material = ExtResource("1_crypt_stone")
+
+[node name="LeftCapital" type="CSGBox3D" parent="CryptArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.8, 6.7, 0)
+size = Vector3(1.7, 0.5, 1.7)
+material = ExtResource("1_crypt_stone")
+
+[node name="RightPillarBase" type="CSGBox3D" parent="CryptArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8, 0.5, 0)
+size = Vector3(1.8, 1.0, 1.8)
+material = ExtResource("1_crypt_stone")
 
 [node name="RightPillar" type="CSGCylinder3D" parent="CryptArchway"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 3, 0)
-radius = 0.7
-height = 6.0
-sides = 8
-material = SubResource("Mat_DarkCryptStone")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8, 3.8, 0)
+radius = 0.75
+height = 5.6
+sides = 12
+material = ExtResource("1_crypt_stone")
+
+[node name="RightCapital" type="CSGBox3D" parent="CryptArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8, 6.7, 0)
+size = Vector3(1.7, 0.5, 1.7)
+material = ExtResource("1_crypt_stone")
 
 [node name="ArchLintel" type="CSGBox3D" parent="CryptArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.0, 0)
+size = Vector3(9.5, 0.9, 1.4)
+material = ExtResource("1_crypt_stone")
+
+[node name="GothicPointedApex" type="CSGBox3D" parent="CryptArchway"]
+transform = Transform3D(0.707, -0.707, 0, 0.707, 0.707, 0, 0, 0, 1, 0, 7.8, 0)
+size = Vector3(1.6, 1.6, 1.2)
+material = ExtResource("1_crypt_stone")
+
+[node name="IronPortcullisSpikes" type="CSGBox3D" parent="CryptArchway"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, 0)
-size = Vector3(9, 0.8, 1.2)
-material = SubResource("Mat_DarkCryptStone")
+size = Vector3(6.5, 0.6, 0.2)
+material = SubResource("Mat_GothicIron")
+
+[node name="SunkenStairs" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="Step_1" type="CSGBox3D" parent="SunkenStairs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -2.5)
+size = Vector3(5.5, 0.3, 1.2)
+material = ExtResource("1_crypt_stone")
+
+[node name="Step_2" type="CSGBox3D" parent="SunkenStairs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, -3.7)
+size = Vector3(5.5, 0.3, 1.2)
+material = ExtResource("1_crypt_stone")
+
+[node name="Step_3" type="CSGBox3D" parent="SunkenStairs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, -4.9)
+size = Vector3(5.5, 0.3, 1.2)
+material = ExtResource("1_crypt_stone")
 
 [node name="BrokenPillarLeft" type="CSGCylinder3D" parent="."]
-transform = Transform3D(0.966, -0.259, 0, 0.259, 0.966, 0, 0, 0, 1, -7, 1.5, -4)
+transform = Transform3D(0.966, -0.259, 0, 0.259, 0.966, 0, 0, 0, 1, -7.5, 1.6, -4)
 use_collision = true
-radius = 0.6
-height = 3.2
-sides = 8
+radius = 0.65
+height = 3.6
+sides = 10
 material = SubResource("Mat_MossyRubble")
 
 [node name="BrokenPillarRight" type="CSGCylinder3D" parent="."]
-transform = Transform3D(0.94, 0.342, 0, -0.342, 0.94, 0, 0, 0, 1, 7, 2, -3)
+transform = Transform3D(0.94, 0.342, 0, -0.342, 0.94, 0, 0, 0, 1, 7.5, 2.1, -3.5)
 use_collision = true
-radius = 0.6
-height = 4.0
-sides = 8
+radius = 0.65
+height = 4.2
+sides = 10
 material = SubResource("Mat_MossyRubble")
 
-[node name="TombStone1" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.966, 0, 0.259, 0, 1, 0, -0.259, 0, 0.966, -3, 0.4, -6)
-mesh = SubResource("BoxMesh_tomb")
+[node name="SarcophagusKnight_1" type="CSGCombiner3D" parent="."]
+transform = Transform3D(0.966, 0, 0.259, 0, 1, 0, -0.259, 0, 0.966, -3.8, 0, -8.5)
+use_collision = true
 
-[node name="TombStone2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, 4, 0.4, -7)
-mesh = SubResource("BoxMesh_tomb")
+[node name="TombBase" type="CSGBox3D" parent="SarcophagusKnight_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(1.5, 0.9, 2.6)
+material = ExtResource("1_crypt_stone")
 
-[node name="SpectralBrazierLeft" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1.2, 0.5)
-size = Vector3(0.5, 0.5, 0.5)
-material = SubResource("Mat_SpectralFire")
+[node name="TombLid" type="MeshInstance3D" parent="SarcophagusKnight_1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+mesh = SubResource("BoxMesh_tomb_lid")
+
+[node name="SarcophagusKnight_2" type="CSGCombiner3D" parent="."]
+transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, 4.2, 0, -9.5)
+use_collision = true
+
+[node name="TombBase" type="CSGBox3D" parent="SarcophagusKnight_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(1.5, 0.9, 2.6)
+material = ExtResource("1_crypt_stone")
+
+[node name="TombLid" type="MeshInstance3D" parent="SarcophagusKnight_2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+mesh = SubResource("BoxMesh_tomb_lid")
+
+[node name="SpectralBrazierLeft" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 0, 0.6)
+use_collision = true
+
+[node name="PedestalBase" type="CSGCylinder3D" parent="SpectralBrazierLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+radius = 0.35
+height = 1.2
+sides = 8
+material = SubResource("Mat_GothicIron")
+
+[node name="CauldronBowl" type="CSGCylinder3D" parent="SpectralBrazierLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+radius = 0.55
+height = 0.4
+sides = 10
+material = SubResource("Mat_GothicIron")
+
+[node name="FlameMesh" type="MeshInstance3D" parent="SpectralBrazierLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+mesh = SubResource("CylinderMesh_flame")
 
 [node name="LightLeft" type="OmniLight3D" parent="SpectralBrazierLeft"]
-light_color = Color(0.2, 0.95, 0.65, 1)
-light_energy = 2.8
-omni_range = 9.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+light_color = Color(0.18, 0.95, 0.62, 1)
+light_energy = 3.6
+omni_range = 11.0
 
-[node name="SpectralBrazierRight" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.2, 0.5)
-size = Vector3(0.5, 0.5, 0.5)
-material = SubResource("Mat_SpectralFire")
+[node name="SpectralBrazierRight" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 0, 0.6)
+use_collision = true
+
+[node name="PedestalBase" type="CSGCylinder3D" parent="SpectralBrazierRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+radius = 0.35
+height = 1.2
+sides = 8
+material = SubResource("Mat_GothicIron")
+
+[node name="CauldronBowl" type="CSGCylinder3D" parent="SpectralBrazierRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+radius = 0.55
+height = 0.4
+sides = 10
+material = SubResource("Mat_GothicIron")
+
+[node name="FlameMesh" type="MeshInstance3D" parent="SpectralBrazierRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+mesh = SubResource("CylinderMesh_flame")
 
 [node name="LightRight" type="OmniLight3D" parent="SpectralBrazierRight"]
-light_color = Color(0.2, 0.95, 0.65, 1)
-light_energy = 2.8
-omni_range = 9.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+light_color = Color(0.18, 0.95, 0.62, 1)
+light_energy = 3.6
+omni_range = 11.0

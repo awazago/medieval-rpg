@@ -1,6 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://b1m6s4pqr2y9x"]
 
 [ext_resource type="Script" path="res://client/scripts/npc_ship_captain.gd" id="1_captain"]
+[ext_resource type="Material" uid="uid://d9o0m1k4ocean" path="res://client/shaders/materials/ocean_water_mat.tres" id="2_ocean_mat"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_DockWood"]
 albedo_color = Color(0.38, 0.27, 0.18, 1)
@@ -13,11 +14,6 @@ roughness = 0.75
 [sub_resource type="StandardMaterial3D" id="Mat_SailCloth"]
 albedo_color = Color(0.9, 0.88, 0.82, 1)
 roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_OceanWater"]
-albedo_color = Color(0.08, 0.25, 0.42, 0.9)
-roughness = 0.15
-metallic = 0.2
 
 [sub_resource type="StandardMaterial3D" id="Mat_LanternGlow"]
 albedo_color = Color(1.0, 0.8, 0.3, 1)
@@ -35,8 +31,10 @@ metallic = 0.8
 roughness = 0.4
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_water"]
-material = SubResource("Mat_OceanWater")
+material = ExtResource("2_ocean_mat")
 size = Vector2(160, 160)
+subdivide_width = 48
+subdivide_depth = 48
 
 [sub_resource type="CapsuleShape3D" id="Capsule_npc"]
 radius = 0.45

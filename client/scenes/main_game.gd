@@ -92,6 +92,10 @@ func _attempt_player_attack() -> void:
 	if target.has_method("take_damage"):
 		target.take_damage(damage, player)
 		
+	# Aplica animação de ataque
+	if player.has_method("play_attack_animation"):
+		player.play_attack_animation()
+		
 	# Efeito visual de Soulshot
 	if player.soulshots_enabled:
 		_spawn_soulshot_burst(target.global_position + Vector3(0, 0.8, 0))
@@ -140,6 +144,8 @@ func _on_skill_triggered(skill_id: String) -> void:
 	if skill_id == "lesser_heal":
 		var heal_val = skill_data.get("power", 60)
 		player.current_hp = mini(player.max_hp, player.current_hp + heal_val)
+		if player.has_method("play_cast_animation"):
+			player.play_cast_animation()
 		hud.update_player_status(
 			player.current_hp, player.max_hp,
 			player.current_mp, player.max_mp,
@@ -169,9 +175,13 @@ func _on_skill_triggered(skill_id: String) -> void:
 	
 	if skill_data.get("element"):
 		# Magia (ex: Flecha Ígnea)
+		if player.has_method("play_cast_animation"):
+			player.play_cast_animation()
 		result = CombatFormulas.calculate_magical_damage(player.m_atk, target_m_def, 12, skill_power, player.soulshots_enabled)
 	else:
 		# Físico (ex: Golpe Poderoso)
+		if player.has_method("play_attack_animation"):
+			player.play_attack_animation()
 		result = CombatFormulas.calculate_physical_damage(player.p_atk, target_p_def, 30, 8, player.soulshots_enabled, skill_power)
 		
 	var damage = result["damage"]

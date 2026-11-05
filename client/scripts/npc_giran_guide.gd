@@ -20,6 +20,10 @@ func interact(player: CharacterBody3D) -> void:
 	
 	dialog_win.show_dialog_custom(title, text, [
 		{
+			"text": "🏰 Entrar na Metrópole Comercial de Giran (Praça do Mercado)",
+			"action": Callable(self, "_on_enter_giran_city").bind(player)
+		},
+		{
 			"text": "📜 Como faço a 1ª Mudança de Classe (Nível 20)?",
 			"action": Callable(self, "_on_class_transfer_info").bind(dialog_win)
 		},
@@ -32,10 +36,16 @@ func interact(player: CharacterBody3D) -> void:
 			"action": Callable(self, "_on_return_to_dawn_isle").bind(player)
 		},
 		{
-			"text": "Obrigado, vou explorar a cidade por conta própria.",
+			"text": "Obrigado, vou explorar o cais por enquanto.",
 			"action": Callable(dialog_win, "hide")
 		}
 	])
+
+func _on_enter_giran_city(_player: CharacterBody3D) -> void:
+	var hud = get_tree().get_first_node_in_group("hud")
+	if hud and hud.has_node("DialogWindow"):
+		hud.get_node("DialogWindow").hide()
+	get_tree().change_scene_to_file("res://client/scenes/environment/giran_city.tscn")
 
 func _on_class_transfer_info(dialog_win: Control) -> void:
 	var title = npc_name + " " + npc_title

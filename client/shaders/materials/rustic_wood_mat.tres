@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://r2w3m4p5rusticwood"]
+
+[ext_resource type="Shader" path="res://client/shaders/rustic_wood.gdshader" id="1_wood_shader"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_wood_shader")
+shader_parameter/wood_color_base = Color(0.34, 0.23, 0.14, 1)
+shader_parameter/wood_color_dark = Color(0.2, 0.13, 0.08, 1)
+shader_parameter/wood_color_highlight = Color(0.44, 0.3, 0.18, 1)
+shader_parameter/grain_scale_x = 24.0
+shader_parameter/grain_scale_y = 1.8
+shader_parameter/wood_roughness = 0.82

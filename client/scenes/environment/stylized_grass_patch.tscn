@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://e1g2p3a4grasspatch"]
+
+[ext_resource type="Material" uid="uid://c8n9m0k3grass" path="res://client/shaders/materials/grass_mat.tres" id="1_grass_mat"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_blade"]
+material = ExtResource("1_grass_mat")
+size = Vector2(0.9, 0.9)
+center_offset = Vector3(0, 0.45, 0)
+
+[node name="StylizedGrassPatch" type="Node3D"]
+
+[node name="Blade_0" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_blade")
+
+[node name="Blade_60" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0, 0)
+mesh = SubResource("QuadMesh_blade")
+
+[node name="Blade_120" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 0, 0, 0)
+mesh = SubResource("QuadMesh_blade")

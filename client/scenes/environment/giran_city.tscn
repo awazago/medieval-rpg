@@ -1,0 +1,724 @@
+[gd_scene load_steps=22 format=3 uid="uid://c7giranmarketplaza"]
+
+[ext_resource type="Script" path="res://client/scenes/environment/giran_city.gd" id="1_city"]
+[ext_resource type="Script" path="res://client/scripts/player_character.gd" id="2_player"]
+[ext_resource type="Script" path="res://client/scripts/hybrid_camera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://client/scripts/inventory_manager.gd" id="4_inv"]
+[ext_resource type="Script" path="res://client/ui/hud.gd" id="5_hud"]
+[ext_resource type="Script" path="res://client/ui/dialog_window.gd" id="6_dialog"]
+[ext_resource type="Script" path="res://client/ui/hotbar.gd" id="7_hotbar"]
+[ext_resource type="Script" path="res://client/ui/inventory_window.gd" id="8_inv_win"]
+[ext_resource type="Script" path="res://client/ui/shop_window.gd" id="9_shop_win"]
+[ext_resource type="Script" path="res://client/ui/warehouse_window.gd" id="10_wh_win"]
+[ext_resource type="Script" path="res://client/ui/private_store_window.gd" id="11_ps_win"]
+[ext_resource type="Script" path="res://client/scripts/economy/private_store_manager.gd" id="12_ps_mgr"]
+[ext_resource type="Script" path="res://client/scripts/npc_giran_trader.gd" id="13_trader"]
+[ext_resource type="Script" path="res://client/scripts/npc_grand_master.gd" id="14_master"]
+[ext_resource type="Script" path="res://client/scripts/npc_warehouse_chief.gd" id="15_wh_chief"]
+[ext_resource type="Script" path="res://client/scripts/npc_private_store_dummy.gd" id="16_dummy"]
+[ext_resource type="PackedScene" path="res://client/scenes/character/humanoid_character.tscn" id="17_rig"]
+[ext_resource type="PackedScene" path="res://client/scenes/ui/private_store_sign_3d.tscn" id="18_sign"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_Giran"]
+sky_top_color = Color(0.35, 0.58, 0.92, 1)
+sky_horizon_color = Color(0.75, 0.82, 0.92, 1)
+ground_bottom_color = Color(0.2, 0.22, 0.2, 1)
+ground_horizon_color = Color(0.55, 0.62, 0.6, 1)
+
+[sub_resource type="Sky" id="Sky_res"]
+sky_material = SubResource("Sky_Giran")
+
+[sub_resource type="Environment" id="Env_GiranCity"]
+background_mode = 2
+sky = SubResource("Sky_res")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
+ssao_enabled = true
+ssao_radius = 1.5
+ssao_intensity = 2.0
+ssil_enabled = true
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.15
+fog_enabled = true
+fog_light_color = Color(0.72, 0.8, 0.9, 1)
+fog_density = 0.0015
+
+[sub_resource type="StandardMaterial3D" id="Mat_ImperialPaver"]
+albedo_color = Color(0.72, 0.7, 0.66, 1)
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="Mat_ImperialWall"]
+albedo_color = Color(0.58, 0.56, 0.52, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Mat_FountainMarble"]
+albedo_color = Color(0.88, 0.88, 0.85, 1)
+roughness = 0.4
+metallic = 0.1
+
+[sub_resource type="StandardMaterial3D" id="Mat_FountainWater"]
+albedo_color = Color(0.12, 0.5, 0.72, 0.75)
+roughness = 0.08
+metallic = 0.15
+
+[sub_resource type="StandardMaterial3D" id="Mat_GoldTrim"]
+albedo_color = Color(0.95, 0.8, 0.22, 1)
+metallic = 0.85
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_RedCanopy"]
+albedo_color = Color(0.75, 0.15, 0.18, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_StallWood"]
+albedo_color = Color(0.42, 0.28, 0.16, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Mat_BlueCanopy"]
+albedo_color = Color(0.18, 0.35, 0.65, 1)
+roughness = 0.7
+
+[sub_resource type="CapsuleShape3D" id="Capsule_char"]
+radius = 0.45
+height = 1.85
+
+[node name="GiranCity" type="Node3D"]
+script = ExtResource("1_city")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_GiranCity")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 30, 0)
+light_color = Color(1, 0.96, 0.88, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="PrivateStoreManager" type="Node" parent="." groups=["private_store_manager"]]
+script = ExtResource("12_ps_mgr")
+
+# ==============================================================================
+# 1. ARQUITETURA: PRAÇA DO MERCADO DE GIRAN, FONTE IMPERIAL E MURALHAS
+# ==============================================================================
+[node name="MarketPlaza" type="Node3D" parent="."]
+
+# Piso lajeado imperial da praça central (80m x 80m)
+[node name="PlazaFloor" type="CSGBox3D" parent="MarketPlaza"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+size = Vector3(80, 0.5, 80)
+material = SubResource("Mat_ImperialPaver")
+
+# Círculo decorativo central em mármore
+[node name="PlazaCenterRing" type="CSGCylinder3D" parent="MarketPlaza"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 16.0
+height = 0.05
+sides = 32
+material = SubResource("Mat_FountainMarble")
+
+# --- Grande Fonte Monumental Imperial ---
+[node name="ImperialFountain" type="Node3D" parent="MarketPlaza"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="OuterBasin" type="CSGCylinder3D" parent="MarketPlaza/ImperialFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+radius = 6.0
+height = 0.9
+sides = 24
+material = SubResource("Mat_FountainMarble")
+
+[node name="WaterPool" type="CSGCylinder3D" parent="MarketPlaza/ImperialFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+radius = 5.6
+height = 0.25
+sides = 24
+material = SubResource("Mat_FountainWater")
+
+[node name="CenterPillar" type="CSGCylinder3D" parent="MarketPlaza/ImperialFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+radius = 1.2
+height = 3.6
+sides = 16
+material = SubResource("Mat_FountainMarble")
+
+[node name="GoldOrnamentRim" type="CSGTorus3D" parent="MarketPlaza/ImperialFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
+inner_radius = 1.15
+outer_radius = 1.5
+sides = 16
+ring_sides = 8
+material = SubResource("Mat_GoldTrim")
+
+[node name="TopBasinBowl" type="CSGCylinder3D" parent="MarketPlaza/ImperialFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+radius = 2.4
+height = 0.4
+sides = 16
+material = SubResource("Mat_FountainMarble")
+
+[node name="TopSpoutWater" type="CSGCylinder3D" parent="MarketPlaza/ImperialFountain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, 0)
+radius = 2.2
+height = 0.2
+sides = 16
+material = SubResource("Mat_FountainWater")
+
+# --- Muralhas Fortificadas e Portão Sul ---
+[node name="CityWalls" type="Node3D" parent="."]
+
+# Muralha Norte
+[node name="WallNorth" type="CSGBox3D" parent="CityWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -40)
+size = Vector3(80, 8, 3)
+material = SubResource("Mat_ImperialWall")
+
+# Muralha Leste
+[node name="WallEast" type="CSGBox3D" parent="CityWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 4, 0)
+size = Vector3(3, 8, 80)
+material = SubResource("Mat_ImperialWall")
+
+# Muralha Oeste
+[node name="WallWest" type="CSGBox3D" parent="CityWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 4, 0)
+size = Vector3(3, 8, 80)
+material = SubResource("Mat_ImperialWall")
+
+# Muralha Sul (com vão do Portão de 10m)
+[node name="WallSouthLeft" type="CSGBox3D" parent="CityWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 4, 40)
+size = Vector3(35, 8, 3)
+material = SubResource("Mat_ImperialWall")
+
+[node name="WallSouthRight" type="CSGBox3D" parent="CityWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 4, 40)
+size = Vector3(35, 8, 3)
+material = SubResource("Mat_ImperialWall")
+
+[node name="SouthGateArch" type="CSGBox3D" parent="CityWalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 40)
+size = Vector3(10, 2, 3)
+material = SubResource("Mat_ImperialWall")
+
+# --- Bancas e Tendas da Feira Livre (Bazaar Stalls) ---
+[node name="MarketStalls" type="Node3D" parent="."]
+
+# Banca 1: Equipamentos D-Grade (Valeria)
+[node name="StallValeria" type="Node3D" parent="MarketStalls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 6)
+
+[node name="Counter" type="CSGBox3D" parent="MarketStalls/StallValeria"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+size = Vector3(3.5, 1.0, 1.2)
+material = SubResource("Mat_StallWood")
+
+[node name="Canopy" type="CSGBox3D" parent="MarketStalls/StallValeria"]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 2.5, 0)
+size = Vector3(4.0, 0.1, 2.4)
+material = SubResource("Mat_RedCanopy")
+
+# Banca 2: Feira Livre dos Feirantes (Dummy Goran)
+[node name="StallGoran" type="Node3D" parent="MarketStalls"]
+transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, 8, 0, -10)
+
+[node name="Carpet" type="CSGBox3D" parent="MarketStalls/StallGoran"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(2.5, 0.02, 2.5)
+material = SubResource("Mat_RedCanopy")
+
+# Banca 3: Feira Livre Compradora (Dummy Lyra)
+[node name="StallLyra" type="Node3D" parent="MarketStalls"]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, -8, 0, -10)
+
+[node name="Carpet" type="CSGBox3D" parent="MarketStalls/StallLyra"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(2.5, 0.02, 2.5)
+material = SubResource("Mat_BlueCanopy")
+
+# ==============================================================================
+# 2. NPCS DE GIRAN
+# ==============================================================================
+[node name="NPCs" type="Node3D" parent="."]
+
+# NPC Mercadora Valeria (D-Grade)
+[node name="NPC_GiranTraderValeria" type="CharacterBody3D" parent="NPCs"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 0, 7.5)
+script = ExtResource("13_trader")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPCs/NPC_GiranTraderValeria"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+shape = SubResource("Capsule_char")
+
+[node name="VisualMesh" type="Node3D" parent="NPCs/NPC_GiranTraderValeria"]
+
+[node name="HumanoidCharacterRig" parent="NPCs/NPC_GiranTraderValeria/VisualMesh" instance=ExtResource("17_rig")]
+
+# NPC Grão-Mestre Kallum (Classes e Ordens)
+[node name="NPC_GrandMasterKallum" type="CharacterBody3D" parent="NPCs"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -16, 0, 8)
+script = ExtResource("14_master")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPCs/NPC_GrandMasterKallum"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+shape = SubResource("Capsule_char")
+
+[node name="VisualMesh" type="Node3D" parent="NPCs/NPC_GrandMasterKallum"]
+
+[node name="HumanoidCharacterRig" parent="NPCs/NPC_GrandMasterKallum/VisualMesh" instance=ExtResource("17_rig")]
+
+# NPC Chefe Moke (Armazém Imperial)
+[node name="NPC_WarehouseChiefMoke" type="CharacterBody3D" parent="NPCs"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -16, 0, -8)
+script = ExtResource("15_wh_chief")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPCs/NPC_WarehouseChiefMoke"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+shape = SubResource("Capsule_char")
+
+[node name="VisualMesh" type="Node3D" parent="NPCs/NPC_WarehouseChiefMoke"]
+
+[node name="HumanoidCharacterRig" parent="NPCs/NPC_WarehouseChiefMoke/VisualMesh" instance=ExtResource("17_rig")]
+
+# NPC Feirante Goran (Anão Vendedor - Private Store Sell)
+[node name="NPC_StoreSellerGoran" type="CharacterBody3D" parent="NPCs"]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 8, 0, -10)
+script = ExtResource("16_dummy")
+merchant_name = "Feirante Goran"
+store_type = 1
+store_title = "Soulshots D & Cristais D Barato!"
+race_name = "dwarf"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPCs/NPC_StoreSellerGoran"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("Capsule_char")
+
+[node name="VisualMesh" type="Node3D" parent="NPCs/NPC_StoreSellerGoran"]
+transform = Transform3D(1.15, 0, 0, 0, 0.8, 0, 0, 0, 1.15, 0, 0, 0)
+
+[node name="HumanoidCharacterRig" parent="NPCs/NPC_StoreSellerGoran/VisualMesh" instance=ExtResource("17_rig")]
+
+[node name="PrivateStoreSign3D" parent="NPCs/NPC_StoreSellerGoran" instance=ExtResource("18_sign")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0)
+
+# NPC Feirante Lyra (Elfa Compradora - Private Store Buy)
+[node name="NPC_StoreBuyerLyra" type="CharacterBody3D" parent="NPCs"]
+transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, -8, 0, -10)
+script = ExtResource("16_dummy")
+merchant_name = "Compradora Lyra"
+store_type = 2
+store_title = "Compro Ossos & Cristais D!"
+race_name = "light_elf"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPCs/NPC_StoreBuyerLyra"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("Capsule_char")
+
+[node name="VisualMesh" type="Node3D" parent="NPCs/NPC_StoreBuyerLyra"]
+transform = Transform3D(0.9, 0, 0, 0, 1.05, 0, 0, 0, 0.9, 0, 0, 0)
+
+[node name="HumanoidCharacterRig" parent="NPCs/NPC_StoreBuyerLyra/VisualMesh" instance=ExtResource("17_rig")]
+
+[node name="PrivateStoreSign3D" parent="NPCs/NPC_StoreBuyerLyra" instance=ExtResource("18_sign")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+
+# ==============================================================================
+# 3. JOGADOR, CÂMERA E INVENTÁRIO
+# ==============================================================================
+[node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
+script = ExtResource("2_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+shape = SubResource("Capsule_char")
+
+[node name="VisualMesh" type="Node3D" parent="Player"]
+
+[node name="HumanoidCharacterRig" parent="Player/VisualMesh" instance=ExtResource("17_rig")]
+
+[node name="CameraPivot" type="SpringArm3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 0.94, 0.34, 0, -0.34, 0.94, 0, 1.6, 0)
+spring_length = 4.5
+script = ExtResource("3_camera")
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
+
+[node name="InventoryManager" type="Node" parent="Player"]
+script = ExtResource("4_inv")
+
+# ==============================================================================
+# 4. HUD E JANELAS DE INTERFACE
+# ==============================================================================
+[node name="HUD" type="Control" parent="." groups=["hud"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_hud")
+
+[node name="PlayerStatus" type="PanelContainer" parent="HUD"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 260.0
+offset_bottom = 110.0
+
+[node name="Margin" type="MarginContainer" parent="HUD/PlayerStatus"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="HUD/PlayerStatus/Margin"]
+layout_mode = 2
+
+[node name="NameAndLevel" type="Label" parent="HUD/PlayerStatus/Margin/VBox"]
+layout_mode = 2
+text = "Guerreiro [Nv. 20]"
+
+[node name="CPBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="HPBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="MPBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="SoulshotIndicator" type="Label" parent="HUD/PlayerStatus/Margin/VBox"]
+layout_mode = 2
+text = "[F1] Soulshots: DESLIGADOS"
+
+[node name="DialogWindow" type="PanelContainer" parent="HUD"]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -240.0
+offset_right = 260.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("6_dialog")
+
+[node name="Margin" type="MarginContainer" parent="HUD/DialogWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="HUD/DialogWindow/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LabelSpeaker" type="Label" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+text = "Nome do NPC"
+
+[node name="TextBody" type="RichTextLabel" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Texto do diálogo..."
+
+[node name="OptionsContainer" type="VBoxContainer" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="Hotbar" type="PanelContainer" parent="HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -65.0
+offset_right = 240.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("7_hotbar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/Hotbar"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Hotbar/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="InventoryWindow" type="PanelContainer" parent="HUD" groups=["inventory_window"]]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -200.0
+offset_right = 180.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_inv_win")
+
+[node name="Margin" type="MarginContainer" parent="HUD/InventoryWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="HUD/InventoryWindow/Margin"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+text = "Inventário do Personagem"
+
+[node name="WeightBar" type="ProgressBar" parent="HUD/InventoryWindow/Margin/VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+show_percentage = false
+
+[node name="WeightText" type="Label" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+text = "Carga: 0 / 10000 (0%)"
+
+[node name="Grid" type="GridContainer" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+columns = 4
+
+[node name="BtnClose" type="Button" parent="HUD/InventoryWindow/Margin/VBox"]
+layout_mode = 2
+text = "Fechar"
+
+# Janela de Loja D-Grade (Mercadora Valeria)
+[node name="ShopWindow" type="PanelContainer" parent="HUD" groups=["shop_window"]]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -230.0
+offset_right = 210.0
+offset_bottom = 230.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_shop_win")
+
+[node name="Margin" type="MarginContainer" parent="HUD/ShopWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="HUD/ShopWindow/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="HUD/ShopWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/ShopWindow/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Armaria Imperial de Giran"
+
+[node name="LabelAdena" type="Label" parent="HUD/ShopWindow/Margin/VBox/Header"]
+layout_mode = 2
+text = "Sua Adena: 0 🪙"
+
+[node name="HSeparator" type="HSeparator" parent="HUD/ShopWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="HUD/ShopWindow/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemsList" type="VBoxContainer" parent="HUD/ShopWindow/Margin/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnClose" type="Button" parent="HUD/ShopWindow/Margin/VBox"]
+layout_mode = 2
+text = "Fechar Comércio"
+
+# Janela de Armazém Imperial (Chefe Moke)
+[node name="WarehouseWindow" type="PanelContainer" parent="HUD" groups=["warehouse_window"]]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -220.0
+offset_right = 300.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_wh_win")
+
+[node name="Margin" type="MarginContainer" parent="HUD/WarehouseWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="HUD/WarehouseWindow/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="HUD/WarehouseWindow/Margin/VBox"]
+layout_mode = 2
+text = "Armazém Imperial de Giran - Cofre de Pedra"
+
+[node name="HSeparator" type="HSeparator" parent="HUD/WarehouseWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HUD/WarehouseWindow/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InvVBox" type="VBoxContainer" parent="HUD/WarehouseWindow/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InvHeader" type="Label" parent="HUD/WarehouseWindow/Margin/VBox/HBox/InvVBox"]
+layout_mode = 2
+text = "Mochila"
+
+[node name="Scroll" type="ScrollContainer" parent="HUD/WarehouseWindow/Margin/VBox/HBox/InvVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="InvList" type="VBoxContainer" parent="HUD/WarehouseWindow/Margin/VBox/HBox/InvVBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VaultVBox" type="VBoxContainer" parent="HUD/WarehouseWindow/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VaultHeader" type="Label" parent="HUD/WarehouseWindow/Margin/VBox/HBox/VaultVBox"]
+layout_mode = 2
+text = "Cofre"
+
+[node name="Scroll" type="ScrollContainer" parent="HUD/WarehouseWindow/Margin/VBox/HBox/VaultVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VaultList" type="VBoxContainer" parent="HUD/WarehouseWindow/Margin/VBox/HBox/VaultVBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnClose" type="Button" parent="HUD/WarehouseWindow/Margin/VBox"]
+layout_mode = 2
+text = "Fechar Armazém"
+
+# Janela de Loja Pessoal (Private Store Window - Sell / Buy)
+[node name="PrivateStoreWindow" type="PanelContainer" parent="HUD" groups=["private_store_window"]]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -240.0
+offset_right = 240.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_ps_win")
+
+[node name="Margin" type="MarginContainer" parent="HUD/PrivateStoreWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="HUD/PrivateStoreWindow/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderLabel" type="Label" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+text = "🏛️ Loja Pessoal de Giran (Private Store)"
+
+[node name="TabButtons" type="HBoxContainer" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="BtnTabSell" type="Button" parent="HUD/PrivateStoreWindow/Margin/VBox/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "💰 Vender (Sell)"
+
+[node name="BtnTabBuy" type="Button" parent="HUD/PrivateStoreWindow/Margin/VBox/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "📦 Comprar (Buy)"
+
+[node name="HSeparator1" type="HSeparator" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+text = "Configure sua banca e selecione os itens:"
+
+[node name="ConfigSection" type="VBoxContainer" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="LineTitle" type="LineEdit" parent="HUD/PrivateStoreWindow/Margin/VBox/ConfigSection"]
+layout_mode = 2
+placeholder_text = "Digite o título da sua loja pessoal..."
+
+[node name="ScrollItems" type="ScrollContainer" parent="HUD/PrivateStoreWindow/Margin/VBox/ConfigSection"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ItemsList" type="VBoxContainer" parent="HUD/PrivateStoreWindow/Margin/VBox/ConfigSection/ScrollItems"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnOpenStore" type="Button" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+text = "🪑 Abrir Loja Pessoal (Sentar no Chão)"
+
+[node name="BtnCloseStore" type="Button" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+visible = false
+layout_mode = 2
+text = "🚶 Encerrar Loja e Levantar"
+
+[node name="BtnCloseWindow" type="Button" parent="HUD/PrivateStoreWindow/Margin/VBox"]
+layout_mode = 2
+text = "Fechar Painel"

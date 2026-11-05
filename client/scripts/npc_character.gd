@@ -15,6 +15,7 @@ var available_quests: Array[String] = ["quest_first_steps"]
 
 @onready var label_name: Label3D = $LabelName
 @onready var interaction_area: Area3D = $InteractionArea
+@onready var rig: HumanoidCharacterRig = $HumanoidCharacterRig if has_node("HumanoidCharacterRig") else null
 
 var player_in_range: PlayerCharacter = null
 
@@ -22,6 +23,8 @@ func _ready() -> void:
 	add_to_group("npcs")
 	if label_name:
 		label_name.text = npc_name + "\n" + npc_title
+	if rig:
+		rig.play_anim("idle")
 
 func _on_interaction_area_body_entered(body: Node3D) -> void:
 	if body is PlayerCharacter:

@@ -1,6 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://dmv7s9px4w8ka"]
 
 [ext_resource type="Script" path="res://client/scenes/environment/ocean_voyage.gd" id="1_voyage"]
+[ext_resource type="Material" uid="uid://d9o0m1k4ocean" path="res://client/shaders/materials/ocean_water_mat.tres" id="2_ocean_mat"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_Voyage"]
 sky_top_color = Color(0.2, 0.45, 0.8, 1)
@@ -18,14 +19,11 @@ ambient_light_source = 3
 reflected_light_source = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="Mat_Ocean"]
-albedo_color = Color(0.06, 0.22, 0.38, 0.95)
-roughness = 0.12
-metallic = 0.3
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
-material = SubResource("Mat_Ocean")
+material = ExtResource("2_ocean_mat")
 size = Vector2(500, 500)
+subdivide_width = 64
+subdivide_depth = 64
 
 [sub_resource type="StandardMaterial3D" id="Mat_ShipWood"]
 albedo_color = Color(0.24, 0.16, 0.1, 1)

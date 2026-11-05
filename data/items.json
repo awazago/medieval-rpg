@@ -111,6 +111,118 @@
       "description": "Passagem autorizada pelo Sentinela Marcus concedendo passagem de navio até o Porto de Giran.",
       "weight": 5,
       "price": 0
+    },
+    {
+      "id": "bastard_sword",
+      "name": "Espada Bastarda",
+      "type": "weapon",
+      "weapon_type": "sword_1h",
+      "grade": "D",
+      "p_atk": 84,
+      "m_atk": 54,
+      "crit_rate": 8,
+      "atk_speed": "medium",
+      "weight": 1450,
+      "price": 180000,
+      "soulshot_count": 3
+    },
+    {
+      "id": "elven_bow",
+      "name": "Arco Élfico",
+      "type": "weapon",
+      "weapon_type": "bow_2h",
+      "grade": "D",
+      "p_atk": 112,
+      "m_atk": 50,
+      "crit_rate": 12,
+      "atk_speed": "slow",
+      "weight": 1700,
+      "price": 220000,
+      "soulshot_count": 4
+    },
+    {
+      "id": "crucifix_of_blessing",
+      "name": "Crucifixo da Bênção",
+      "type": "weapon",
+      "weapon_type": "staff_2h",
+      "grade": "D",
+      "p_atk": 45,
+      "m_atk": 89,
+      "crit_rate": 4,
+      "atk_speed": "slow",
+      "weight": 1100,
+      "price": 210000,
+      "spiritshot_count": 3
+    },
+    {
+      "id": "mithril_dagger",
+      "name": "Adaga de Mithril",
+      "type": "weapon",
+      "weapon_type": "dagger_1h",
+      "grade": "D",
+      "p_atk": 72,
+      "m_atk": 48,
+      "crit_rate": 15,
+      "atk_speed": "very_fast",
+      "weight": 750,
+      "price": 195000,
+      "soulshot_count": 2
+    },
+    {
+      "id": "brigandine_tunic",
+      "name": "Túnica de Brigantina",
+      "type": "armor",
+      "slot": "chest",
+      "grade": "D",
+      "p_def": 68,
+      "weight": 4400,
+      "price": 140000
+    },
+    {
+      "id": "mithril_tunic",
+      "name": "Túnica de Mithril",
+      "type": "armor",
+      "slot": "chest",
+      "grade": "D",
+      "p_def": 48,
+      "weight": 1900,
+      "price": 135000
+    },
+    {
+      "id": "soulshot_d",
+      "name": "Pedra de Alma (Grau D)",
+      "type": "consumable",
+      "grade": "D",
+      "effect": "double_p_atk",
+      "weight": 3,
+      "price": 35
+    },
+    {
+      "id": "spiritshot_d",
+      "name": "Pedra Espiritual (Grau D)",
+      "type": "consumable",
+      "grade": "D",
+      "effect": "double_m_atk",
+      "weight": 3,
+      "price": 70
+    },
+    {
+      "id": "crystal_d",
+      "name": "Cristal Grau D",
+      "type": "consumable",
+      "grade": "D",
+      "effect": "crafting_material",
+      "weight": 2,
+      "price": 550
+    },
+    {
+      "id": "scroll_of_escape_giran",
+      "name": "Pergaminho de Teletransporte: Giran",
+      "type": "consumable",
+      "grade": "none",
+      "effect": "teleport_giran",
+      "weight": 12,
+      "price": 500
     }
   ]
 }

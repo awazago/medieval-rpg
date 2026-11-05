@@ -267,6 +267,316 @@ def test_sprint6_harbor_and_voyage():
 
     print(" -> Sucesso: Porto de Highstone, Travessia Marítima e Porto de Giran 100% validados!")
 
+def test_shaders_visual_layer():
+    print("[QA Test 10] Validando Shaders da Camada Visual (Terreno, Grama e Água Oceânica)...")
+    shaders_dir = os.path.join(BASE_DIR, "client", "shaders")
+    materials_dir = os.path.join(shaders_dir, "materials")
+    
+    # 1. Validação dos arquivos de shader .gdshader
+    terrain_shader = os.path.join(shaders_dir, "terrain.gdshader")
+    grass_shader = os.path.join(shaders_dir, "grass.gdshader")
+    ocean_shader = os.path.join(shaders_dir, "ocean_water.gdshader")
+    
+    assert os.path.exists(terrain_shader), "terrain.gdshader não encontrado"
+    assert os.path.exists(grass_shader), "grass.gdshader não encontrado"
+    assert os.path.exists(ocean_shader), "ocean_water.gdshader não encontrado"
+    
+    with open(terrain_shader) as f:
+        src = f.read()
+        assert "shader_type spatial;" in src
+        assert "grass_color_base" in src
+        assert "dirt_color" in src
+        assert "rock_color" in src
+        assert "slope_threshold" in src
+
+    with open(grass_shader) as f:
+        src = f.read()
+        assert "shader_type spatial;" in src
+        assert "cull_disabled" in src
+        assert "color_root" in src
+        assert "color_tip" in src
+        assert "wind_speed" in src
+
+    with open(ocean_shader) as f:
+        src = f.read()
+        assert "shader_type spatial;" in src
+        assert "shallow_color" in src
+        assert "deep_color" in src
+        assert "foam_color" in src
+        assert "wave_amplitude" in src
+        assert "hint_depth_texture" in src
+
+    # 2. Validação dos materiais .tres
+    terrain_mat = os.path.join(materials_dir, "terrain_mat.tres")
+    grass_mat = os.path.join(materials_dir, "grass_mat.tres")
+    ocean_mat = os.path.join(materials_dir, "ocean_water_mat.tres")
+    
+    assert os.path.exists(terrain_mat), "terrain_mat.tres não encontrado"
+    assert os.path.exists(grass_mat), "grass_mat.tres não encontrado"
+    assert os.path.exists(ocean_mat), "ocean_water_mat.tres não encontrado"
+    
+    # 3. Validação da cena do tufo de grama
+    grass_patch_scene = os.path.join(BASE_DIR, "client", "scenes", "environment", "stylized_grass_patch.tscn")
+    assert os.path.exists(grass_patch_scene), "stylized_grass_patch.tscn não encontrado"
+
+    # 4. Validação da integração com as cenas do jogo
+    with open(os.path.join(BASE_DIR, "client", "scenes", "main_game.tscn")) as f:
+        mg_content = f.read()
+        assert "terrain_mat.tres" in mg_content, "main_game.tscn deve usar terrain_mat.tres"
+        assert "stylized_grass_patch.tscn" in mg_content, "main_game.tscn deve conter tufos de grama"
+
+    with open(os.path.join(BASE_DIR, "client", "scenes", "environment", "highstone_harbor.tscn")) as f:
+        hh_content = f.read()
+        assert "ocean_water_mat.tres" in hh_content, "highstone_harbor.tscn deve usar ocean_water_mat.tres"
+
+    with open(os.path.join(BASE_DIR, "client", "scenes", "environment", "ocean_voyage.tscn")) as f:
+        ov_content = f.read()
+        assert "ocean_water_mat.tres" in ov_content, "ocean_voyage.tscn deve usar ocean_water_mat.tres"
+
+    print(" -> Sucesso: Shaders de Terreno, Grama e Água Oceânica 100% integrados e verificados!")
+
+def test_highstone_village_visual_upgrade():
+    print("[QA Test 11] Validando Camada Visual da Vila de Highstone (PBR, Forja, Armazém & Monólito)...")
+    shaders_dir = os.path.join(BASE_DIR, "client", "shaders")
+    materials_dir = os.path.join(shaders_dir, "materials")
+    
+    # 1. Shaders medievais
+    stone_shader = os.path.join(shaders_dir, "mossy_stone.gdshader")
+    wood_shader = os.path.join(shaders_dir, "rustic_wood.gdshader")
+    embers_shader = os.path.join(shaders_dir, "forge_embers.gdshader")
+    crystal_shader = os.path.join(shaders_dir, "aether_crystal.gdshader")
+    
+    for s_path in [stone_shader, wood_shader, embers_shader, crystal_shader]:
+        assert os.path.exists(s_path), f"Shader não encontrado: {s_path}"
+        with open(s_path) as f:
+            assert "shader_type spatial;" in f.read()
+
+    # 2. Materiais .tres
+    for m_name in ["mossy_stone_mat.tres", "rustic_wood_mat.tres", "forge_embers_mat.tres", "aether_crystal_mat.tres"]:
+        m_path = os.path.join(materials_dir, m_name)
+        assert os.path.exists(m_path), f"Material .tres não encontrado: {m_path}"
+
+    # 3. Integridade dos elementos 3D da Vila de Highstone
+    village_scene = os.path.join(BASE_DIR, "client", "scenes", "environment", "highstone_village.tscn")
+    assert os.path.exists(village_scene), "highstone_village.tscn não encontrado"
+    
+    with open(village_scene) as f:
+        v_content = f.read()
+        # Forja do Ferreiro
+        assert "mossy_stone_mat.tres" in v_content, "Vila deve usar pedras musgosas"
+        assert "forge_embers_mat.tres" in v_content, "Forja deve usar brasas incandescentes"
+        assert "QuenchingTrough" in v_content, "Forja deve possuir tina de têmpera d'água"
+        assert "Chimney" in v_content, "Forja deve possuir chaminé de pedra"
+        # Armazém Geral
+        assert "HighstoneWarehouse" in v_content, "Vila deve possuir estrutura do Armazém Geral"
+        assert "CounterDesk" in v_content, "Armazém deve ter balcão de atendimento"
+        assert "CrateStack" in v_content, "Armazém deve ter pilhas de caixotes"
+        assert "Barrel" in v_content, "Armazém deve ter barris de carga"
+        # Monólito de Aetherstone
+        assert "aether_crystal_mat.tres" in v_content, "Monólito deve usar material de cristal arcano"
+        assert "LowerStepPedestal" in v_content, "Monólito deve ter base escalonada"
+        assert "SubShard" in v_content, "Monólito deve possuir fragmentos orbitantes de cristal"
+        # Paliçada da Vila
+        assert "rustic_wood_mat.tres" in v_content, "Paliçada deve usar madeira rústica"
+        assert "LeftTowerPlatform" in v_content, "Torres devem possuir plataformas de vigia"
+        assert "BrazierLeft" in v_content, "Portão deve ter braseiros medievais de ferro"
+
+    print(" -> Sucesso: Vila de Highstone revitalizada com PBR, Forja detalhada, Armazém e Monólito arcano!")
+
+def test_ancient_crypt_visual_upgrade():
+    print("[QA Test 12] Validando Camada Visual da Cripta Ancestral (Pedra Gótica, Névoa & Chamas Espectrais)...")
+    shaders_dir = os.path.join(BASE_DIR, "client", "shaders")
+    materials_dir = os.path.join(shaders_dir, "materials")
+    
+    # 1. Shaders da Cripta
+    crypt_shader = os.path.join(shaders_dir, "crypt_gothic_stone.gdshader")
+    flame_shader = os.path.join(shaders_dir, "spectral_flame.gdshader")
+    mist_shader = os.path.join(shaders_dir, "spectral_mist.gdshader")
+    
+    for s_path in [crypt_shader, flame_shader, mist_shader]:
+        assert os.path.exists(s_path), f"Shader não encontrado: {s_path}"
+        with open(s_path) as f:
+            assert "shader_type spatial;" in f.read()
+
+    # 2. Materiais .tres
+    for m_name in ["crypt_gothic_stone_mat.tres", "spectral_flame_mat.tres", "spectral_mist_mat.tres"]:
+        m_path = os.path.join(materials_dir, m_name)
+        assert os.path.exists(m_path), f"Material .tres não encontrado: {m_path}"
+
+    # 3. Integridade da cena da Cripta Ancestral
+    crypt_scene = os.path.join(BASE_DIR, "client", "scenes", "environment", "ancient_crypt_ruins.tscn")
+    assert os.path.exists(crypt_scene), "ancient_crypt_ruins.tscn não encontrado"
+    
+    with open(crypt_scene) as f:
+        c_content = f.read()
+        assert "crypt_gothic_stone_mat.tres" in c_content, "Cripta deve usar pedra gótica com runas"
+        assert "spectral_mist_mat.tres" in c_content, "Cripta deve ter névoa espectral rasteira"
+        assert "spectral_flame_mat.tres" in c_content, "Cripta deve usar chamas verdes espectrais"
+        assert "GothicPointedApex" in c_content, "Portal da Cripta deve ter arco ogival gótico"
+        assert "SarcophagusKnight_1" in c_content, "Cripta deve conter sarcófagos detalhados"
+        assert "SunkenStairs" in c_content, "Cripta deve conter escadaria subterrânea de descida"
+        assert "SpectralBrazierLeft" in c_content, "Cripta deve conter braseiros com fogo espectral"
+
+    print(" -> Sucesso: Cripta Ancestral revitalizada com arquitetura gótica, névoa e chamas espectrais!")
+
+def test_humanoid_character_rig_and_animations():
+    print("[QA Test 13] Validando Rig Humanoide, Articulação 3D e Animações (Idle, Run, Attack, Cast)...")
+    char_scene = os.path.join(BASE_DIR, "client", "scenes", "character", "humanoid_character.tscn")
+    char_script = os.path.join(BASE_DIR, "client", "scripts", "character", "humanoid_character.gd")
+    
+    assert os.path.exists(char_scene), "humanoid_character.tscn não encontrado"
+    assert os.path.exists(char_script), "humanoid_character.gd não encontrado"
+    
+    with open(char_scene) as f:
+        src = f.read()
+        assert "AnimationPlayer" in src, "Rig deve possuir AnimationPlayer"
+        assert "Animation_idle" in src, "Rig deve conter animação idle"
+        assert "Animation_run" in src, "Rig deve conter animação run"
+        assert "Animation_attack" in src, "Rig deve conter animação attack"
+        assert "Animation_cast" in src, "Rig deve conter animação cast"
+        assert "RightHandSocket" in src, "Rig deve possuir RightHandSocket para Paperdoll de armas"
+        assert "ChestMesh" in src and "ShoulderPads" in src and "Belt" in src, "Rig deve conter armadura completa"
+        assert "LeftLeg" in src and "RightLeg" in src, "Rig deve possuir articulação de pernas"
+
+    with open(char_script) as f:
+        script_src = f.read()
+        assert "play_anim" in script_src, "Script do Rig deve expor play_anim"
+        assert "update_armor" in script_src, "Script do Rig deve suportar atualização de armadura"
+        assert "get_right_hand_socket" in script_src, "Script do Rig deve retornar socket de mão"
+
+    # Validação do Player
+    with open(os.path.join(BASE_DIR, "client", "scripts", "player_character.gd")) as f:
+        p_src = f.read()
+        assert "play_attack_animation" in p_src, "Player deve ter método de ataque animado"
+        assert "play_cast_animation" in p_src, "Player deve ter método de conjuração animada"
+        assert "HumanoidCharacterRig" in p_src, "Player deve gerenciar HumanoidCharacterRig"
+
+    # Validação da integração nas cenas
+    with open(os.path.join(BASE_DIR, "client", "scenes", "main_game.tscn")) as f:
+        mg_src = f.read()
+        assert "humanoid_character.tscn" in mg_src, "main_game.tscn deve instanciar humanoid_character.tscn"
+        assert "NPC_BlacksmithTorvald" in mg_src and "NPC_WarehouseRandall" in mg_src and "NPC_SentinelMarcus" in mg_src
+
+    with open(os.path.join(BASE_DIR, "client", "scenes", "character_select.tscn")) as f:
+        cs_src = f.read()
+        assert "humanoid_character.tscn" in cs_src, "character_select.tscn deve usar humanoid_character.tscn no preview"
+
+    print(" -> Sucesso: Rig Humanoide, Paperdoll articulado e animações 100% verificados!")
+
+def test_environmental_vfx_and_lighting():
+    print("[QA Test 14] Validando Polimento Visual, Partículas de Ambiente (VFX) e Iluminação Forward+...")
+    vfx_dir = os.path.join(BASE_DIR, "client", "scenes", "vfx")
+    
+    sun_motes_scene = os.path.join(vfx_dir, "ambient_sun_motes.tscn")
+    chimney_embers_scene = os.path.join(vfx_dir, "chimney_embers.tscn")
+    crypt_spores_scene = os.path.join(vfx_dir, "crypt_spores.tscn")
+    
+    assert os.path.exists(sun_motes_scene), "ambient_sun_motes.tscn não encontrado"
+    assert os.path.exists(chimney_embers_scene), "chimney_embers.tscn não encontrado"
+    assert os.path.exists(crypt_spores_scene), "crypt_spores.tscn não encontrado"
+    
+    for s_path in [sun_motes_scene, chimney_embers_scene, crypt_spores_scene]:
+        with open(s_path) as f:
+            content = f.read()
+            assert "GPUParticles3D" in content, f"Cena {s_path} deve conter GPUParticles3D"
+            assert "ParticleProcessMaterial" in content, f"Cena {s_path} deve configurar ParticleProcessMaterial"
+
+    # Validação do WorldEnvironment e DirectionalLight3D em main_game.tscn
+    with open(os.path.join(BASE_DIR, "client", "scenes", "main_game.tscn")) as f:
+        mg_src = f.read()
+        assert "ssao_enabled = true" in mg_src, "SSAO deve estar ativo no WorldEnvironment"
+        assert "ssil_enabled = true" in mg_src, "SSIL (iluminação indireta) deve estar ativo no Forward+"
+        assert "glow_bloom" in mg_src, "Glow Bloom deve estar calibrado"
+        assert "fog_enabled = true" in mg_src, "Volumetric Fog deve estar ativo para atmosfera de alta fantasia"
+        assert "ambient_sun_motes.tscn" in mg_src, "Vila de Highstone deve possuir motes de sol"
+        assert "chimney_embers.tscn" in mg_src, "Forja deve possuir brasas subindo da chaminé"
+        assert "crypt_spores.tscn" in mg_src, "Cripta deve possuir esporos e névoa espectral"
+
+    print(" -> Sucesso: Partículas de ambiente (motes, brasas, esporos) e iluminação Forward+ 100% validadas!")
+
+def test_sprint7_giran_city_and_private_stores():
+    print("[QA Test 15] Validando Sprint 7: Metrópole de Giran, Grau D & Private Stores (Lineage II)...")
+    
+    # 1. Validação de Itens Grau D
+    with open(os.path.join(DATA_DIR, "items.json")) as f:
+        items = {item["id"]: item for item in json.load(f)["items"]}
+        
+    assert "bastard_sword" in items, "Espada Bastarda (D-Grade) deve existir"
+    assert "elven_bow" in items, "Arco Élfico (D-Grade) deve existir"
+    assert "crucifix_of_blessing" in items, "Crucifixo da Bênção (D-Grade) deve existir"
+    assert "mithril_dagger" in items, "Adaga de Mithril (D-Grade) deve existir"
+    assert "brigandine_tunic" in items, "Túnica de Brigantina (D-Grade) deve existir"
+    assert "mithril_tunic" in items, "Túnica de Mithril (D-Grade) deve existir"
+    assert "soulshot_d" in items, "Soulshot D deve existir"
+    assert "spiritshot_d" in items, "Spiritshot D deve existir"
+    assert "crystal_d" in items, "Cristal D deve existir"
+    
+    bs = items["bastard_sword"]
+    assert bs["grade"] == "D" and bs["p_atk"] == 84 and bs["soulshot_count"] == 3, "Espada Bastarda deve ter atributos D-grade"
+    assert bs["p_atk"] > items["short_sword"]["p_atk"] * 5, "Arma D-grade deve ser substancialmente superior ao Grau Nenhum"
+    
+    eb = items["elven_bow"]
+    assert eb["grade"] == "D" and eb["p_atk"] == 112 and eb["soulshot_count"] == 4, "Arco Élfico deve consumir 4 Soulshots D"
+    
+    brig = items["brigandine_tunic"]
+    assert brig["grade"] == "D" and brig["p_def"] == 68, "Brigantina D-grade deve possuir 68 de P.Def"
+    
+    # 2. Validação da Cena 3D da Metrópole de Giran (giran_city.tscn)
+    giran_city_path = os.path.join(BASE_DIR, "client", "scenes", "environment", "giran_city.tscn")
+    assert os.path.exists(giran_city_path), "giran_city.tscn deve existir"
+    with open(giran_city_path) as f:
+        city_src = f.read()
+        assert "MarketPlaza" in city_src, "Giran deve possuir a grande praça do mercado"
+        assert "ImperialFountain" in city_src, "Giran deve possuir a Fonte Monumental Imperial"
+        assert "OuterBasin" in city_src and "CenterPillar" in city_src, "Fonte de Giran deve ter bacia e coluna esculpida"
+        assert "CityWalls" in city_src and "SouthGateArch" in city_src, "Giran deve possuir muralhas e o Portão Sul"
+        assert "NPC_GiranTraderValeria" in city_src, "Mercadora Valeria deve estar posicionada na praça"
+        assert "NPC_GrandMasterKallum" in city_src, "Grão-Mestre Kallum deve estar no hall marcial"
+        assert "NPC_WarehouseChiefMoke" in city_src, "Chefe Moke deve estar no armazém imperial"
+        assert "NPC_StoreSellerGoran" in city_src, "Feirante Goran (Private Store Dummy Vendedor) deve estar na feira"
+        assert "NPC_StoreBuyerLyra" in city_src, "Feirante Lyra (Private Store Dummy Comprador) deve estar na feira"
+        assert "PrivateStoreWindow" in city_src, "HUD de Giran deve conter a janela de Private Store"
+        assert "PrivateStoreManager" in city_src, "Giran deve instanciar o PrivateStoreManager"
+        
+    # 3. Validação da Lógica do PrivateStoreManager (private_store_manager.gd)
+    mgr_path = os.path.join(BASE_DIR, "client", "scripts", "economy", "private_store_manager.gd")
+    assert os.path.exists(mgr_path), "private_store_manager.gd deve existir"
+    with open(mgr_path) as f:
+        mgr_src = f.read()
+        assert "enum StoreType { NONE = 0, SELL = 1, BUY = 2 }" in mgr_src, "Deve suportar tipos SELL e BUY canônicos"
+        assert "func open_sell_store" in mgr_src, "Deve conter método open_sell_store"
+        assert "func open_buy_store" in mgr_src, "Deve conter método open_buy_store"
+        assert "func close_store" in mgr_src, "Deve conter método close_store"
+        assert "func execute_client_purchase" in mgr_src, "Deve processar compra de clientes transeuntes"
+        assert "func execute_client_sale" in mgr_src, "Deve processar venda de clientes transeuntes"
+        assert "signal store_opened" in mgr_src and "signal store_closed" in mgr_src, "Deve emitir sinais de ciclo de vida"
+
+    # 4. Validação da Plaquinha 3D e Animação de Sentar no Rig Humanoide
+    sign_scene_path = os.path.join(BASE_DIR, "client", "scenes", "ui", "private_store_sign_3d.tscn")
+    assert os.path.exists(sign_scene_path), "private_store_sign_3d.tscn deve existir"
+    with open(sign_scene_path) as f:
+        sign_src = f.read()
+        assert "Label3D" in sign_src and "billboard = 1" in sign_src, "Plaquinha 3D deve usar Label3D em billboard"
+
+    rig_scene_path = os.path.join(BASE_DIR, "client", "scenes", "character", "humanoid_character.tscn")
+    with open(rig_scene_path) as f:
+        rig_src = f.read()
+        assert "sit_shop" in rig_src, "AnimationLibrary do rig deve conter animação sit_shop"
+
+    rig_gd_path = os.path.join(BASE_DIR, "client", "scripts", "character", "humanoid_character.gd")
+    with open(rig_gd_path) as f:
+        rig_gd_src = f.read()
+        assert "play_sit_shop" in rig_gd_src, "humanoid_character.gd deve implementar play_sit_shop"
+        assert "is_sitting" in rig_gd_src, "humanoid_character.gd deve implementar is_sitting"
+
+    # 5. Validação da Conexão entre Porto de Giran e Metrópole de Giran
+    guide_path = os.path.join(BASE_DIR, "client", "scripts", "npc_giran_guide.gd")
+    with open(guide_path) as f:
+        guide_src = f.read()
+        assert "giran_city.tscn" in guide_src, "Oficial Lauren no Porto deve guiar o jogador para giran_city.tscn"
+
+    print(" -> Sucesso: Metrópole de Giran, Equipamentos Grau D e Sistema de Lojas Pessoais (Private Stores) 100% validados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -278,7 +588,13 @@ if __name__ == "__main__":
         test_sprint5_boss_and_economy()
         test_audio_system_and_tracks()
         test_sprint6_harbor_and_voyage()
-        print("\n🏆 TODOS OS 9 TESTES DE QA PASSARAM COM SUCESSO! Crônica 2 Iniciada com Excelência.")
+        test_shaders_visual_layer()
+        test_highstone_village_visual_upgrade()
+        test_ancient_crypt_visual_upgrade()
+        test_humanoid_character_rig_and_animations()
+        test_environmental_vfx_and_lighting()
+        test_sprint7_giran_city_and_private_stores()
+        print("\n🏆 TODOS OS 15 TESTES DE QA PASSARAM COM SUCESSO! Sprint 7 (Metrópole de Giran & Private Stores) Concluída!")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

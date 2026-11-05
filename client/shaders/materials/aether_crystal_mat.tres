@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://a4c5m6p7aethercrystal"]
+
+[ext_resource type="Shader" path="res://client/shaders/aether_crystal.gdshader" id="1_crystal_shader"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_crystal_shader")
+shader_parameter/crystal_color_core = Color(0.12, 0.38, 0.85, 0.92)
+shader_parameter/crystal_color_rim = Color(0.4, 0.82, 1, 1)
+shader_parameter/rune_glow_color = Color(0.65, 0.9, 1, 1)
+shader_parameter/pulse_speed = 2.2
+shader_parameter/base_emission = 3.2

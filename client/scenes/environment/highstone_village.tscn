@@ -1,36 +1,35 @@
-[gd_scene load_steps=12 format=3 uid="uid://c6v2n8pm7x5ky"]
+[gd_scene load_steps=10 format=3 uid="uid://c6v2n8pm7x5ky"]
 
-[sub_resource type="StandardMaterial3D" id="Mat_StoneWall"]
-albedo_color = Color(0.48, 0.46, 0.42, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_WoodTimber"]
-albedo_color = Color(0.32, 0.22, 0.14, 1)
-roughness = 0.8
+[ext_resource type="Material" uid="uid://m1s2t3o4mossystone" path="res://client/shaders/materials/mossy_stone_mat.tres" id="1_mossy_stone"]
+[ext_resource type="Material" uid="uid://r2w3m4p5rusticwood" path="res://client/shaders/materials/rustic_wood_mat.tres" id="2_rustic_wood"]
+[ext_resource type="Material" uid="uid://f3e4m5p6forgeembers" path="res://client/shaders/materials/forge_embers_mat.tres" id="3_forge_embers"]
+[ext_resource type="Material" uid="uid://a4c5m6p7aethercrystal" path="res://client/shaders/materials/aether_crystal_mat.tres" id="4_aether_crystal"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_RoofTile"]
-albedo_color = Color(0.45, 0.2, 0.15, 1)
-roughness = 0.7
+albedo_color = Color(0.48, 0.22, 0.16, 1)
+roughness = 0.65
+rim_enabled = true
+rim = 0.2
 
-[sub_resource type="StandardMaterial3D" id="Mat_Aetherstone"]
-albedo_color = Color(0.2, 0.35, 0.65, 1)
-emission_enabled = true
-emission = Color(0.25, 0.6, 1.0, 1)
-emission_energy_multiplier = 3.0
-roughness = 0.3
+[sub_resource type="StandardMaterial3D" id="Mat_IronAnvil"]
+albedo_color = Color(0.22, 0.22, 0.25, 1)
+metallic = 0.88
+roughness = 0.32
 
-[sub_resource type="StandardMaterial3D" id="Mat_ForgeFire"]
-albedo_color = Color(0.9, 0.4, 0.1, 1)
-emission_enabled = true
-emission = Color(1.0, 0.45, 0.1, 1)
-emission_energy_multiplier = 4.0
+[sub_resource type="StandardMaterial3D" id="Mat_TroughWater"]
+albedo_color = Color(0.12, 0.32, 0.42, 0.85)
+metallic = 0.2
+roughness = 0.1
+refraction_enabled = true
+refraction_scale = 0.05
 
-[sub_resource type="StandardMaterial3D" id="Mat_CobblestonePath"]
-albedo_color = Color(0.4, 0.38, 0.34, 1)
-roughness = 0.95
+[sub_resource type="StandardMaterial3D" id="Mat_BrazierIron"]
+albedo_color = Color(0.18, 0.18, 0.2, 1)
+metallic = 0.8
+roughness = 0.4
 
 [sub_resource type="BoxMesh" id="BoxMesh_path"]
-material = SubResource("Mat_CobblestonePath")
+material = ExtResource("1_mossy_stone")
 size = Vector3(4.5, 0.05, 35)
 
 [node name="HighstoneVillage" type="Node3D"]
@@ -43,105 +42,246 @@ mesh = SubResource("BoxMesh_path")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
 use_collision = true
 
+[node name="LowerStepPedestal" type="CSGBox3D" parent="AetherstoneMonolith"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+size = Vector3(5.2, 0.4, 5.2)
+material = ExtResource("1_mossy_stone")
+
 [node name="BasePedestal" type="CSGBox3D" parent="AetherstoneMonolith"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-size = Vector3(4, 1, 4)
-material = SubResource("Mat_StoneWall")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+size = Vector3(4.0, 0.6, 4.0)
+material = ExtResource("1_mossy_stone")
 
 [node name="PillarCore" type="CSGCylinder3D" parent="AetherstoneMonolith"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-radius = 0.9
-height = 4.5
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0)
+radius = 0.95
+height = 4.2
 sides = 8
-material = SubResource("Mat_StoneWall")
+material = ExtResource("1_mossy_stone")
+
+[node name="PillarCapital" type="CSGBox3D" parent="AetherstoneMonolith"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0, 0)
+size = Vector3(2.6, 0.35, 2.6)
+material = ExtResource("1_mossy_stone")
 
 [node name="CrystalShard" type="CSGBox3D" parent="AetherstoneMonolith"]
-transform = Transform3D(0.707, -0.707, 0, 0.707, 0.707, 0, 0, 0, 1, 0, 5.2, 0)
-size = Vector3(1.2, 1.2, 1.2)
-material = SubResource("Mat_Aetherstone")
+transform = Transform3D(0.707, -0.707, 0, 0.707, 0.707, 0, 0, 0, 1, 0, 6.2, 0)
+size = Vector3(1.3, 1.3, 1.3)
+material = ExtResource("4_aether_crystal")
+
+[node name="SubShard_1" type="CSGBox3D" parent="AetherstoneMonolith"]
+transform = Transform3D(0.5, -0.5, 0, 0.5, 0.5, 0, 0, 0, 0.7, -1.2, 5.8, 0.8)
+size = Vector3(0.4, 0.4, 0.4)
+material = ExtResource("4_aether_crystal")
+
+[node name="SubShard_2" type="CSGBox3D" parent="AetherstoneMonolith"]
+transform = Transform3D(0.5, 0.5, 0, -0.5, 0.5, 0, 0, 0, 0.7, 1.2, 5.9, -0.8)
+size = Vector3(0.4, 0.4, 0.4)
+material = ExtResource("4_aether_crystal")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="AetherstoneMonolith"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 0)
-light_color = Color(0.3, 0.7, 1, 1)
-light_energy = 2.5
-omni_range = 10.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, 0)
+light_color = Color(0.35, 0.75, 1.0, 1)
+light_energy = 3.5
+omni_range = 14.0
 
 [node name="BlacksmithForge" type="CSGCombiner3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -4)
 use_collision = true
 
 [node name="BuildingWalls" type="CSGBox3D" parent="BlacksmithForge"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-size = Vector3(6, 4, 6)
-material = SubResource("Mat_StoneWall")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+size = Vector3(6.5, 4.0, 6.5)
+material = ExtResource("1_mossy_stone")
 
 [node name="DoorOpening" type="CSGBox3D" parent="BlacksmithForge"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.5, 3.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.5, 3.3)
 operation = 2
-size = Vector3(2.2, 3, 1)
+size = Vector3(2.4, 3.0, 1.2)
 
 [node name="Roof" type="CSGBox3D" parent="BlacksmithForge"]
-transform = Transform3D(0.866, -0.5, 0, 0.5, 0.866, 0, 0, 0, 1, 0, 4.5, 0)
-size = Vector3(5, 0.4, 6.8)
+transform = Transform3D(0.866, -0.5, 0, 0.5, 0.866, 0, 0, 0, 1, 0, 4.6, 0)
+size = Vector3(5.5, 0.4, 7.2)
 material = SubResource("Mat_RoofTile")
+
+[node name="Chimney" type="CSGBox3D" parent="BlacksmithForge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 4.8, -1.8)
+size = Vector3(1.1, 2.4, 1.1)
+material = ExtResource("1_mossy_stone")
 
 [node name="FurnaceHearth" type="CSGBox3D" parent="BlacksmithForge"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.8, -1.5)
-size = Vector3(1.6, 1.6, 1.6)
-material = SubResource("Mat_ForgeFire")
+size = Vector3(1.7, 1.6, 1.7)
+material = ExtResource("3_forge_embers")
 
 [node name="ForgeGlow" type="OmniLight3D" parent="BlacksmithForge"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.2, -1.5)
-light_color = Color(1, 0.5, 0.1, 1)
-light_energy = 3.0
-omni_range = 8.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.3, -1.5)
+light_color = Color(1.0, 0.55, 0.15, 1)
+light_energy = 4.2
+omni_range = 10.0
+
+[node name="QuenchingTrough" type="CSGBox3D" parent="BlacksmithForge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.45, -1.8)
+size = Vector3(1.8, 0.9, 0.9)
+material = ExtResource("2_rustic_wood")
+
+[node name="TroughWater" type="CSGBox3D" parent="BlacksmithForge/QuenchingTrough"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+size = Vector3(1.6, 0.5, 0.7)
+material = SubResource("Mat_TroughWater")
+
+[node name="ToolBench" type="CSGBox3D" parent="BlacksmithForge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.5, 1.0)
+size = Vector3(0.9, 1.0, 2.2)
+material = ExtResource("2_rustic_wood")
 
 [node name="Anvil" type="CSGBox3D" parent="BlacksmithForge"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.5, 0)
-size = Vector3(0.6, 0.9, 1.2)
-material = SubResource("Mat_StoneWall")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.55, 0.2)
+size = Vector3(0.65, 0.9, 1.3)
+material = SubResource("Mat_IronAnvil")
+
+[node name="AnvilBlockBase" type="CSGCylinder3D" parent="BlacksmithForge/Anvil"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+radius = 0.55
+height = 0.6
+sides = 8
+material = ExtResource("2_rustic_wood")
+
+[node name="HighstoneWarehouse" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 0, -3.5)
+use_collision = true
+
+[node name="ShedBackWall" type="CSGBox3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -2.6)
+size = Vector3(6.5, 3.6, 0.4)
+material = ExtResource("2_rustic_wood")
+
+[node name="ShedSideWall_L" type="CSGBox3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1, 1.8, -0.4)
+size = Vector3(0.4, 3.6, 4.8)
+material = ExtResource("2_rustic_wood")
+
+[node name="ShedRoof" type="CSGBox3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 3.8, -0.3)
+size = Vector3(7.0, 0.3, 5.6)
+material = SubResource("Mat_RoofTile")
+
+[node name="CounterDesk" type="CSGBox3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.55, 1.2)
+size = Vector3(3.4, 1.1, 0.9)
+material = ExtResource("2_rustic_wood")
+
+[node name="CrateStack_1" type="CSGBox3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0.6, -1.2)
+size = Vector3(1.2, 1.2, 1.2)
+material = ExtResource("2_rustic_wood")
+
+[node name="CrateStack_2" type="CSGBox3D" parent="HighstoneWarehouse"]
+transform = Transform3D(0.966, 0, 0.259, 0, 1, 0, -0.259, 0, 0.966, 1.7, 1.6, -1.1)
+size = Vector3(0.9, 0.8, 0.9)
+material = ExtResource("2_rustic_wood")
+
+[node name="Barrel_1" type="CSGCylinder3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0.6, 0.8)
+radius = 0.42
+height = 1.2
+sides = 10
+material = ExtResource("2_rustic_wood")
+
+[node name="Barrel_2" type="CSGCylinder3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0.6, 0.1)
+radius = 0.42
+height = 1.2
+sides = 10
+material = ExtResource("2_rustic_wood")
+
+[node name="WarehouseLantern" type="OmniLight3D" parent="HighstoneWarehouse"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.4, 1.0)
+light_color = Color(1.0, 0.85, 0.4, 1)
+light_energy = 2.4
+omni_range = 8.0
 
 [node name="VillagePalisadeGate" type="CSGCombiner3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 use_collision = true
 
 [node name="LeftTower" type="CSGCylinder3D" parent="VillagePalisadeGate"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 3, 0)
-radius = 1.2
-height = 6.0
-sides = 8
-material = SubResource("Mat_WoodTimber")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 3.2, 0)
+radius = 1.35
+height = 6.4
+sides = 10
+material = ExtResource("2_rustic_wood")
+
+[node name="LeftTowerPlatform" type="CSGCylinder3D" parent="VillagePalisadeGate/LeftTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
+radius = 1.6
+height = 0.3
+sides = 10
+material = ExtResource("2_rustic_wood")
 
 [node name="RightTower" type="CSGCylinder3D" parent="VillagePalisadeGate"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3, 0)
-radius = 1.2
-height = 6.0
-sides = 8
-material = SubResource("Mat_WoodTimber")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3.2, 0)
+radius = 1.35
+height = 6.4
+sides = 10
+material = ExtResource("2_rustic_wood")
+
+[node name="RightTowerPlatform" type="CSGCylinder3D" parent="VillagePalisadeGate/RightTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
+radius = 1.6
+height = 0.3
+sides = 10
+material = ExtResource("2_rustic_wood")
 
 [node name="CrossbarBeam" type="CSGBox3D" parent="VillagePalisadeGate"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.8, 0)
-size = Vector3(9, 0.6, 0.6)
-material = SubResource("Mat_WoodTimber")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.0, 0)
+size = Vector3(9.2, 0.7, 0.7)
+material = ExtResource("2_rustic_wood")
 
 [node name="LeftWall" type="CSGBox3D" parent="VillagePalisadeGate"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.8, 0)
-size = Vector3(14, 3.6, 0.5)
-material = SubResource("Mat_WoodTimber")
+size = Vector3(14, 3.6, 0.6)
+material = ExtResource("2_rustic_wood")
+
+[node name="LeftWallCrenels" type="CSGCylinder3D" parent="VillagePalisadeGate/LeftWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+radius = 0.25
+height = 0.9
+sides = 6
+material = ExtResource("2_rustic_wood")
 
 [node name="RightWall" type="CSGBox3D" parent="VillagePalisadeGate"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1.8, 0)
-size = Vector3(14, 3.6, 0.5)
-material = SubResource("Mat_WoodTimber")
+size = Vector3(14, 3.6, 0.6)
+material = ExtResource("2_rustic_wood")
+
+[node name="RightWallCrenels" type="CSGCylinder3D" parent="VillagePalisadeGate/RightWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+radius = 0.25
+height = 0.9
+sides = 6
+material = ExtResource("2_rustic_wood")
+
+[node name="BrazierLeft" type="CSGCylinder3D" parent="VillagePalisadeGate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 3.0, 0.8)
+radius = 0.4
+height = 0.5
+material = SubResource("Mat_BrazierIron")
 
 [node name="TorchLeft" type="OmniLight3D" parent="VillagePalisadeGate"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 3.2, 0.5)
-light_color = Color(1, 0.65, 0.2, 1)
-light_energy = 2.0
-omni_range = 6.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 3.5, 0.8)
+light_color = Color(1.0, 0.65, 0.2, 1)
+light_energy = 2.8
+omni_range = 8.0
+
+[node name="BrazierRight" type="CSGCylinder3D" parent="VillagePalisadeGate"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 3.0, 0.8)
+radius = 0.4
+height = 0.5
+material = SubResource("Mat_BrazierIron")
 
 [node name="TorchRight" type="OmniLight3D" parent="VillagePalisadeGate"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 3.2, 0.5)
-light_color = Color(1, 0.65, 0.2, 1)
-light_energy = 2.0
-omni_range = 6.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 3.5, 0.8)
+light_color = Color(1.0, 0.65, 0.2, 1)
+light_energy = 2.8
+omni_range = 8.0
