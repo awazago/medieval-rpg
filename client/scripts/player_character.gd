@@ -238,18 +238,36 @@ func apply_race_data(race_key: String) -> void:
 	if inventory:
 		inventory.setup_weight_limit(con_stat)
 		
-	# Ajuste de Proporção e Silhueta Visual 3D
-	match race_key:
-		"orc":
-			visual_mesh.scale = Vector3(1.28, 1.14, 1.28)
-		"light_elf":
-			visual_mesh.scale = Vector3(0.90, 1.12, 0.90)
-		"dark_elf":
-			visual_mesh.scale = Vector3(0.92, 1.08, 0.92)
-		"dwarf":
-			visual_mesh.scale = Vector3(1.22, 0.78, 1.22)
-		_: # Humano
-			visual_mesh.scale = Vector3(1.0, 1.0, 1.0)
+	# Ajuste de Proporção e Modelo Visual 3D Real por Raça
+	if rig and rig.has_method("set_character_model"):
+		match race_key:
+			"orc":
+				rig.set_character_model("barbarian")
+				visual_mesh.scale = Vector3(1.28, 1.14, 1.28)
+			"light_elf":
+				rig.set_character_model("mage")
+				visual_mesh.scale = Vector3(0.90, 1.12, 0.90)
+			"dark_elf":
+				rig.set_character_model("rogue")
+				visual_mesh.scale = Vector3(0.92, 1.08, 0.92)
+			"dwarf":
+				rig.set_character_model("knight")
+				visual_mesh.scale = Vector3(1.22, 0.78, 1.22)
+			_: # Humano
+				rig.set_character_model("knight")
+				visual_mesh.scale = Vector3(1.0, 1.0, 1.0)
+	else:
+		match race_key:
+			"orc":
+				visual_mesh.scale = Vector3(1.28, 1.14, 1.28)
+			"light_elf":
+				visual_mesh.scale = Vector3(0.90, 1.12, 0.90)
+			"dark_elf":
+				visual_mesh.scale = Vector3(0.92, 1.08, 0.92)
+			"dwarf":
+				visual_mesh.scale = Vector3(1.22, 0.78, 1.22)
+			_: # Humano
+				visual_mesh.scale = Vector3(1.0, 1.0, 1.0)
 			
 	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
 	print("[Raça] Raça aplicada ao personagem: ", race_data.get("name"), " | HP: ", max_hp, " | Velocidade: ", walk_speed)

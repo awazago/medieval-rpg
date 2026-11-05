@@ -71,6 +71,18 @@ func _ready() -> void:
 		
 	# Configura a postura sentada e plaquinha flutuante
 	if rig:
+		if rig.has_method("set_character_model"):
+			match race_name:
+				"dwarf", "human":
+					rig.set_character_model("knight")
+				"light_elf":
+					rig.set_character_model("mage")
+				"dark_elf":
+					rig.set_character_model("rogue")
+				"orc":
+					rig.set_character_model("barbarian")
+				_:
+					rig.set_character_model("knight")
 		rig.play_sit_shop()
 		
 	if sign_3d:

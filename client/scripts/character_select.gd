@@ -78,6 +78,22 @@ func _update_preview_silhouette(race_key: String) -> void:
 	if not preview_model:
 		return
 		
+	var rig = preview_model.get_node_or_null("HumanoidCharacterRig")
+	if rig and rig.has_method("set_character_model"):
+		match race_key:
+			"human":
+				rig.set_character_model("knight")
+			"light_elf":
+				rig.set_character_model("mage")
+			"dark_elf":
+				rig.set_character_model("rogue")
+			"orc":
+				rig.set_character_model("barbarian")
+			"dwarf":
+				rig.set_character_model("knight")
+			_:
+				rig.set_character_model("knight")
+		
 	match race_key:
 		"orc":
 			preview_model.scale = Vector3(1.3, 1.15, 1.3)

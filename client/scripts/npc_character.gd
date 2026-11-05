@@ -8,6 +8,7 @@ signal dialogue_requested(npc: NPCCharacter)
 @export var npc_id: String = "sentinel_marcus"
 @export var npc_name: String = "Sentinela Marcus"
 @export var npc_title: String = "<Guarda da Vila de Highstone>"
+@export var model_preset: String = "knight"
 
 @export_multiline var greeting_text: String = "Saudações, recruta. A Ilha do Alvorecer costumava ser um refúgio sereno, mas as feras selvagens e os mortos inquietos nas criptas antigas estão ameaçando os camponeses. O que o traz até aqui?"
 
@@ -24,6 +25,8 @@ func _ready() -> void:
 	if label_name:
 		label_name.text = npc_name + "\n" + npc_title
 	if rig:
+		if model_preset != "" and rig.has_method("set_character_model"):
+			rig.set_character_model(model_preset)
 		rig.play_anim("idle")
 
 func _on_interaction_area_body_entered(body: Node3D) -> void:

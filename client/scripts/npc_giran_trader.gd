@@ -19,8 +19,14 @@ const GIRAN_D_GRADE_CATALOG = [
 	"scroll_of_escape_giran"
 ]
 
+@onready var rig: HumanoidCharacterRig = $VisualMesh/HumanoidCharacterRig if has_node("VisualMesh/HumanoidCharacterRig") else null
+
 func _ready() -> void:
 	add_to_group("npcs")
+	if rig:
+		if rig.has_method("set_character_model"):
+			rig.set_character_model("rogue")
+		rig.play_anim("idle")
 
 func interact(player: CharacterBody3D) -> void:
 	var hud = get_tree().get_first_node_in_group("hud")

@@ -121,6 +121,28 @@
     * Atalho `[P]` no HUD e teclado para abrir/fechar o painel comercial.
   * 15 suítes de testes de QA passando com 100% de sucesso (`tests/test_gameplay_systems.py`).
 
+* **Camada Visual - Upgrade Definitivo de Modelos 3D (.glb) e Rigs Esqueletais (CONCLUÍDA ✅):**
+  * Substituição completa de malhas procedurais CSG por modelos 3D poligonais texturizados (.glb/.gltf) com UV mapping e esqueleto skinned:
+    * `client/assets/models/characters/`:
+      * `Knight.glb` (Armadura de placas, elmo, capa, espada, 76 animações esqueletais e sockets de mão).
+      * `Mage.glb` (Vestes místicas, chapéu de mago, capa, 76 animações).
+      * `Rogue.glb` & `Rogue_Hooded.glb` (Traje de couro reforçado, capuz, mantos de ladino).
+      * `Barbarian.glb` (Peitoral bárbaro, elmo com chifres, peles nórdicas).
+      * `Skeleton_Warrior.glb`, `Skeleton_Mage.glb`, `Skeleton_Minion.glb` (Monstros esqueléticos completos).
+    * `client/assets/models/weapons/`:
+      * `sword_1handed.gltf`, `dagger.gltf`, `staff.gltf`, `crossbow_1handed.gltf`, escudos e acessórios com texturas dedicadas.
+  * `client/scripts/character/humanoid_character.gd`:
+    * Dicionário `MODEL_PRESETS` para troca a quente de malhas.
+    * Mapeamento de animações `ANIMATION_MAP` (`idle` -> `Idle`, `run` -> `Running_A`, `attack` -> `1H_Melee_Attack_Slice_Horizontal`, `cast` -> `Spellcast_Shoot`, `sit_shop` -> `Sit_Floor_Idle`).
+    * Conexão com o socket esqueletal nativo do modelo (`handslot.r`).
+  * `client/scripts/player_character.gd`:
+    * Associação das 5 raças clássicas aos modelos poligonais (Humano: Knight, Elfo da Luz: Mage, Elfo Negro: Rogue, Orc: Barbarian, Anão: Knight com escala 0.78).
+  * `client/scripts/character_select.gd`:
+    * Alternância instantânea dos modelos 3D no preview em tempo real ao selecionar as raças.
+  * `server/skeleton_warrior.tscn` & `server/boss_valthor.tscn`:
+    * Instanciação direta do modelo 3D `Skeleton_Warrior.glb`, com escala 1.7x e iluminação de aura carmesim no Raid Boss Valthor.
+  * 16 suítes de testes de QA passando com 100% de sucesso (`tests/test_gameplay_systems.py`).
+
 ---
 
 ## 🗺️ Status Geral do Projeto
@@ -131,6 +153,7 @@
 | **Crônica 1: Camada Visual (Sprints 1 a 5 / Etapas 1 a 5)** | 100% | Concluída ✅ |
 | **Crônica 2: Sprint 6 (Porto de Highstone, Rota Marítima, Porto de Giran)** | 100% | Concluída ✅ |
 | **Crônica 2: Sprint 7 (Metrópole de Giran, Praça Comercial & Private Stores)** | 100% | Concluída ✅ |
+| **Modelos 3D Reais (.glb), Rigs Esqueletais & Paperdoll Texturizado** | 100% | Concluída ✅ |
 | **Crônica 2: Sprint 8 (1ª Mudança de Classe - Nível 20 & Class Transfer Quests)** | 0% | Próxima Missão 🚀 |
 
 ---
@@ -147,7 +170,7 @@ Avançar na **Crônica 2 (A Chegada ao Continente)**:
 ---
 
 ## 🧪 Comandos Úteis para o Novo Agente
-* Rodar testes automatizados (15 suítes de QA):
+* Rodar testes automatizados (16 suítes de QA):
   ```bash
   python3 tests/test_gameplay_systems.py
   ```

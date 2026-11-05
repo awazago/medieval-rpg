@@ -6,8 +6,14 @@ extends CharacterBody3D
 @export var npc_name: String = "Chefe Moke"
 @export var npc_title: String = "<Guardião do Armazém Imperial de Giran>"
 
+@onready var rig: HumanoidCharacterRig = $VisualMesh/HumanoidCharacterRig if has_node("VisualMesh/HumanoidCharacterRig") else null
+
 func _ready() -> void:
 	add_to_group("npcs")
+	if rig:
+		if rig.has_method("set_character_model"):
+			rig.set_character_model("barbarian")
+		rig.play_anim("idle")
 
 func interact(player: CharacterBody3D) -> void:
 	var hud = get_tree().get_first_node_in_group("hud")

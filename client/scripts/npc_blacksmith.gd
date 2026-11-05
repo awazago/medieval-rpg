@@ -4,6 +4,7 @@ class_name NPCBlacksmith
 extends NPCCharacter
 
 func _ready() -> void:
+	model_preset = "barbarian"
 	super._ready()
 	npc_id = "blacksmith_torvald"
 	npc_name = "Ferreiro Torvald"

@@ -7,9 +7,9 @@ Um MMORPG 3D medieval clássico inspirado nos pilares de jogabilidade, progress�
 ## 🌟 Características Principais
 
 * **Perspectiva Híbrida Dinâmica:** Câmera imersiva em 1ª pessoa com transição contínua para 3ª pessoa orbital via scroll do mouse.
-* **5 Raças Canônicas:** Humanos, Elfos da Luz, Elfos Negros, Orcs e Anões com atributos `STR, DEX, CON, INT, WIT, MEN` e silhuetas anatômicas 3D distintas.
-* **Rig Humanoide 3D & Ciclos de Animação:** Modelo anatômico completo com ciclos de locomoção (`run`), repouso (`idle`), corte de combate (`attack`) e conjuração mágica (`cast`).
-* **Sistema de Paperdoll 3D:** Armas empunhadas fisicamente na mão direita (`RightHandSocket`) e armaduras que alteram os materiais do personagem.
+* **Modelos 3D Poligonais & Rigs Esqueletais (.glb):** Substituição de blocos procedurais por modelos 3D texturizados com esqueleto articulado e animações fluidas integradas (Knight, Mage, Rogue, Barbarian, Esqueleto Guerreiro e Raid Boss Valthor).
+* **5 Raças Canônicas com Troca em Tempo Real:** Humanos, Elfos da Luz, Elfos Negros, Orcs e Anões com atributos `STR, DEX, CON, INT, WIT, MEN` e troca instantânea de modelo 3D no preview de criação.
+* **Sistema de Paperdoll 3D Texturizado:** Espadas, adagas, cajados arcanos e bestas 3D empunhados fisicamente nos sockets das mãos dos personagens (`handslot.r`).
 * **Shaders PBR & Gráficos Forward+:** 
   * Terreno tri-camada procedural (grama, terra e pedra com declive automático).
   * Grama viva com balanço de vento procedural e luz translúcida (`BACKLIGHT`).
@@ -37,6 +37,7 @@ Um MMORPG 3D medieval clássico inspirado nos pilares de jogabilidade, progress�
 | **Crônica 1: Camada Visual (Etapas 1 a 5)** | **100% Concluída ✅** | Shaders de Terreno, Grama, Água, Vila PBR, Cripta Gótica, Rig Animado e Partículas VFX. |
 | **Crônica 2: Sprint 6 (Porto & Rota Marítima)** | **100% Concluída ✅** | Porto de Highstone, Caravela "Vento de Aden", Travessia do Oceano e Porto Imperial de Giran. |
 | **Crônica 2: Sprint 7 (Metrópole de Giran & Private Stores)** | **100% Concluída ✅** | Praça comercial livre, sistema de Private Store (Venda/Compra) com plaquinha 3D e itens Grau D. |
+| **Modelos 3D Reais (.glb) & Rigs Esqueletais** | **100% Concluída ✅** | Modelos poligonais (Knight, Mage, Rogue, Barbarian, Skeleton), armas e monstros integrados. |
 | **Crônica 2: Sprint 8 (1ª Mudança de Classe - Nv. 20)** | **Próxima Missão 🚀** | Quests de graduação de classe com os Mestres de Giran, novas skills e proficiência Grau D. |
 
 ---

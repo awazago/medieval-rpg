@@ -1,6 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c6v2n8pm7x5vb"]
 
 [ext_resource type="Script" path="res://server/boss_valthor.gd" id="1_valthor"]
+[ext_resource type="PackedScene" path="res://client/assets/models/characters/Skeleton_Warrior.glb" id="2_skel_model"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_DarkObsidian"]
 albedo_color = Color(0.12, 0.13, 0.15, 1)
@@ -39,13 +40,17 @@ shape = SubResource("Capsule_boss")
 [node name="VisualMesh" type="Node3D" parent="."]
 transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, 0, 0, 0)
 
+[node name="Model3D" parent="VisualMesh" instance=ExtResource("2_skel_model")]
+
 [node name="BodyMesh" type="CSGCapsule3D" parent="VisualMesh"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
 radius = 0.45
 height = 1.9
 material = SubResource("Mat_DarkObsidian")
 
 [node name="GreatShoulderPads" type="CSGBox3D" parent="VisualMesh"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 size = Vector3(1.4, 0.35, 0.6)
 material = SubResource("Mat_DarkObsidian")
@@ -73,6 +78,7 @@ light_energy = 3.0
 omni_range = 8.0
 
 [node name="Greatsword" type="CSGBox3D" parent="VisualMesh"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0.65, 1.1, 0.3)
 size = Vector3(0.12, 1.8, 0.28)
 material = SubResource("Mat_BladeSteel")

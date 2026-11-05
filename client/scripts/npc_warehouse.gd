@@ -4,6 +4,7 @@ class_name NPCWarehouse
 extends NPCCharacter
 
 func _ready() -> void:
+	model_preset = "mage"
 	super._ready()
 	npc_id = "warehouse_randall"
 	npc_name = "Guardião Randall"

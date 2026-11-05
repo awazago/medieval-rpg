@@ -577,6 +577,60 @@ def test_sprint7_giran_city_and_private_stores():
 
     print(" -> Sucesso: Metrópole de Giran, Equipamentos Grau D e Sistema de Lojas Pessoais (Private Stores) 100% validados!")
 
+def test_real_3d_models_and_skeletal_animations():
+    print("[QA Test 16] Validando Integração de Modelos 3D Reais (.glb), Rigs Esqueletais e Armas...")
+    
+    # 1. Modelos de Personagens e Monstros (.glb)
+    models_char_dir = os.path.join(BASE_DIR, "client", "assets", "models", "characters")
+    required_char_models = [
+        "Knight.glb", "Mage.glb", "Rogue.glb", "Barbarian.glb", "Skeleton_Warrior.glb"
+    ]
+    for model_file in required_char_models:
+        path = os.path.join(models_char_dir, model_file)
+        assert os.path.exists(path), f"Modelo 3D obrigatório {model_file} não encontrado em {models_char_dir}"
+        assert os.path.getsize(path) > 1000000, f"Modelo {model_file} parece corrompido ou incompleto (tamanho < 1MB)"
+
+    # 2. Modelos de Armas (.gltf / .bin)
+    weapons_dir = os.path.join(BASE_DIR, "client", "assets", "models", "weapons")
+    required_weapons = [
+        "sword_1handed.gltf", "dagger.gltf", "staff.gltf", "crossbow_1handed.gltf"
+    ]
+    for wpn_file in required_weapons:
+        path = os.path.join(weapons_dir, wpn_file)
+        assert os.path.exists(path), f"Arma 3D {wpn_file} não encontrada em {weapons_dir}"
+
+    # 3. Validação do Rig Humanoide e Mapeamento de Animações
+    rig_gd_path = os.path.join(BASE_DIR, "client", "scripts", "character", "humanoid_character.gd")
+    with open(rig_gd_path) as f:
+        rig_src = f.read()
+        assert "MODEL_PRESETS" in rig_src, "humanoid_character.gd deve declarar MODEL_PRESETS para troca dinâmica"
+        assert "ANIMATION_MAP" in rig_src, "humanoid_character.gd deve conter ANIMATION_MAP para animações do GLB"
+        assert "set_character_model" in rig_src, "humanoid_character.gd deve implementar set_character_model"
+        assert "get_right_hand_socket" in rig_src, "humanoid_character.gd deve implementar socket de arma"
+
+    # 4. Validação das Cenas de Monstros e Boss com Malha 3D Real
+    skel_scene = os.path.join(BASE_DIR, "server", "skeleton_warrior.tscn")
+    with open(skel_scene) as f:
+        skel_src = f.read()
+        assert "Skeleton_Warrior.glb" in skel_src, "Esqueleto Guerreiro deve instanciar Skeleton_Warrior.glb"
+
+    valthor_scene = os.path.join(BASE_DIR, "server", "boss_valthor.tscn")
+    with open(valthor_scene) as f:
+        valthor_src = f.read()
+        assert "Skeleton_Warrior.glb" in valthor_src, "Raid Boss Valthor deve instanciar modelo 3D"
+
+    # 5. Validação das Cenas de Armas com Modelos 3D
+    sword_scene = os.path.join(BASE_DIR, "client", "scenes", "weapons", "sword_1h.tscn")
+    with open(sword_scene) as f:
+        assert "sword_1handed.gltf" in f.read(), "sword_1h.tscn deve usar modelo 3D texturizado"
+
+    # 6. Validação da Seleção de Personagens com Troca em Tempo Real
+    char_select_gd = os.path.join(BASE_DIR, "client", "scripts", "character_select.gd")
+    with open(char_select_gd) as f:
+        assert "set_character_model" in f.read(), "character_select.gd deve alternar modelo 3D do preview por raça"
+
+    print(" -> Sucesso: Modelos 3D reais (.glb), Rigs esqueletais, Animações e Armas 100% integrados e validados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -594,7 +648,9 @@ if __name__ == "__main__":
         test_humanoid_character_rig_and_animations()
         test_environmental_vfx_and_lighting()
         test_sprint7_giran_city_and_private_stores()
-        print("\n🏆 TODOS OS 15 TESTES DE QA PASSARAM COM SUCESSO! Sprint 7 (Metrópole de Giran & Private Stores) Concluída!")
+        test_real_3d_models_and_skeletal_animations()
+        print("\n🏆 TODOS OS 16 TESTES DE QA PASSARAM COM SUCESSO! Modelos 3D Poligonais e Sprint 7 Concluídos!")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)
+

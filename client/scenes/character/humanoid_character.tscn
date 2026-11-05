@@ -1,6 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://h1m2c3r4rig"]
 
 [ext_resource type="Script" path="res://client/scripts/character/humanoid_character.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://client/assets/models/characters/Knight.glb" id="2_knight"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_SteelArmor"]
 albedo_color = Color(0.78, 0.82, 0.88, 1)
@@ -267,12 +268,15 @@ _data = {
 [node name="HumanoidCharacterRig" type="Node3D"]
 script = ExtResource("1_script")
 
+[node name="Model3D" parent="." instance=ExtResource("2_knight")]
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_rig")
 }
 
 [node name="RootNode" type="Node3D" parent="."]
+visible = false
 
 [node name="Torso" type="Node3D" parent="RootNode"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
