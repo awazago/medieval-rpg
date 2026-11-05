@@ -11,6 +11,13 @@ signal leveled_up(new_level: int)
 
 const LEVEL_UP_SCENE = preload("res://client/scenes/vfx/level_up_burst.tscn")
 
+const WEAPON_MODELS = {
+	"sword_1h": preload("res://client/scenes/weapons/sword_1h.tscn"),
+	"dagger_1h": preload("res://client/scenes/weapons/dagger_1h.tscn"),
+	"staff_2h": preload("res://client/scenes/weapons/staff_2h.tscn"),
+	"bow_2h": preload("res://client/scenes/weapons/bow_2h.tscn")
+}
+
 @export_category("Identidade")
 @export var character_name: String = "Guerreiro"
 @export var race_id: String = "human"
@@ -48,6 +55,9 @@ var soulshots_enabled: bool = false
 var selected_target: Node3D = null
 
 @onready var visual_mesh: Node3D = $VisualMesh
+@onready var body_mesh: CSGCapsule3D = $VisualMesh/BodyMesh
+@onready var shoulder_pads: CSGBox3D = $VisualMesh/ShoulderPads
+@onready var right_hand_socket: Node3D = $VisualMesh/RightHandSocket
 @onready var camera_pivot: SpringArm3D = $CameraPivot
 @onready var inventory: InventoryManager = $InventoryManager
 
@@ -120,6 +130,7 @@ func _on_item_equipped(item_data: Dictionary, slot_type: String) -> void:
 			p_atk = base_p_atk
 			m_atk = base_m_atk
 			print("[Personagem] Arma desequipada. P.Atk restaurado: ", p_atk)
+		_update_weapon_mesh(item_data)
 	elif slot_type == "chest":
 		if not item_data.is_empty():
 			p_def = base_p_def + item_data.get("p_def", 0)
@@ -127,6 +138,98 @@ func _on_item_equipped(item_data: Dictionary, slot_type: String) -> void:
 		else:
 			p_def = base_p_def
 			print("[Personagem] Armadura desequipada. P.Def restaurado: ", p_def)
+		_update_armor_mesh(item_data)
+
+## Paperdoll: Atualiza o modelo 3D da arma na mão direita
+func _update_weapon_mesh(item_data: Dictionary) -> void:
+	if not right_hand_socket:
+		return
+		
+	# Remove arma anterior
+	for child in right_hand_socket.get_children():
+		child.queue_free()
+		
+	if item_data.is_empty():
+		return
+		
+	var weapon_type = item_data.get("weapon_type", "")
+	if WEAPON_MODELS.has(weapon_type):
+		var weapon_instance = WEAPON_MODELS[weapon_type].instantiate()
+		right_hand_socket.add_child(weapon_instance)
+		print("[Paperdoll] Modelo 3D anexado à mão direita: ", weapon_type)
+
+## Paperdoll: Atualiza as texturas e malha da armadura
+func _update_armor_mesh(item_data: Dictionary) -> void:
+	if not body_mesh:
+		return
+		
+	var mat = StandardMaterial3D.new()
+	var item_id = item_data.get("id", "")
+	
+	match item_id:
+		"leather_tunic":
+			mat.albedo_color = Color(0.4, 0.28, 0.16)
+			mat.roughness = 0.85
+			mat.metallic = 0.0
+			body_mesh.material = mat
+			if shoulder_pads:
+				shoulder_pads.size = Vector3(0.9, 0.15, 0.4)
+		"iron_breastplate":
+			mat.albedo_color = Color(0.8, 0.84, 0.88)
+			mat.metallic = 0.95
+			mat.roughness = 0.2
+			body_mesh.material = mat
+			if shoulder_pads:
+				shoulder_pads.size = Vector3(1.2, 0.25, 0.55)
+		_:
+			# Roupa inicial básica
+			mat.albedo_color = Color(0.5, 0.52, 0.55)
+			mat.roughness = 0.7
+			body_mesh.material = mat
+			if shoulder_pads:
+				shoulder_pads.size = Vector3(1.0, 0.2, 0.45)
+
+## Aplica os dados, atributos e silhueta 3D da Raça escolhida
+func apply_race_data(race_key: String) -> void:
+	race_id = race_key
+	var race_data = GameData.get_race(race_key) if GameData else {}
+	if race_data.is_empty():
+		return
+		
+	var stats = race_data.get("base_stats", {})
+	base_hp = race_data.get("base_hp", 120)
+	base_mp = race_data.get("base_mp", 80)
+	var spd = race_data.get("base_speed", 125)
+	
+	# Converte a velocidade de Lineage para metros por segundo do Godot
+	walk_speed = (spd / 125.0) * 5.0
+	base_walk_speed = walk_speed
+	
+	max_hp = base_hp
+	max_mp = base_mp
+	current_hp = max_hp
+	current_mp = max_mp
+	
+	# Ajusta capacidade de carga baseada na CON da raça
+	var con_stat = stats.get("con", 40)
+	if inventory:
+		inventory.setup_weight_limit(con_stat)
+		
+	# Ajuste de Proporção e Silhueta Visual 3D
+	match race_key:
+		"orc":
+			visual_mesh.scale = Vector3(1.28, 1.14, 1.28)
+		"light_elf":
+			visual_mesh.scale = Vector3(0.90, 1.12, 0.90)
+		"dark_elf":
+			visual_mesh.scale = Vector3(0.92, 1.08, 0.92)
+		"dwarf":
+			visual_mesh.scale = Vector3(1.22, 0.78, 1.22)
+		_: # Humano
+			visual_mesh.scale = Vector3(1.0, 1.0, 1.0)
+			
+	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
+	print("[Raça] Raça aplicada ao personagem: ", race_data.get("name"), " | HP: ", max_hp, " | Velocidade: ", walk_speed)
 
 func _on_item_used(item_data: Dictionary) -> void:
 	if item_data.get("effect") == "heal_over_time":

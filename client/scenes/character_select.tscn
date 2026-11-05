@@ -1,0 +1,256 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6v2n8pm7x5cs"]
+
+[ext_resource type="Script" path="res://client/scripts/character_select.gd" id="1_select"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_PreviewArmor"]
+albedo_color = Color(0.85, 0.88, 0.9, 1)
+metallic = 0.9
+roughness = 0.25
+
+[sub_resource type="Environment" id="Environment_preview"]
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.65, 0.75, 1)
+
+[sub_resource type="World3D" id="World3D_preview"]
+environment = SubResource("Environment_preview")
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_select")
+
+[node name="BackgroundDark" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.09, 0.11, 1)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -250.0
+offset_right = 200.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+own_world_3d = true
+world_3d = SubResource("World3D_preview")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(400, 500)
+render_target_update_mode = 4
+
+[node name="PreviewCamera" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.2, 3.2)
+
+[node name="PreviewLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 5, 0)
+light_energy = 1.5
+
+[node name="PreviewCharacter" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="VisualMesh" type="Node3D" parent="SubViewportContainer/SubViewport/PreviewCharacter"]
+
+[node name="BodyMesh" type="CSGCapsule3D" parent="SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+radius = 0.4
+height = 1.8
+material = SubResource("Mat_PreviewArmor")
+
+[node name="ShoulderPads" type="CSGBox3D" parent="SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+size = Vector3(1.1, 0.2, 0.5)
+material = SubResource("Mat_PreviewArmor")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 30.0
+offset_top = -240.0
+offset_right = 290.0
+offset_bottom = 240.0
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LabelTitle" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "ESCOLHA SUA RAÇA"
+horizontal_alignment = 1
+
+[node name="BtnHuman" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "⚔ Humano"
+
+[node name="BtnLightElf" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "🏹 Elfo da Luz"
+
+[node name="BtnDarkElf" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "🗡 Elfo Negro"
+
+[node name="BtnOrc" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "🪓 Orc"
+
+[node name="BtnDwarf" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "🔨 Anão"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="LabelName" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Nome do Herói:"
+
+[node name="InputName" type="LineEdit" parent="Panel/VBox"]
+layout_mode = 2
+placeholder_text = "Seu nome..."
+
+[node name="BtnEnterWorld" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+text = "⚡ Despertar em Aethelgard"
+
+[node name="PanelStats" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -330.0
+offset_top = -240.0
+offset_right = -30.0
+offset_bottom = 240.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="PanelStats"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LabelRaceTitle" type="Label" parent="PanelStats/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Humano"
+horizontal_alignment = 1
+
+[node name="LabelRaceDesc" type="Label" parent="PanelStats/VBox"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Descrição da raça e especializações de combate..."
+autowrap_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="PanelStats/VBox"]
+layout_mode = 2
+
+[node name="StatsGrid" type="VBoxContainer" parent="PanelStats/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LabelSTR" type="Label" parent="PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "STR: 40"
+
+[node name="BarSTR" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
+modulate = Color(1, 0.3, 0.3, 1)
+layout_mode = 2
+max_value = 50.0
+value = 40.0
+show_percentage = false
+
+[node name="LabelDEX" type="Label" parent="PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "DEX: 30"
+
+[node name="BarDEX" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
+modulate = Color(0.3, 1, 0.4, 1)
+layout_mode = 2
+max_value = 50.0
+value = 30.0
+show_percentage = false
+
+[node name="LabelCON" type="Label" parent="PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "CON: 43"
+
+[node name="BarCON" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
+modulate = Color(1, 0.6, 0.1, 1)
+layout_mode = 2
+max_value = 50.0
+value = 43.0
+show_percentage = false
+
+[node name="LabelINT" type="Label" parent="PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "INT: 21"
+
+[node name="BarINT" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
+modulate = Color(0.3, 0.6, 1, 1)
+layout_mode = 2
+max_value = 50.0
+value = 21.0
+show_percentage = false
+
+[node name="LabelWIT" type="Label" parent="PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "WIT: 11"
+
+[node name="BarWIT" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
+modulate = Color(0.7, 0.4, 1, 1)
+layout_mode = 2
+max_value = 50.0
+value = 11.0
+show_percentage = false
+
+[node name="LabelMEN" type="Label" parent="PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "MEN: 25"
+
+[node name="BarMEN" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
+modulate = Color(0.3, 0.9, 0.9, 1)
+layout_mode = 2
+max_value = 50.0
+value = 25.0
+show_percentage = false
+
+[node name="LabelDerivedStats" type="Label" parent="PanelStats/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "HP Base: 120 | MP Base: 80 | Velocidade: 125"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="Panel/VBox/BtnHuman" to="." method="select_race" binds= ["human"]]
+[connection signal="pressed" from="Panel/VBox/BtnLightElf" to="." method="select_race" binds= ["light_elf"]]
+[connection signal="pressed" from="Panel/VBox/BtnDarkElf" to="." method="select_race" binds= ["dark_elf"]]
+[connection signal="pressed" from="Panel/VBox/BtnOrc" to="." method="select_race" binds= ["orc"]]
+[connection signal="pressed" from="Panel/VBox/BtnDwarf" to="." method="select_race" binds= ["dwarf"]]

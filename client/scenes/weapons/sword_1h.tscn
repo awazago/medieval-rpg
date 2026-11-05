@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://cx6q8vw91ylmw"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_SteelBlade"]
+albedo_color = Color(0.85, 0.88, 0.9, 1)
+metallic = 0.95
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_GoldGuard"]
+albedo_color = Color(0.85, 0.7, 0.2, 1)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_LeatherGrip"]
+albedo_color = Color(0.25, 0.15, 0.1, 1)
+roughness = 0.9
+
+[node name="Sword1H" type="Node3D"]
+
+[node name="Blade" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(0.06, 0.9, 0.14)
+material = SubResource("Mat_SteelBlade")
+
+[node name="Crossguard" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+size = Vector3(0.12, 0.05, 0.36)
+material = SubResource("Mat_GoldGuard")
+
+[node name="Hilt" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12, 0)
+radius = 0.03
+height = 0.22
+material = SubResource("Mat_LeatherGrip")
+
+[node name="Pommel" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24, 0)
+radius = 0.05
+material = SubResource("Mat_GoldGuard")

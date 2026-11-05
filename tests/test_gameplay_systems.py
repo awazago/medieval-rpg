@@ -134,6 +134,33 @@ def test_exp_and_progression_sprint3():
     
     print(" -> Sucesso: Curva de XP e monstro agressivo da Cripta 100% verificados!")
 
+def test_races_and_paperdoll_sprint4():
+    print("[QA Test 6] Validando as 5 Raças e Sistema de Paperdoll 3D (Sprint 4)...")
+    
+    # 1. Validação das 5 raças
+    with open(os.path.join(DATA_DIR, "races.json")) as f:
+        races = json.load(f)
+        
+    expected_races = {"human", "light_elf", "dark_elf", "orc", "dwarf"}
+    assert expected_races.issubset(set(races.keys())), "Faltando uma das 5 raças fundamentais de Lineage II."
+    
+    # Orc tem que ter mais vida que todos
+    assert races["orc"]["base_hp"] > races["human"]["base_hp"]
+    # Elfo da luz tem que ser o mais rápido
+    assert races["light_elf"]["base_speed"] > races["orc"]["base_speed"]
+    # Elfo negro tem que ter o maior dano base de INT
+    assert races["dark_elf"]["base_stats"]["int"] > races["human"]["base_stats"]["int"]
+    
+    # 2. Validação dos tipos de armas para Paperdoll
+    with open(os.path.join(DATA_DIR, "items.json")) as f:
+        items = json.load(f)["items"]
+        
+    weapon_types = {item["weapon_type"] for item in items if item.get("type") == "weapon"}
+    expected_types = {"sword_1h", "dagger_1h", "staff_2h", "bow_2h"}
+    assert expected_types.issubset(weapon_types), "Faltando tipos de armas clássicas para Paperdoll."
+
+    print(" -> Sucesso: As 5 raças clássicas e armas do Paperdoll 3D 100% validadas!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -141,7 +168,8 @@ if __name__ == "__main__":
         test_weight_penalties()
         test_skills_and_hotbar()
         test_exp_and_progression_sprint3()
-        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1, 2 & 3 Validadas.")
+        test_races_and_paperdoll_sprint4()
+        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1, 2, 3 & 4 Validadas.")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

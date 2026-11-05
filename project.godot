@@ -8,7 +8,7 @@ config_version=5
 
 config/name="Project Chronicles: Aethelgard"
 config/description="3D Medieval MMORPG with Hybrid 1st/3rd Person Camera, Lineage II-inspired mechanics and authoritative client-server architecture."
-run/main_scene="res://client/scenes/main_game.tscn"
+run/main_scene="res://client/scenes/character_select.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
