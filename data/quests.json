@@ -45,6 +45,28 @@
           {"id": "leather_tunic", "count": 1}
         ]
       }
+    },
+    {
+      "id": "quest_departure_to_mainland",
+      "title": "A Jornada ao Grande Continente",
+      "required_level": 20,
+      "giver_npc": "sentinel_marcus",
+      "dialogue": "Você provou ser o mais destemido guerreiro da Ilha do Alvorecer. Valthor foi contido e seus passos agora clamam pela glória de Aden. Apresente este Bilhete de Embarque ao Capitão Drake no porto ao sul.",
+      "objectives": [
+        {
+          "type": "kill",
+          "target_monster": "boss_valthor",
+          "required_count": 1
+        }
+      ],
+      "rewards": {
+        "exp": 8500,
+        "sp": 950,
+        "adena": 15000,
+        "items": [
+          {"id": "ticket_continental_ship", "count": 1}
+        ]
+      }
     }
   ]
 }

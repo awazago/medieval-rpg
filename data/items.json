@@ -103,6 +103,14 @@
       "duration_sec": 15,
       "weight": 20,
       "price": 45
+    },
+    {
+      "id": "ticket_continental_ship",
+      "name": "Bilhete de Embarque Continental",
+      "type": "quest_item",
+      "description": "Passagem autorizada pelo Sentinela Marcus concedendo passagem de navio até o Porto de Giran.",
+      "weight": 5,
+      "price": 0
     }
   ]
 }

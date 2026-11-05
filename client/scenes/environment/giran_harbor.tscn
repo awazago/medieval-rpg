@@ -1,0 +1,237 @@
+[gd_scene load_steps=14 format=3 uid="uid://cx6m2k8q9w1va"]
+
+[ext_resource type="Script" path="res://client/scripts/npc_giran_guide.gd" id="1_guide"]
+[ext_resource type="Script" path="res://client/scripts/player_character.gd" id="2_player"]
+[ext_resource type="Script" path="res://client/scripts/hybrid_camera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://client/scripts/inventory_manager.gd" id="4_inv"]
+[ext_resource type="Script" path="res://client/ui/hud.gd" id="5_hud"]
+[ext_resource type="Script" path="res://client/ui/dialog_window.gd" id="6_dialog"]
+[ext_resource type="Script" path="res://client/ui/hotbar.gd" id="7_hotbar"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_Giran"]
+sky_top_color = Color(0.3, 0.55, 0.9, 1)
+sky_horizon_color = Color(0.7, 0.8, 0.9, 1)
+ground_bottom_color = Color(0.15, 0.2, 0.15, 1)
+ground_horizon_color = Color(0.5, 0.6, 0.55, 1)
+
+[sub_resource type="Sky" id="Sky_res"]
+sky_material = SubResource("Sky_Giran")
+
+[sub_resource type="Environment" id="Env_Giran"]
+background_mode = 2
+sky = SubResource("Sky_res")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
+ssao_enabled = true
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="Mat_GiranStone"]
+albedo_color = Color(0.78, 0.75, 0.7, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_RoyalRed"]
+albedo_color = Color(0.7, 0.12, 0.15, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_OceanWater"]
+albedo_color = Color(0.08, 0.28, 0.45, 0.9)
+roughness = 0.15
+metallic = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_GoldTrim"]
+albedo_color = Color(0.9, 0.75, 0.2, 1)
+metallic = 0.85
+roughness = 0.3
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
+material = SubResource("Mat_OceanWater")
+size = Vector2(250, 250)
+
+[sub_resource type="CapsuleShape3D" id="Capsule_char"]
+radius = 0.45
+height = 1.85
+
+[node name="GiranHarbor" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_Giran")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 45, 0)
+shadow_enabled = true
+
+[node name="OceanSurface" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0, -25)
+mesh = SubResource("PlaneMesh_ocean")
+
+[node name="GrandQuay" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="QuayFloor" type="CSGBox3D" parent="GrandQuay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 10)
+size = Vector3(18, 0.8, 36)
+material = SubResource("Mat_GiranStone")
+
+[node name="LeftBalustrade" type="CSGBox3D" parent="GrandQuay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.7, 1.2, 10)
+size = Vector3(0.6, 1.0, 36)
+material = SubResource("Mat_GiranStone")
+
+[node name="RightBalustrade" type="CSGBox3D" parent="GrandQuay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.7, 1.2, 10)
+size = Vector3(0.6, 1.0, 36)
+material = SubResource("Mat_GiranStone")
+
+[node name="ImperialArchway" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 26)
+use_collision = true
+
+[node name="PillarLeft" type="CSGBox3D" parent="ImperialArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 4.0, 0)
+size = Vector3(2.0, 8.0, 2.0)
+material = SubResource("Mat_GiranStone")
+
+[node name="PillarRight" type="CSGBox3D" parent="ImperialArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 4.0, 0)
+size = Vector3(2.0, 8.0, 2.0)
+material = SubResource("Mat_GiranStone")
+
+[node name="ArchLintel" type="CSGBox3D" parent="ImperialArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.8, 0)
+size = Vector3(13.0, 1.6, 2.4)
+material = SubResource("Mat_GiranStone")
+
+[node name="BannerLeft" type="CSGBox3D" parent="ImperialArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2, 4.5, 1.1)
+size = Vector3(1.0, 4.5, 0.08)
+material = SubResource("Mat_RoyalRed")
+
+[node name="BannerRight" type="CSGBox3D" parent="ImperialArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 4.5, 1.1)
+size = Vector3(1.0, 4.5, 0.08)
+material = SubResource("Mat_RoyalRed")
+
+[node name="ArchLabel" type="Label3D" parent="ImperialArchway"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.8, 1.25)
+billboard = 0
+text = "REINO DE ADEN — PORTO DE GIRAN"
+font_size = 32
+modulate = Color(1, 0.85, 0.25, 1)
+
+[node name="NPC_OficialLauren" type="CharacterBody3D" parent="." groups=["npcs"]]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.7, 18)
+script = ExtResource("1_guide")
+
+[node name="BodyMesh" type="CSGCapsule3D" parent="NPC_OficialLauren"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+radius = 0.45
+height = 1.8
+material = SubResource("Mat_RoyalRed")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC_OficialLauren"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Capsule_char")
+
+[node name="LabelName" type="Label3D" parent="NPC_OficialLauren"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
+billboard = 1
+text = "Oficial Lauren\n<Guia e Guarda Imperial de Giran>"
+font_size = 24
+modulate = Color(1, 0.75, 0.2, 1)
+
+[node name="Player" type="CharacterBody3D" parent="." groups=["players"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 5)
+script = ExtResource("2_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+shape = SubResource("Capsule_char")
+
+[node name="InventoryManager" type="Node" parent="Player"]
+script = ExtResource("4_inv")
+
+[node name="VisualMesh" type="Node3D" parent="Player"]
+
+[node name="BodyMesh" type="CSGCapsule3D" parent="Player/VisualMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+radius = 0.45
+height = 1.85
+
+[node name="RightHandSocket" type="Node3D" parent="Player/VisualMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.85, -0.3)
+
+[node name="CameraPivot" type="SpringArm3D" parent="Player" node_paths=PackedStringArray("character_mesh_node")]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 1.6, 0)
+spring_length = 4.5
+script = ExtResource("3_camera")
+character_mesh_node = NodePath("../VisualMesh")
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
+current = true
+
+[node name="HUD" type="CanvasLayer" parent="." groups=["hud"]]
+script = ExtResource("5_hud")
+
+[node name="DialogWindow" type="PanelContainer" parent="HUD" groups=["dialog_window"]]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -240.0
+offset_right = 260.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("6_dialog")
+
+[node name="Margin" type="MarginContainer" parent="HUD/DialogWindow"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="HUD/DialogWindow/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LabelSpeaker" type="Label" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+text = "Nome do NPC"
+
+[node name="TextBody" type="RichTextLabel" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Texto do diálogo..."
+
+[node name="OptionsContainer" type="VBoxContainer" parent="HUD/DialogWindow/Margin/VBox"]
+layout_mode = 2
+
+[node name="Hotbar" type="PanelContainer" parent="HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -65.0
+offset_right = 240.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("7_hotbar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/Hotbar"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="HUD/Hotbar/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6

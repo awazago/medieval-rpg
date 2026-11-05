@@ -30,6 +30,26 @@ func close_dialogue() -> void:
 	current_npc = null
 	# Opcional: restaura mouse capturado se preferido pelo jogador
 
+func show_dialog_custom(speaker: String, text: String, options: Array) -> void:
+	visible = true
+	if label_speaker:
+		label_speaker.text = speaker
+	if label_body:
+		label_body.text = text
+		
+	if options_container:
+		for child in options_container.get_children():
+			child.queue_free()
+			
+		for opt in options:
+			var btn = Button.new()
+			btn.text = opt.get("text", "Opção")
+			if opt.has("action") and opt["action"] is Callable:
+				btn.pressed.connect(opt["action"])
+			options_container.add_child(btn)
+			
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
 func _build_options() -> void:
 	for child in options_container.get_children():
 		child.queue_free()

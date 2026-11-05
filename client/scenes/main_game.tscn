@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://client/scripts/npc_warehouse.gd" id="16_warehouse_npc"]
 [ext_resource type="Script" path="res://client/ui/shop_window.gd" id="17_shop"]
 [ext_resource type="Script" path="res://client/ui/warehouse_window.gd" id="18_warehouse_ui"]
+[ext_resource type="PackedScene" path="res://client/scenes/environment/highstone_harbor.tscn" id="19_harbor"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.55, 0.85, 1.0)
@@ -74,6 +75,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape_ground")
 
 [node name="HighstoneVillage" parent="." instance=ExtResource("9_village")]
+
+[node name="HighstoneHarbor" parent="." instance=ExtResource("19_harbor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
 
 [node name="AncientCryptRuins" parent="." instance=ExtResource("11_crypt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)

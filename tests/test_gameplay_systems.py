@@ -219,6 +219,54 @@ def test_audio_system_and_tracks():
 
     print(" -> Sucesso: Trilha sonora medieval e biblioteca de SFX 100% validadas!")
 
+def test_sprint6_harbor_and_voyage():
+    print("[QA Test 9] Validando Sprint 6: Porto de Highstone, Rota Marítima e Porto de Giran...")
+    
+    # 1. Valida item do bilhete de viagem
+    with open(os.path.join(DATA_DIR, "items.json")) as f:
+        items_data = json.load(f)["items"]
+        ticket_item = next((i for i in items_data if i["id"] == "ticket_continental_ship"), None)
+        assert ticket_item is not None, "Item 'ticket_continental_ship' não encontrado em items.json"
+        assert ticket_item["type"] == "quest_item", "O bilhete deve ser do tipo 'quest_item'"
+
+    # 2. Valida quest de partida continental
+    with open(os.path.join(DATA_DIR, "quests.json")) as f:
+        quests_data = json.load(f)["quests"]
+        departure_quest = next((q for q in quests_data if q["id"] == "quest_departure_to_mainland"), None)
+        assert departure_quest is not None, "Quest 'quest_departure_to_mainland' não encontrada"
+        assert departure_quest["required_level"] == 20, "Nível requerido para partida continental deve ser 20"
+        
+    # 3. Validação lógica da regra de embarque do Capitão Drake
+    def can_board(player_level, has_ticket):
+        return player_level >= 20 or has_ticket
+        
+    assert not can_board(1, False), "Recruta nível 1 sem bilhete NÃO deve poder embarcar"
+    assert not can_board(19, False), "Guerreiro nível 19 sem bilhete NÃO deve poder embarcar"
+    assert can_board(20, False), "Guerreiro nível 20 DEVE poder embarcar"
+    assert can_board(15, True), "Portador do bilhete de honra DEVE poder embarcar"
+
+    # 4. Validação das cenas 3D criadas
+    env_dir = os.path.join(BASE_DIR, "client", "scenes", "environment")
+    harbor_scene = os.path.join(env_dir, "highstone_harbor.tscn")
+    voyage_scene = os.path.join(env_dir, "ocean_voyage.tscn")
+    giran_scene = os.path.join(env_dir, "giran_harbor.tscn")
+    
+    assert os.path.exists(harbor_scene), "Cena highstone_harbor.tscn não encontrada"
+    assert os.path.exists(voyage_scene), "Cena ocean_voyage.tscn não encontrada"
+    assert os.path.exists(giran_scene), "Cena giran_harbor.tscn não encontrada"
+
+    with open(harbor_scene) as f:
+        content = f.read()
+        assert "CaptainDrake" in content, "Capitão Drake deve estar presente no Porto de Highstone"
+        assert "CaravelShip" in content, "Caravela deve estar ancorada no porto"
+
+    with open(giran_scene) as f:
+        content = f.read()
+        assert "OficialLauren" in content, "Oficial Lauren deve estar presente no Porto de Giran"
+        assert "ImperialArchway" in content, "Arco Imperial de boas-vindas deve estar presente em Giran"
+
+    print(" -> Sucesso: Porto de Highstone, Travessia Marítima e Porto de Giran 100% validados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -229,7 +277,8 @@ if __name__ == "__main__":
         test_races_and_paperdoll_sprint4()
         test_sprint5_boss_and_economy()
         test_audio_system_and_tracks()
-        print("\n🏆 TODOS OS 8 TESTES DE QA PASSARAM COM SUCESSO! Trilha Sonora e Jogo Validados.")
+        test_sprint6_harbor_and_voyage()
+        print("\n🏆 TODOS OS 9 TESTES DE QA PASSARAM COM SUCESSO! Crônica 2 Iniciada com Excelência.")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

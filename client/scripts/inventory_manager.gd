@@ -131,6 +131,15 @@ func _consume_item(slot_index: int) -> void:
 		slots[slot_index] = null
 	_recalculate_weight()
 
+func has_item(item_id: String, min_count: int = 1) -> bool:
+	var total = 0
+	for s in slots:
+		if s != null and s["id"] == item_id:
+			total += s["count"]
+			if total >= min_count:
+				return true
+	return false
+
 func _recalculate_weight() -> void:
 	current_weight = 0
 	for s in slots:
