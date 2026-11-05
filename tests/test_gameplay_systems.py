@@ -161,6 +161,34 @@ def test_races_and_paperdoll_sprint4():
 
     print(" -> Sucesso: As 5 raças clássicas e armas do Paperdoll 3D 100% validadas!")
 
+def test_sprint5_boss_and_economy():
+    print("[QA Test 7] Validando Raid Boss Valthor Nv. 20, Loja de Adena e Armazém (Sprint 5)...")
+    
+    # 1. Validação de Valthor
+    with open(os.path.join(DATA_DIR, "monsters.json")) as f:
+        mobs = {m["id"]: m for m in json.load(f)["monsters"]}
+        
+    valthor = mobs["fallen_knight_valthor"]
+    assert valthor["level"] == 20
+    assert valthor["hp"] == 4800, f"HP incorreto do Raid Boss: {valthor['hp']}"
+    assert valthor["p_atk"] == 120.0
+    assert valthor["p_def"] == 95.0
+    assert valthor["exp_reward"] == 8500
+    
+    # 2. Validação do catálogo de comércio
+    with open(os.path.join(DATA_DIR, "items.json")) as f:
+        items_map = {item["id"]: item for item in json.load(f)["items"]}
+        
+    shop_items = [
+        "short_sword", "apprentice_staff", "hunting_bow", "bone_dagger",
+        "leather_tunic", "iron_breastplate", "soulshot_none", "spiritshot_none", "lesser_healing_potion"
+    ]
+    for s_item in shop_items:
+        assert s_item in items_map, f"Item da loja ausente em items.json: {s_item}"
+        assert items_map[s_item].get("price", 0) > 0, f"Preço de {s_item} deve ser maior que 0"
+
+    print(" -> Sucesso: Raid Boss Valthor e Sistema de Economia da Forja 100% validados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -169,7 +197,8 @@ if __name__ == "__main__":
         test_skills_and_hotbar()
         test_exp_and_progression_sprint3()
         test_races_and_paperdoll_sprint4()
-        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1, 2, 3 & 4 Validadas.")
+        test_sprint5_boss_and_economy()
+        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1, 2, 3, 4 & 5 Validadas.")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

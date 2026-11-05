@@ -12,6 +12,10 @@ extends CanvasLayer
 @onready var label_target_name: Label = $TopCenterTarget/VBox/LabelTargetName
 @onready var bar_target_hp: ProgressBar = $TopCenterTarget/VBox/BarTargetHP
 
+@onready var boss_bar_container: Control = $TopBossBar
+@onready var label_boss_title: Label = $TopBossBar/VBox/LabelBossTitle
+@onready var bar_boss_hp: ProgressBar = $TopBossBar/VBox/BarBossHP
+
 @onready var label_soulshot: Label = $BottomBar/SoulshotIndicator
 @onready var chat_log: RichTextLabel = $BottomLeftChat/ChatLog
 
@@ -21,6 +25,8 @@ extends CanvasLayer
 func _ready() -> void:
 	if target_box:
 		target_box.visible = false
+	if boss_bar_container:
+		boss_bar_container.visible = false
 	add_system_message("Bem-vindo a Aethelgard! Conectado aos servidores.")
 
 func update_player_status(hp: int, max_hp: int, mp: int, max_mp: int, cp: int, max_cp: int) -> void:
@@ -38,17 +44,36 @@ func update_target(target: Node3D) -> void:
 	if target == null or not is_instance_valid(target):
 		if target_box:
 			target_box.visible = false
+		if boss_bar_container:
+			boss_bar_container.visible = false
 		return
 		
-	if target_box:
-		target_box.visible = true
-		if target.has_method("get") and target.get("monster_name"):
-			label_target_name.text = str(target.get("monster_name")) + " (Nv. " + str(target.get("level")) + ")"
-			bar_target_hp.max_value = target.get("max_hp")
-			bar_target_hp.value = target.get("current_hp")
-		else:
-			label_target_name.text = target.name
-			bar_target_hp.value = 100
+	var is_boss = target.get("is_raid_boss") == true
+	
+	if is_boss:
+		if target_box:
+			target_box.visible = false
+		if boss_bar_container and label_boss_title and bar_boss_hp:
+			boss_bar_container.visible = true
+			var b_name = target.get("monster_name")
+			var b_lvl = target.get("level")
+			var cur = target.get("current_hp")
+			var max_h = target.get("max_hp")
+			label_boss_title.text = "👑 [RAID BOSS] %s (Nv. %d)" % [b_name, b_lvl]
+			bar_boss_hp.max_value = max_h
+			bar_boss_hp.value = cur
+	else:
+		if boss_bar_container:
+			boss_bar_container.visible = false
+		if target_box:
+			target_box.visible = true
+			if target.has_method("get") and target.get("monster_name"):
+				label_target_name.text = str(target.get("monster_name")) + " (Nv. " + str(target.get("level")) + ")"
+				bar_target_hp.max_value = target.get("max_hp")
+				bar_target_hp.value = target.get("current_hp")
+			else:
+				label_target_name.text = target.name
+				bar_target_hp.value = 100
 
 func set_soulshot_active(active: bool) -> void:
 	if label_soulshot:
