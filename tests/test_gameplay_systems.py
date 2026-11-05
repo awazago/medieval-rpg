@@ -631,6 +631,58 @@ def test_real_3d_models_and_skeletal_animations():
 
     print(" -> Sucesso: Modelos 3D reais (.glb), Rigs esqueletais, Animações e Armas 100% integrados e validados!")
 
+def test_master_graphics_refactor():
+    print("[QA Test 17] Validando Refatoração Geral de Gráficos (Cenários 3D, Natureza, Iluminação Cinemática & UI Lineage II)...")
+    
+    # 1. Arquitetura 3D Poligonal da Vila de Highstone
+    village_path = os.path.join(BASE_DIR, "client", "scenes", "environment", "highstone_village.tscn")
+    with open(village_path) as f:
+        v_src = f.read()
+        assert "building_blacksmith_blue.gltf" in v_src, "Forja deve usar modelo 3D poligonal da ferraria"
+        assert "building_home_A_blue.gltf" in v_src, "Armazém deve usar modelo 3D de casa/armazém"
+        assert "building_well_blue.gltf" in v_src, "Vila deve ter poço medieval central 3D"
+        assert "building_tavern_blue.gltf" in v_src, "Vila deve ter taberna medieval 3D"
+        assert "trees_A_large.gltf" in v_src, "Vila deve ter árvores poligonais 3D"
+
+    # 2. Arquitetura 3D Gótica da Cripta Ancestral
+    crypt_path = os.path.join(BASE_DIR, "client", "scenes", "environment", "ancient_crypt_ruins.tscn")
+    with open(crypt_path) as f:
+        c_src = f.read()
+        assert "pillar.gltf.glb" in c_src, "Cripta deve ter pilares arquitetônicos góticos 3D"
+        assert "wall_arched.gltf.glb" in c_src, "Cripta deve ter arcada gótica de pedra 3D"
+        assert "chest_gold.glb" in c_src, "Cripta deve ter baú de tesouro dourado 3D"
+
+    # 3. Monumentos e Praça Comercial da Metrópole de Giran
+    giran_path = os.path.join(BASE_DIR, "client", "scenes", "environment", "giran_city.tscn")
+    with open(giran_path) as f:
+        g_src = f.read()
+        assert "building_castle_blue.gltf" in g_src, "Giran deve ter o Castelo Imperial 3D ao fundo"
+        assert "building_church_blue.gltf" in g_src, "Giran deve ter o Templo de Einhasad 3D"
+        assert "building_market_blue.gltf" in g_src, "Giran deve ter o pavilhão do mercado 3D"
+        assert "column.gltf.glb" in g_src, "Giran deve ter colunata da praça central 3D"
+        assert "ssr_enabled = true" in g_src, "Giran deve ter Screen Space Reflections (SSR)"
+        assert "volumetric_fog_enabled = true" in g_src, "Giran deve ter névoa volumétrica"
+
+    # 4. Natureza Densa e Iluminação Cinemática na Ilha do Alvorecer
+    main_path = os.path.join(BASE_DIR, "client", "scenes", "main_game.tscn")
+    with open(main_path) as f:
+        m_src = f.read()
+        assert "IslandNature" in m_src, "main_game deve conter nó de natureza densa (IslandNature)"
+        assert "trees_A_large.gltf" in m_src, "main_game deve ter bosques de árvores 3D"
+        assert "rock_single_B.gltf" in m_src, "main_game deve ter formações rochosas 3D"
+        assert "ssr_enabled = true" in m_src, "main_game deve ter Screen Space Reflections (SSR)"
+        assert "volumetric_fog_enabled = true" in m_src, "main_game deve ter névoa volumétrica com raios solares"
+
+    # 5. Interface do Usuário (HUD/UI) Estilo Canônico Lineage II
+    hud_path = os.path.join(BASE_DIR, "client", "ui", "hud.gd")
+    with open(hud_path) as f:
+        h_src = f.read()
+        assert "_apply_lineage2_theme" in h_src, "hud.gd deve implementar _apply_lineage2_theme"
+        assert "_style_bar" in h_src, "hud.gd deve implementar _style_bar"
+        assert "_style_panel" in h_src, "hud.gd deve implementar _style_panel"
+
+    print(" -> Sucesso: Refatoração geral de gráficos, iluminação cinemática Forward+, cenários 3D e UI Lineage II 100% verificados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -649,8 +701,10 @@ if __name__ == "__main__":
         test_environmental_vfx_and_lighting()
         test_sprint7_giran_city_and_private_stores()
         test_real_3d_models_and_skeletal_animations()
-        print("\n🏆 TODOS OS 16 TESTES DE QA PASSARAM COM SUCESSO! Modelos 3D Poligonais e Sprint 7 Concluídos!")
+        test_master_graphics_refactor()
+        print("\n🏆 TODOS OS 17 TESTES DE QA PASSARAM COM SUCESSO! Refatoração Geral de Gráficos Concluída!")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)
+
 

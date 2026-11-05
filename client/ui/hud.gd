@@ -27,7 +27,61 @@ func _ready() -> void:
 		target_box.visible = false
 	if boss_bar_container:
 		boss_bar_container.visible = false
+	_apply_lineage2_theme()
 	add_system_message("Bem-vindo a Aethelgard! Conectado aos servidores.")
+
+func _apply_lineage2_theme() -> void:
+	# 1. Barra de CP (Combat Points) - Âmbar Dourado
+	_style_bar(bar_cp, Color(0.9, 0.45, 0.1), Color(0.12, 0.13, 0.15))
+	# 2. Barra de HP (Health Points) - Rubi Carmesim Canônico
+	_style_bar(bar_hp, Color(0.85, 0.15, 0.15), Color(0.12, 0.13, 0.15))
+	# 3. Barra de MP (Mana Points) - Safira Elétrico
+	_style_bar(bar_mp, Color(0.15, 0.5, 0.9), Color(0.12, 0.13, 0.15))
+	# 4. Barra de Alvo
+	_style_bar(bar_target_hp, Color(0.85, 0.2, 0.2), Color(0.12, 0.13, 0.15))
+	# 5. Barra de Raid Boss
+	_style_bar(bar_boss_hp, Color(0.95, 0.1, 0.1), Color(0.08, 0.05, 0.05), Color(0.85, 0.7, 0.2))
+	# 6. Barra de Experiência
+	_style_bar(bar_xp, Color(0.0, 0.75, 0.85), Color(0.06, 0.08, 0.1))
+	
+	# Estilização de Painéis Flutuantes (Inventory, Shop, Warehouse, Dialog, Network)
+	var panels = [
+		get_node_or_null("InventoryWindow"),
+		get_node_or_null("ShopWindow"),
+		get_node_or_null("WarehouseWindow"),
+		get_node_or_null("DialogWindow"),
+		get_node_or_null("NetworkMenu"),
+		get_node_or_null("Hotbar")
+	]
+	for p in panels:
+		if p is PanelContainer:
+			_style_panel(p)
+
+func _style_bar(bar: ProgressBar, fill_color: Color, bg_color: Color, border_color: Color = Color(0.3, 0.32, 0.36)) -> void:
+	if not bar:
+		return
+	var bg = StyleBoxFlat.new()
+	bg.bg_color = bg_color
+	bg.border_color = border_color
+	bg.set_border_width_all(1)
+	bg.set_corner_radius_all(2)
+	bar.add_theme_stylebox_override("background", bg)
+	
+	var fg = StyleBoxFlat.new()
+	fg.bg_color = fill_color
+	fg.set_corner_radius_all(2)
+	bar.add_theme_stylebox_override("fill", fg)
+
+func _style_panel(panel: PanelContainer) -> void:
+	var sb = StyleBoxFlat.new()
+	sb.bg_color = Color(0.07, 0.08, 0.1, 0.94)
+	sb.border_color = Color(0.55, 0.45, 0.28, 1.0) # Bronze/Ouro envelhecido
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(4)
+	sb.set_content_margin_all(8)
+	sb.shadow_color = Color(0, 0, 0, 0.5)
+	sb.shadow_size = 6
+	panel.add_theme_stylebox_override("panel", sb)
 
 func update_player_status(hp: int, max_hp: int, mp: int, max_mp: int, cp: int, max_cp: int) -> void:
 	if bar_hp:

@@ -3,6 +3,11 @@
 [ext_resource type="Material" uid="uid://c1g2s3t4cryptstone" path="res://client/shaders/materials/crypt_gothic_stone_mat.tres" id="1_crypt_stone"]
 [ext_resource type="Material" uid="uid://s2f3m4p5spectralflame" path="res://client/shaders/materials/spectral_flame_mat.tres" id="2_spectral_flame"]
 [ext_resource type="Material" uid="uid://m3m4p5s6spectralmist" path="res://client/shaders/materials/spectral_mist_mat.tres" id="3_spectral_mist"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/architecture/pillar.gltf.glb" id="4_model_pillar"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/architecture/column.gltf.glb" id="5_model_column"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/architecture/wall_arched.gltf.glb" id="6_model_arch"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/architecture/torch_mounted.gltf.glb" id="7_model_torch"]
+[ext_resource type="PackedScene" path="res://client/assets/models/props/chest_gold.glb" id="8_model_chest"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_GothicIron"]
 albedo_color = Color(0.16, 0.17, 0.18, 1)
@@ -200,3 +205,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
 light_color = Color(0.18, 0.95, 0.62, 1)
 light_energy = 3.6
 omni_range = 11.0
+
+# ==============================================================================
+# ELEMENTOS ARQUITETÔNICOS GÓTICOS 3D POLIGONAIS
+# ==============================================================================
+[node name="CryptArchitecture" type="Node3D" parent="."]
+
+[node name="GothicPillarLeft" parent="CryptArchitecture" instance=ExtResource("4_model_pillar")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -6, 0, -4)
+
+[node name="GothicPillarRight" parent="CryptArchitecture" instance=ExtResource("4_model_pillar")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 6, 0, -4)
+
+[node name="GothicColumnLeft" parent="CryptArchitecture" instance=ExtResource("5_model_column")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -3.8, 0, -8)
+
+[node name="GothicColumnRight" parent="CryptArchitecture" instance=ExtResource("5_model_column")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 3.8, 0, -8)
+
+[node name="ArchedBackWall" parent="CryptArchitecture" instance=ExtResource("6_model_arch")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, -12)
+
+[node name="TorchMountedLeft" parent="CryptArchitecture" instance=ExtResource("7_model_torch")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -3.8, 2.5, 0.4)
+
+[node name="TorchMountedRight" parent="CryptArchitecture" instance=ExtResource("7_model_torch")]
+transform = Transform3D(-1.5, 0, 0, 0, 1.5, 0, 0, 0, -1.5, 3.8, 2.5, 0.4)
+
+[node name="AncientGoldChest" parent="CryptArchitecture" instance=ExtResource("8_model_chest")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, -8)
+

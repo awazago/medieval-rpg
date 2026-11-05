@@ -18,12 +18,20 @@
 [ext_resource type="Script" path="res://client/scripts/npc_private_store_dummy.gd" id="16_dummy"]
 [ext_resource type="PackedScene" path="res://client/scenes/character/humanoid_character.tscn" id="17_rig"]
 [ext_resource type="PackedScene" path="res://client/scenes/ui/private_store_sign_3d.tscn" id="18_sign"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_castle_blue.gltf" id="19_model_castle"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_church_blue.gltf" id="20_model_church"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_market_blue.gltf" id="21_model_market"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_tavern_blue.gltf" id="22_model_tavern"]
+[ext_resource type="PackedScene" path="res://client/assets/models/props/banner_red.gltf.glb" id="23_model_banner_red"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/architecture/column.gltf.glb" id="24_model_column"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_Giran"]
-sky_top_color = Color(0.35, 0.58, 0.92, 1)
-sky_horizon_color = Color(0.75, 0.82, 0.92, 1)
-ground_bottom_color = Color(0.2, 0.22, 0.2, 1)
-ground_horizon_color = Color(0.55, 0.62, 0.6, 1)
+sky_top_color = Color(0.25, 0.48, 0.86, 1)
+sky_horizon_color = Color(0.82, 0.76, 0.72, 1)
+sky_curve = 0.08
+ground_bottom_color = Color(0.16, 0.18, 0.17, 1)
+ground_horizon_color = Color(0.55, 0.58, 0.56, 1)
+ground_curve = 0.08
 
 [sub_resource type="Sky" id="Sky_res"]
 sky_material = SubResource("Sky_Giran")
@@ -34,16 +42,29 @@ sky = SubResource("Sky_res")
 ambient_light_source = 3
 reflected_light_source = 2
 tonemap_mode = 3
+tonemap_exposure = 1.1
+ssr_enabled = true
+ssr_max_steps = 64
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
 ssao_enabled = true
-ssao_radius = 1.5
-ssao_intensity = 2.0
+ssao_radius = 1.8
+ssao_intensity = 2.4
+ssao_power = 1.5
 ssil_enabled = true
+ssil_radius = 2.2
+ssil_intensity = 1.1
 glow_enabled = true
-glow_intensity = 0.8
-glow_bloom = 0.15
+glow_intensity = 0.85
+glow_strength = 0.95
+glow_bloom = 0.18
 fog_enabled = true
 fog_light_color = Color(0.72, 0.8, 0.9, 1)
-fog_density = 0.0015
+fog_density = 0.0012
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0035
+volumetric_fog_albedo = Color(0.88, 0.92, 0.98, 1)
+volumetric_fog_anisotropy = 0.25
 
 [sub_resource type="StandardMaterial3D" id="Mat_ImperialPaver"]
 albedo_color = Color(0.72, 0.7, 0.66, 1)
@@ -201,6 +222,50 @@ material = SubResource("Mat_ImperialWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 40)
 size = Vector3(10, 2, 3)
 material = SubResource("Mat_ImperialWall")
+
+# ==============================================================================
+# EDIFÍCIOS MONUMENTAIS 3D DA METRÓPOLE DE GIRAN
+# ==============================================================================
+[node name="GiranArchitecture" type="Node3D" parent="."]
+
+# Castelo Imperial de Giran ao Norte
+[node name="CastleKeep" parent="GiranArchitecture" instance=ExtResource("19_model_castle")]
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, -48)
+
+# Templo de Einhasad ao Leste
+[node name="TempleEinhasad" parent="GiranArchitecture" instance=ExtResource("20_model_church")]
+transform = Transform3D(0, 0, 2.4, 0, 2.4, 0, -2.4, 0, 0, 28, 0, -18)
+
+# Guilda dos Aventureiros e Taberna ao Oeste
+[node name="GuildHallTavern" parent="GiranArchitecture" instance=ExtResource("22_model_tavern")]
+transform = Transform3D(0, 0, -2.4, 0, 2.4, 0, 2.4, 0, 0, -28, 0, -18)
+
+# Pavilhão Comercial da Feira ao Sul
+[node name="MarketPavilion" parent="GiranArchitecture" instance=ExtResource("21_model_market")]
+transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, 0, 0, 28)
+
+# Colunata da Praça Central
+[node name="PlazaColonnade" type="Node3D" parent="GiranArchitecture"]
+
+[node name="Column_1" parent="GiranArchitecture/PlazaColonnade" instance=ExtResource("24_model_column")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -11, 0, -11)
+
+[node name="Column_2" parent="GiranArchitecture/PlazaColonnade" instance=ExtResource("24_model_column")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 11, 0, -11)
+
+[node name="Column_3" parent="GiranArchitecture/PlazaColonnade" instance=ExtResource("24_model_column")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -11, 0, 11)
+
+[node name="Column_4" parent="GiranArchitecture/PlazaColonnade" instance=ExtResource("24_model_column")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 11, 0, 11)
+
+# Estandartes Imperiais Vermelhos do Portão Sul
+[node name="BannerSouthLeft" parent="GiranArchitecture" instance=ExtResource("23_model_banner_red")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -5.5, 4.5, 40)
+
+[node name="BannerSouthRight" parent="GiranArchitecture" instance=ExtResource("23_model_banner_red")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 5.5, 4.5, 40)
+
 
 # --- Bancas e Tendas da Feira Livre (Bazaar Stalls) ---
 [node name="MarketStalls" type="Node3D" parent="."]

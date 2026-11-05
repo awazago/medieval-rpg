@@ -4,6 +4,18 @@
 [ext_resource type="Material" uid="uid://r2w3m4p5rusticwood" path="res://client/shaders/materials/rustic_wood_mat.tres" id="2_rustic_wood"]
 [ext_resource type="Material" uid="uid://f3e4m5p6forgeembers" path="res://client/shaders/materials/forge_embers_mat.tres" id="3_forge_embers"]
 [ext_resource type="Material" uid="uid://a4c5m6p7aethercrystal" path="res://client/shaders/materials/aether_crystal_mat.tres" id="4_aether_crystal"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_blacksmith_blue.gltf" id="5_model_forge"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_home_A_blue.gltf" id="6_model_home_a"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_home_B_blue.gltf" id="7_model_home_b"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_tavern_blue.gltf" id="8_model_tavern"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/buildings/building_well_blue.gltf" id="9_model_well"]
+[ext_resource type="PackedScene" path="res://client/assets/models/props/barrel_large.gltf.glb" id="10_model_barrel"]
+[ext_resource type="PackedScene" path="res://client/assets/models/props/barrel_small_stack.gltf.glb" id="11_model_barrel_stack"]
+[ext_resource type="PackedScene" path="res://client/assets/models/props/box_stacked.gltf.glb" id="12_model_crates"]
+[ext_resource type="PackedScene" path="res://client/assets/models/props/banner_blue.gltf.glb" id="13_model_banner"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/nature/tree_single_A.gltf" id="14_model_tree_a"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/nature/trees_A_large.gltf" id="15_model_tree_grove"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/nature/rock_single_B.gltf" id="16_model_rock"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_RoofTile"]
 albedo_color = Color(0.48, 0.22, 0.16, 1)
@@ -89,17 +101,23 @@ omni_range = 14.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -4)
 use_collision = true
 
+[node name="Model3D_BlacksmithBuilding" parent="BlacksmithForge" instance=ExtResource("5_model_forge")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
 [node name="BuildingWalls" type="CSGBox3D" parent="BlacksmithForge"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
 size = Vector3(6.5, 4.0, 6.5)
 material = ExtResource("1_mossy_stone")
 
 [node name="DoorOpening" type="CSGBox3D" parent="BlacksmithForge"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.5, 3.3)
 operation = 2
 size = Vector3(2.4, 3.0, 1.2)
 
 [node name="Roof" type="CSGBox3D" parent="BlacksmithForge"]
+visible = false
 transform = Transform3D(0.866, -0.5, 0, 0.5, 0.866, 0, 0, 0, 1, 0, 4.6, 0)
 size = Vector3(5.5, 0.4, 7.2)
 material = SubResource("Mat_RoofTile")
@@ -151,17 +169,29 @@ material = ExtResource("2_rustic_wood")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 0, -3.5)
 use_collision = true
 
+[node name="Model3D_WarehouseBuilding" parent="HighstoneWarehouse" instance=ExtResource("6_model_home_a")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, -1)
+
+[node name="Model3D_Crates" parent="HighstoneWarehouse" instance=ExtResource("12_model_crates")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 2.2, 0, -1.2)
+
+[node name="Model3D_Barrels" parent="HighstoneWarehouse" instance=ExtResource("11_model_barrel_stack")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 2.4, 0, 0.8)
+
 [node name="ShedBackWall" type="CSGBox3D" parent="HighstoneWarehouse"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -2.6)
 size = Vector3(6.5, 3.6, 0.4)
 material = ExtResource("2_rustic_wood")
 
 [node name="ShedSideWall_L" type="CSGBox3D" parent="HighstoneWarehouse"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1, 1.8, -0.4)
 size = Vector3(0.4, 3.6, 4.8)
 material = ExtResource("2_rustic_wood")
 
 [node name="ShedRoof" type="CSGBox3D" parent="HighstoneWarehouse"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 3.8, -0.3)
 size = Vector3(7.0, 0.3, 5.6)
 material = SubResource("Mat_RoofTile")
@@ -285,3 +315,54 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 3.5, 0.8)
 light_color = Color(1.0, 0.65, 0.2, 1)
 light_energy = 2.8
 omni_range = 8.0
+
+[node name="BannerLeft" parent="VillagePalisadeGate" instance=ExtResource("13_model_banner")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -4.5, 3.5, 0.8)
+
+[node name="BannerRight" parent="VillagePalisadeGate" instance=ExtResource("13_model_banner")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 4.5, 3.5, 0.8)
+
+# ==============================================================================
+# EDIFÍCIOS E PROPS POLIGONAIS 3D DA VILA DE HIGHSTONE
+# ==============================================================================
+[node name="VillageWell" parent="." instance=ExtResource("9_model_well")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 3)
+
+[node name="VillageTavern" parent="." instance=ExtResource("8_model_tavern")]
+transform = Transform3D(0, 0, 1.8, 0, 1.8, 0, -1.8, 0, 0, -15, 0, 8)
+
+[node name="VillageHouse_East" parent="." instance=ExtResource("7_model_home_b")]
+transform = Transform3D(0, 0, -1.8, 0, 1.8, 0, 1.8, 0, 0, 15, 0, 8)
+
+[node name="VillageHouse_North" parent="." instance=ExtResource("6_model_home_a")]
+transform = Transform3D(-1.8, 0, 0, 0, 1.8, 0, 0, 0, -1.8, -12, 0, -14)
+
+# ==============================================================================
+# VEGETAÇÃO E ROCHAS MEDIEVAIS POLIGONAIS
+# ==============================================================================
+[node name="Nature" type="Node3D" parent="."]
+
+[node name="TreeGrove_West" parent="Nature" instance=ExtResource("15_model_tree_grove")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -22, 0, -10)
+
+[node name="TreeGrove_East" parent="Nature" instance=ExtResource("15_model_tree_grove")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 22, 0, -10)
+
+[node name="TreeSingle_1" parent="Nature" instance=ExtResource("14_model_tree_a")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -18, 0, 4)
+
+[node name="TreeSingle_2" parent="Nature" instance=ExtResource("14_model_tree_a")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 18, 0, 4)
+
+[node name="TreeSingle_3" parent="Nature" instance=ExtResource("14_model_tree_a")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -5, 0, -16)
+
+[node name="TreeSingle_4" parent="Nature" instance=ExtResource("14_model_tree_a")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 5, 0, -16)
+
+[node name="RockFormation_1" parent="Nature" instance=ExtResource("16_model_rock")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -14, 0, -16)
+
+[node name="RockFormation_2" parent="Nature" instance=ExtResource("16_model_rock")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 14, 0, -16)
+

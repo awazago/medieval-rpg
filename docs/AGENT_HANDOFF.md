@@ -143,6 +143,23 @@
     * Instanciação direta do modelo 3D `Skeleton_Warrior.glb`, com escala 1.7x e iluminação de aura carmesim no Raid Boss Valthor.
   * 16 suítes de testes de QA passando com 100% de sucesso (`tests/test_gameplay_systems.py`).
 
+* **Refatoração Geral de Gráficos (Master Graphics Refactor - CONCLUÍDA ✅):**
+  * **Cenários & Arquitetura 3D Poligonal:**
+    * Vila de Highstone (`highstone_village.tscn`): Ferraria de Torvald (`building_blacksmith_blue.gltf`), Armazém de Randall (`building_home_A_blue.gltf`), Poço central da vila (`building_well_blue.gltf`), Taberna da colina (`building_tavern_blue.gltf`), casas residenciais, pilhas de caixas/barris texturizados e estandartes no portão da paliçada.
+    * Cripta Ancestral (`ancient_crypt_ruins.tscn`): Pilares arquitetônicos góticos (`pillar.gltf.glb`), colunas caneladas (`column.gltf.glb`), arcadas esculpidas (`wall_arched.gltf.glb`), tochas de ferro nas paredes com luz espectral e baú de ouro antigo (`chest_gold.glb`).
+    * Metrópole de Giran (`giran_city.tscn`): Castelo Imperial em escala 3.5x no horizonte norte (`building_castle_blue.gltf`), Templo de Einhasad (`building_church_blue.gltf`), Taberna e Guilda marcial (`building_tavern_blue.gltf`), Pavilhão comercial do mercado (`building_market_blue.gltf`), colunata monumental circundando a praça e estandartes imperiais vermelhos.
+  * **Natureza & Vegetação Densa:**
+    * Bosques densos de carvalhos e pinheiros 3D (`trees_A_large.gltf`), árvores isoladas ao longo das estradas (`tree_single_A.gltf`, `tree_single_B.gltf`) e maciços rochosos (`rock_single_B.gltf`) integrados na Ilha do Alvorecer (`main_game.tscn`) e na Vila de Highstone.
+  * **Iluminação & Atmosfera Cinemática Forward+:**
+    * Screen Space Reflections (SSR) ativado com 64 steps em `main_game.tscn` e `giran_city.tscn` para reflexos de luz em poças e no piso de mármore imperial.
+    * Screen Space Indirect Lighting (SSIL) e Screen Space Ambient Occlusion (SSAO) recalibrados para contraste e oclusão de sombras suaves.
+    * Volumetric Fog com densidade atmosférica, dispersão frontal de luz (anisotropia 0.28) gerando raios crepusculares (god rays).
+    * Curva de céu estilizada com transição do azul profundo ao dourado quente do horizonte.
+  * **Interface do Usuário (HUD/UI) Estilo Canônico Lineage II:**
+    * `client/ui/hud.gd`: método `_apply_lineage2_theme()` criando `StyleBoxFlat` para barras de CP (âmbar dourado), HP (rubi carmesim), MP (safira elétrico), Target (vermelho escarlate), Boss Raid (moldura dourada real) e EXP (ciano luminoso).
+    * Estilização de painéis flutuantes (Inventário, Lojas, Armazém, Diálogos, Hotbar) com fundo obsidiana translúcido e bordas chanfradas em bronze/ouro envelhecido.
+  * 17 suítes de testes de QA passando com 100% de sucesso (`tests/test_gameplay_systems.py`).
+
 ---
 
 ## 🗺️ Status Geral do Projeto
@@ -154,6 +171,7 @@
 | **Crônica 2: Sprint 6 (Porto de Highstone, Rota Marítima, Porto de Giran)** | 100% | Concluída ✅ |
 | **Crônica 2: Sprint 7 (Metrópole de Giran, Praça Comercial & Private Stores)** | 100% | Concluída ✅ |
 | **Modelos 3D Reais (.glb), Rigs Esqueletais & Paperdoll Texturizado** | 100% | Concluída ✅ |
+| **Refatoração Geral de Gráficos (Cenários 3D, Natureza, SSR/Fog, UI Lineage II)** | 100% | Concluída ✅ |
 | **Crônica 2: Sprint 8 (1ª Mudança de Classe - Nível 20 & Class Transfer Quests)** | 0% | Próxima Missão 🚀 |
 
 ---
@@ -170,7 +188,7 @@ Avançar na **Crônica 2 (A Chegada ao Continente)**:
 ---
 
 ## 🧪 Comandos Úteis para o Novo Agente
-* Rodar testes automatizados (16 suítes de QA):
+* Rodar testes automatizados (17 suítes de QA):
   ```bash
   python3 tests/test_gameplay_systems.py
   ```
