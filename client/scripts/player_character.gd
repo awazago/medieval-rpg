@@ -104,6 +104,9 @@ func add_exp_and_sp(exp_gain: int, sp_gain: int) -> void:
 		add_child(burst)
 		burst.global_position = global_position
 		
+		if AudioManager:
+			AudioManager.play_sfx("level_up")
+		
 		leveled_up.emit(level)
 		stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
 		
@@ -284,6 +287,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func toggle_soulshots() -> void:
 	soulshots_enabled = not soulshots_enabled
 	soulshot_toggled.emit(soulshots_enabled)
+	if soulshots_enabled and AudioManager:
+		AudioManager.play_sfx("soulshot_activate")
 	print("[Combate] Soulshots ativados: ", soulshots_enabled)
 
 func _cycle_target() -> void:

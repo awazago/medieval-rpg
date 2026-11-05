@@ -189,6 +189,36 @@ def test_sprint5_boss_and_economy():
 
     print(" -> Sucesso: Raid Boss Valthor e Sistema de Economia da Forja 100% validados!")
 
+def test_audio_system_and_tracks():
+    print("[QA Test 8] Validando Sistema de Áudio, Trilha Sonora e SFX...")
+    audio_base = os.path.join(BASE_DIR, "audio")
+    music_dir = os.path.join(audio_base, "music")
+    sfx_dir = os.path.join(audio_base, "sfx")
+    
+    # 1. Validação das 3 trilhas adaptativas
+    expected_music = ["dawn_isle_village.wav", "ancient_crypt.wav", "boss_valthor_battle.wav"]
+    for m in expected_music:
+        p = os.path.join(music_dir, m)
+        assert os.path.exists(p), f"Trilha sonora ausente: {m}"
+        assert os.path.getsize(p) > 10000, f"Arquivo de música vazio ou corrompido: {m}"
+        
+    # 2. Validação dos 6 efeitos sonoros (SFX)
+    expected_sfx = [
+        "soulshot_activate.wav", "soulshot_hit.wav", "level_up.wav",
+        "sword_swing.wav", "magic_cast.wav", "coins_pickup.wav"
+    ]
+    for s in expected_sfx:
+        p = os.path.join(sfx_dir, s)
+        assert os.path.exists(p), f"Efeito sonoro ausente: {s}"
+        assert os.path.getsize(p) > 1000, f"Arquivo de SFX vazio: {s}"
+        
+    # 3. Validação do autoload no project.godot
+    with open(os.path.join(BASE_DIR, "project.godot")) as f:
+        godot_cfg = f.read()
+    assert "AudioManager=" in godot_cfg, "AudioManager deve estar registrado como autoload no project.godot"
+
+    print(" -> Sucesso: Trilha sonora medieval e biblioteca de SFX 100% validadas!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -198,7 +228,8 @@ if __name__ == "__main__":
         test_exp_and_progression_sprint3()
         test_races_and_paperdoll_sprint4()
         test_sprint5_boss_and_economy()
-        print("\n🏆 TODOS OS TESTES DE QA PASSARAM COM SUCESSO! Sprints 1, 2, 3, 4 & 5 Validadas.")
+        test_audio_system_and_tracks()
+        print("\n🏆 TODOS OS 8 TESTES DE QA PASSARAM COM SUCESSO! Trilha Sonora e Jogo Validados.")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

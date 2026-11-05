@@ -68,6 +68,8 @@ func _collect(player: PlayerCharacter) -> void:
 	if player and player.inventory:
 		var added = player.inventory.add_item(item_id, count)
 		if added:
+			if AudioManager:
+				AudioManager.play_sfx("coins_pickup")
 			var msg = "Você pegou: " + item_name
 			if count > 1:
 				msg += " (" + str(count) + ")"
