@@ -15,9 +15,22 @@ Um MMORPG 3D medieval clássico inspirado nos pilares de jogabilidade, progress�
 ---
 
 ## 📂 Documentação e Especificações
+- [🎮 Guia do Godot Engine 4 (Instalação, Execução e Controles)](docs/GUIA_GODOT.md)
+- [📜 Plano Diretor de Evolução Contínua (Roadmap das Crônicas)](docs/ROADMAP_EVOLUCAO_CONTINUA.md)
 - [Papéis dos Agentes de IA](AGENTS.md)
 - [GDD 01 - Visão Geral e Mitologia do Mundo](docs/GDD/01_VISAO_GERAL_E_LORE.md)
 - [GDD 02 - Raças, Atributos e Classes](docs/GDD/02_RACAS_E_CLASSES.md)
 - [GDD 03 - Sistemas de Jogo e Mecânicas Centrais](docs/GDD/03_SISTEMAS_DE_JOGO.md)
 - [GDD 04 - Mapa Inicial e Zonas de Expansão](docs/GDD/04_MUNDO_E_MAPAS.md)
 - [Arquitetura de Rede Cliente-Servidor](docs/ARCHITECTURE/01_CLIENT_SERVER.md)
+
+---
+
+## 🚀 Como Abrir e Jogar Rápido
+1. Baixe o [Godot Engine 4.x](https://godotengine.org/download) (versão padrão, ~80 MB).
+2. Abra o Godot, clique em **Import** e selecione o arquivo `project.godot` deste repositório.
+3. Pressione **F5** (ou Play ▶️) para jogar:
+   - Crie seu herói escolhendo entre as **5 Raças** (*Humano, Elfos, Orc, Anão*).
+   - Use o **Scroll do Mouse** para transitar entre 1ª pessoa e 3ª pessoa.
+   - Pressione **`I`** para abrir o inventário e ver as armas 3D empunhadas na mão direita.
+   - Pressione **`Tab`** para travar a mira e **`1` a `4`** para usar habilidades com Soulshots (`F1`).
