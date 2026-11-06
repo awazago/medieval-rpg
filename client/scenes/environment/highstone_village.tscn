@@ -97,12 +97,12 @@ light_color = Color(0.35, 0.75, 1.0, 1)
 light_energy = 3.5
 omni_range = 14.0
 
+[node name="Model3D_BlacksmithBuilding" parent="." instance=ExtResource("5_model_forge")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -10, 0, -4)
+
 [node name="BlacksmithForge" type="CSGCombiner3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -4)
 use_collision = true
-
-[node name="Model3D_BlacksmithBuilding" parent="BlacksmithForge" instance=ExtResource("5_model_forge")]
-transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
 
 [node name="BuildingWalls" type="CSGBox3D" parent="BlacksmithForge"]
 visible = false
@@ -165,18 +165,18 @@ height = 0.6
 sides = 8
 material = ExtResource("2_rustic_wood")
 
+[node name="Model3D_WarehouseBuilding" parent="." instance=ExtResource("6_model_home_a")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 8.5, 0, -4.5)
+
+[node name="Model3D_Crates" parent="." instance=ExtResource("12_model_crates")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 10.7, 0, -4.7)
+
+[node name="Model3D_Barrels" parent="." instance=ExtResource("11_model_barrel_stack")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 10.9, 0, -2.7)
+
 [node name="HighstoneWarehouse" type="CSGCombiner3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 0, -3.5)
 use_collision = true
-
-[node name="Model3D_WarehouseBuilding" parent="HighstoneWarehouse" instance=ExtResource("6_model_home_a")]
-transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, -1)
-
-[node name="Model3D_Crates" parent="HighstoneWarehouse" instance=ExtResource("12_model_crates")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 2.2, 0, -1.2)
-
-[node name="Model3D_Barrels" parent="HighstoneWarehouse" instance=ExtResource("11_model_barrel_stack")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 2.4, 0, 0.8)
 
 [node name="ShedBackWall" type="CSGBox3D" parent="HighstoneWarehouse"]
 visible = false
@@ -316,11 +316,11 @@ light_color = Color(1.0, 0.65, 0.2, 1)
 light_energy = 2.8
 omni_range = 8.0
 
-[node name="BannerLeft" parent="VillagePalisadeGate" instance=ExtResource("13_model_banner")]
-transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -4.5, 3.5, 0.8)
+[node name="BannerLeft" parent="." instance=ExtResource("13_model_banner")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -4.5, 3.5, 15.8)
 
-[node name="BannerRight" parent="VillagePalisadeGate" instance=ExtResource("13_model_banner")]
-transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 4.5, 3.5, 0.8)
+[node name="BannerRight" parent="." instance=ExtResource("13_model_banner")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 4.5, 3.5, 15.8)
 
 [node name="VillageWell" parent="." instance=ExtResource("9_model_well")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 3)

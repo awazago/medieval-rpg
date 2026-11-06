@@ -62,10 +62,12 @@ func _ready() -> void:
 	# Inicializa modelo 3D se já existir na árvore
 	_setup_model_reference()
 	
-	# Oculta blocos CSG caso haja modelo 3D ativo
+	# Garante que haja sempre malha visível (modelo 3D ou fallback CSG estilizado)
 	var csg_root = get_node_or_null("RootNode")
-	if csg_root and model_3d:
-		csg_root.visible = false
+	if csg_root:
+		csg_root.visible = (model_3d == null)
+	if model_3d:
+		model_3d.visible = true
 		
 	play_anim("idle")
 

@@ -9,7 +9,14 @@ const SOULSHOT_BURST_SCENE = preload("res://client/scenes/vfx/soulshot_particles
 @onready var hud: GameHUD = $HUD
 @onready var hotbar: Hotbar = $HUD/Hotbar
 
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
+func _get_audio_manager() -> Node:
+	return get_node_or_null("/root/AudioManager")
+
 func _ready() -> void:
+	var GameData = _get_game_data()
 	if player:
 		if GameData:
 			if GameData.selected_character_name != "":
@@ -59,18 +66,19 @@ func _process(delta: float) -> void:
 
 ## Transição dinâmica de trilha sonora baseada na localização e combate
 func _update_music_zone() -> void:
-	if not AudioManager or not player:
+	var am = _get_audio_manager()
+	if not am or not player:
 		return
 		
 	# 1. Combate com Raid Boss Valthor ou câmara profunda
 	if player.global_position.z <= -50.0 or (player.selected_target and player.selected_target.get("is_raid_boss") == true):
-		AudioManager.play_music("boss", 1.5)
+		am.play_music("boss", 1.5)
 	# 2. Cripta Antiga e Ruínas
 	elif player.global_position.z <= -24.0:
-		AudioManager.play_music("crypt", 2.0)
+		am.play_music("crypt", 2.0)
 	# 3. Vila de Highstone e campinas ensolaradas
 	else:
-		AudioManager.play_music("village", 2.5)
+		am.play_music("village", 2.5)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Ataque básico com o botão esquerdo do mouse
@@ -112,13 +120,14 @@ func _attempt_player_attack() -> void:
 		player.play_attack_animation()
 		
 	# Efeito visual de Soulshot
+	var am = _get_audio_manager()
 	if player.soulshots_enabled:
 		_spawn_soulshot_burst(target.global_position + Vector3(0, 0.8, 0))
-		if AudioManager:
-			AudioManager.play_sfx("soulshot_hit")
+		if am:
+			am.play_sfx("soulshot_hit")
 	else:
-		if AudioManager:
-			AudioManager.play_sfx("sword_swing")
+		if am:
+			am.play_sfx("sword_swing")
 		
 	# Número de dano flutuante 3D
 	_spawn_floating_damage(target.global_position + Vector3(0, 1.2, 0), damage, is_crit)
@@ -136,7 +145,8 @@ func _attempt_player_attack() -> void:
 	hud.add_combat_log(log_msg)
 
 func _on_skill_triggered(skill_id: String) -> void:
-	var skill_data = GameData.get_skill(skill_id) if GameData else {}
+	var gd = _get_game_data()
+	var skill_data = gd.get_skill(skill_id) if gd else {}
 	if skill_data.is_empty():
 		return
 		
@@ -147,8 +157,9 @@ func _on_skill_triggered(skill_id: String) -> void:
 		
 	# Consome MP
 	player.current_mp -= mp_cost
-	if AudioManager:
-		AudioManager.play_sfx("magic_cast")
+	var am = _get_audio_manager()
+	if am:
+		am.play_sfx("magic_cast")
 	hud.update_player_status(
 		player.current_hp, player.max_hp,
 		player.current_mp, player.max_mp,

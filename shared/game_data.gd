@@ -30,8 +30,12 @@ func get_class_display_name(r_id: String, arch: String) -> String:
 				"dwarf": return "Artífice Anão"
 				_: return "Guerreiro"
 
-func _ready() -> void:
+func _init() -> void:
 	load_all_data()
+
+func _ready() -> void:
+	if items.is_empty():
+		load_all_data()
 
 func load_all_data() -> void:
 	races = _load_json("res://data/races.json")
