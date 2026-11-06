@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c7giranmarketplaza"]
+[gd_scene load_steps=37 format=3 uid="uid://c7giranmarketplaza"]
 
 [ext_resource type="Script" path="res://client/scenes/environment/giran_city.gd" id="1_city"]
 [ext_resource type="Script" path="res://client/scripts/player_character.gd" id="2_player"]

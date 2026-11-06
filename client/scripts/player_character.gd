@@ -156,12 +156,20 @@ func _on_item_equipped(item_data: Dictionary, slot_type: String) -> void:
 
 ## Paperdoll: Atualiza o modelo 3D da arma na mão direita
 func _update_weapon_mesh(item_data: Dictionary) -> void:
-	if not right_hand_socket:
+	var socket: Node3D = null
+	if rig and rig.has_method("get_right_hand_socket"):
+		socket = rig.get_right_hand_socket()
+	if not socket:
+		socket = right_hand_socket
+	if not socket:
 		return
 		
-	# Remove arma anterior
-	for child in right_hand_socket.get_children():
+	# Remove arma anterior do socket esqueletal ativo e de fallbacks
+	for child in socket.get_children():
 		child.queue_free()
+	if right_hand_socket and right_hand_socket != socket:
+		for child in right_hand_socket.get_children():
+			child.queue_free()
 		
 	if item_data.is_empty():
 		return
@@ -169,8 +177,8 @@ func _update_weapon_mesh(item_data: Dictionary) -> void:
 	var weapon_type = item_data.get("weapon_type", "")
 	if WEAPON_MODELS.has(weapon_type):
 		var weapon_instance = WEAPON_MODELS[weapon_type].instantiate()
-		right_hand_socket.add_child(weapon_instance)
-		print("[Paperdoll] Modelo 3D anexado à mão direita: ", weapon_type)
+		socket.add_child(weapon_instance)
+		print("[Paperdoll] Modelo 3D anexado à mão direita (Socket Esqueletal): ", weapon_type)
 
 ## Paperdoll: Atualiza as texturas e malha da armadura
 func _update_armor_mesh(item_data: Dictionary) -> void:
@@ -238,36 +246,36 @@ func apply_race_data(race_key: String) -> void:
 	if inventory:
 		inventory.setup_weight_limit(con_stat)
 		
-	# Ajuste de Proporção e Modelo Visual 3D Real por Raça
+	# Ajuste de Proporção e Modelo Visual 3D Real por Raça (Lineage II Authentic)
 	if rig and rig.has_method("set_character_model"):
 		match race_key:
 			"orc":
 				rig.set_character_model("barbarian")
-				visual_mesh.scale = Vector3(1.28, 1.14, 1.28)
+				visual_mesh.scale = Vector3(1.22, 1.42, 1.22)
 			"light_elf":
 				rig.set_character_model("mage")
-				visual_mesh.scale = Vector3(0.90, 1.12, 0.90)
+				visual_mesh.scale = Vector3(0.80, 1.38, 0.80)
 			"dark_elf":
 				rig.set_character_model("rogue")
-				visual_mesh.scale = Vector3(0.92, 1.08, 0.92)
+				visual_mesh.scale = Vector3(0.82, 1.35, 0.82)
 			"dwarf":
 				rig.set_character_model("knight")
-				visual_mesh.scale = Vector3(1.22, 0.78, 1.22)
+				visual_mesh.scale = Vector3(1.15, 0.98, 1.15)
 			_: # Humano
 				rig.set_character_model("knight")
-				visual_mesh.scale = Vector3(1.0, 1.0, 1.0)
+				visual_mesh.scale = Vector3(0.86, 1.32, 0.86)
 	else:
 		match race_key:
 			"orc":
-				visual_mesh.scale = Vector3(1.28, 1.14, 1.28)
+				visual_mesh.scale = Vector3(1.22, 1.42, 1.22)
 			"light_elf":
-				visual_mesh.scale = Vector3(0.90, 1.12, 0.90)
+				visual_mesh.scale = Vector3(0.80, 1.38, 0.80)
 			"dark_elf":
-				visual_mesh.scale = Vector3(0.92, 1.08, 0.92)
+				visual_mesh.scale = Vector3(0.82, 1.35, 0.82)
 			"dwarf":
-				visual_mesh.scale = Vector3(1.22, 0.78, 1.22)
+				visual_mesh.scale = Vector3(1.15, 0.98, 1.15)
 			_: # Humano
-				visual_mesh.scale = Vector3(1.0, 1.0, 1.0)
+				visual_mesh.scale = Vector3(0.86, 1.32, 0.86)
 			
 	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
 	print("[Raça] Raça aplicada ao personagem: ", race_data.get("name"), " | HP: ", max_hp, " | Velocidade: ", walk_speed)

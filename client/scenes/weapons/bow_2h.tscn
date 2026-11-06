@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://cx6q8vw91bowx"]
+[gd_scene load_steps=3 format=3 uid="uid://cx6q8vw91bowx"]
 
 [ext_resource type="PackedScene" path="res://client/assets/models/weapons/crossbow_1handed.gltf" id="1_model"]
 

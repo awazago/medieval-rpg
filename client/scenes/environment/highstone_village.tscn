@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c6v2n8pm7x5ky"]
+[gd_scene load_steps=22 format=3 uid="uid://c6v2n8pm7x5ky"]
 
 [ext_resource type="Material" uid="uid://m1s2t3o4mossystone" path="res://client/shaders/materials/mossy_stone_mat.tres" id="1_mossy_stone"]
 [ext_resource type="Material" uid="uid://r2w3m4p5rusticwood" path="res://client/shaders/materials/rustic_wood_mat.tres" id="2_rustic_wood"]

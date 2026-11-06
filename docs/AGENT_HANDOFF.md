@@ -158,7 +158,17 @@
   * **Interface do Usuário (HUD/UI) Estilo Canônico Lineage II:**
     * `client/ui/hud.gd`: método `_apply_lineage2_theme()` criando `StyleBoxFlat` para barras de CP (âmbar dourado), HP (rubi carmesim), MP (safira elétrico), Target (vermelho escarlate), Boss Raid (moldura dourada real) e EXP (ciano luminoso).
     * Estilização de painéis flutuantes (Inventário, Lojas, Armazém, Diálogos, Hotbar) com fundo obsidiana translúcido e bordas chanfradas em bronze/ouro envelhecido.
-  * 17 suítes de testes de QA passando com 100% de sucesso (`tests/test_gameplay_systems.py`).
+  * **Estabilização de Scripts e Transições de Cena (CONCLUÍDA ✅):**
+    * `client/scripts/character_select.gd`: corrigido fluxo de transição utilizando `get_tree().change_scene_to_file("res://client/scenes/main_game.tscn")`, eliminando instâncias duplicadas no nó `root`, colisões de câmeras no debugger e referências nulas.
+    * `shared/game_data.gd`: adicionadas variáveis globais de persistência `selected_character_name` e `selected_race_id`.
+    * `client/scenes/main_game.gd`: inicialização confiável do jogador e HUD em `_ready()` com dados de raça e nome.
+    * Validação e recálculo automatizado de `load_steps` exatos em todos os 24 arquivos `.tscn` do projeto, eliminando warnings e erros do parser do Godot.
+  * **Fidelidade Visual Realista de Alta Fantasia (Lineage II Authentic) (CONCLUÍDA ✅):**
+    * **Proporções Anatômicas Heroicas (Regra das 8 Cabeças):** eliminação total do aspecto chibi/cartoon (bobblehead) através de reescalonamento esbelto e atlético das silhuetas (`Vector3(0.86, 1.32, 0.86)` para Humanos, `Vector3(0.80, 1.38, 0.80)` para Elfos, `Vector3(1.22, 1.42, 1.22)` para Orcs), escala da cabeça reduzida para 0.68 no `Skeleton3D` e reescalonamento dinâmico de todos os keyframes de escala nas animações.
+    * **Limpeza e Fixação de Paperdoll Esqueletal:** ocultação de armas e escudos embutidos duplicados que poluiam os modelos (`Knight.glb`, etc.) e conexão direta das armas de alta resolução ao socket esqueletal dinâmico da mão direita (`handslot.r`).
+    * **Materiais PBR de Alta Fantasia:** armaduras medievais de metal forjado com reflexos de aço e ouro nobre, capas reais em veludo com iluminação de borda suave (`rim light`) em carmesim e azul imperial.
+    * **Cenários & Paleta de Aden:** cores florestais e de terra batida mais profundas e realistas em `terrain_mat.tres` e `grass_mat.tres`, além de iluminação de estúdio no preview de seleção de raças com rim light azulada.
+  * 18 suítes de testes de QA passando com 100% de sucesso (`tests/test_gameplay_systems.py`).
 
 ---
 
@@ -172,6 +182,7 @@
 | **Crônica 2: Sprint 7 (Metrópole de Giran, Praça Comercial & Private Stores)** | 100% | Concluída ✅ |
 | **Modelos 3D Reais (.glb), Rigs Esqueletais & Paperdoll Texturizado** | 100% | Concluída ✅ |
 | **Refatoração Geral de Gráficos (Cenários 3D, Natureza, SSR/Fog, UI Lineage II)** | 100% | Concluída ✅ |
+| **Estabilidade de Scripts & Visual Realista Lineage II (8 Cabeças, PBR, Capas)** | 100% | Concluída ✅ |
 | **Crônica 2: Sprint 8 (1ª Mudança de Classe - Nível 20 & Class Transfer Quests)** | 0% | Próxima Missão 🚀 |
 
 ---

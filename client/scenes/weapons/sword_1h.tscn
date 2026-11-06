@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cx6q8vw91ylmw"]
+[gd_scene load_steps=5 format=3 uid="uid://cx6q8vw91ylmw"]
 
 [ext_resource type="PackedScene" path="res://client/assets/models/weapons/sword_1handed.gltf" id="1_model"]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6v2n8pm7x5cs"]
+[gd_scene load_steps=6 format=3 uid="uid://c6v2n8pm7x5cs"]
 
 [ext_resource type="Script" path="res://client/scripts/character_select.gd" id="1_select"]
 [ext_resource type="PackedScene" uid="uid://h1m2c3r4rig" path="res://client/scenes/character/humanoid_character.tscn" id="2_humanoid_rig"]
@@ -10,7 +10,10 @@ roughness = 0.25
 
 [sub_resource type="Environment" id="Environment_preview"]
 ambient_light_source = 2
-ambient_light_color = Color(0.6, 0.65, 0.75, 1)
+ambient_light_color = Color(0.35, 0.38, 0.45, 1)
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 0.4
 
 [sub_resource type="World3D" id="World3D_preview"]
 environment = SubResource("Environment_preview")
@@ -60,7 +63,13 @@ transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.2, 3.2)
 
 [node name="PreviewLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 5, 0)
-light_energy = 1.5
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.6
+
+[node name="PreviewRimLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, 0.433, -0.75, 0, 3, -3)
+light_color = Color(0.65, 0.82, 1, 1)
+light_energy = 2.2
 
 [node name="PreviewCharacter" type="Node3D" parent="SubViewportContainer/SubViewport"]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c6v2n8pm7x5vb"]
+[gd_scene load_steps=7 format=3 uid="uid://c6v2n8pm7x5vb"]
 
 [ext_resource type="Script" path="res://server/boss_valthor.gd" id="1_valthor"]
 [ext_resource type="PackedScene" path="res://client/assets/models/characters/Skeleton_Warrior.glb" id="2_skel_model"]

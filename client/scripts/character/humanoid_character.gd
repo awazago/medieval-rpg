@@ -1,5 +1,5 @@
 # res://client/scripts/character/humanoid_character.gd
-# Controlador de Malha Humanoide e Rig de Animação 3D Real (Godot 4 Forward+)
+# Controlador de Malha Humanoide e Rig de Animação 3D Real (Lineage II High Fantasy Aesthetic)
 class_name HumanoidCharacterRig
 extends Node3D
 
@@ -17,15 +17,17 @@ const ANIMATION_MAP = {
 	"idle": "Idle",
 	"run": "Running_A",
 	"attack": "1H_Melee_Attack_Slice_Horizontal",
+	"attack_2h": "2H_Melee_Attack_Slice",
 	"cast": "Spellcast_Shoot",
 	"sit_shop": "Sit_Floor_Idle",
 	"death": "Death_A"
 }
 
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
-@onready var torso_mesh: CSGBox3D = $RootNode/Torso/ChestMesh if has_node("RootNode/Torso/ChestMesh") else null
-@onready var shoulder_pads: CSGBox3D = $RootNode/Torso/ShoulderPads if has_node("RootNode/Torso/ShoulderPads") else null
-@onready var right_hand_socket: Node3D = $RootNode/Torso/RightArm/RightForearm/RightHandSocket if has_node("RootNode/Torso/RightArm/RightForearm/RightHandSocket") else null
+
+var torso_mesh: CSGBox3D = null
+var shoulder_pads: CSGBox3D = null
+var right_hand_socket: Node3D = null
 
 var model_3d: Node3D = null
 var model_anim_player: AnimationPlayer = null
@@ -35,6 +37,10 @@ var is_sitting_mode: bool = false
 var current_model_type: String = "knight"
 
 func _ready() -> void:
+	torso_mesh = get_node_or_null("RootNode/Torso/ChestMesh")
+	shoulder_pads = get_node_or_null("RootNode/Torso/ShoulderPads")
+	right_hand_socket = get_node_or_null("RootNode/Torso/RightArm/RightForearm/RightHandSocket")
+
 	if anim_player:
 		anim_player.animation_finished.connect(_on_animation_finished)
 		
@@ -51,6 +57,10 @@ func _ready() -> void:
 func _setup_model_reference() -> void:
 	if has_node("Model3D"):
 		model_3d = $Model3D
+		_clean_and_setup_model_accessories()
+		_apply_lineage2_heroic_proportions()
+		_apply_lineage2_pbr_materials()
+		
 		model_anim_player = model_3d.find_child("AnimationPlayer", true, false)
 		if model_anim_player and not model_anim_player.animation_finished.is_connected(_on_model_anim_finished):
 			model_anim_player.animation_finished.connect(_on_model_anim_finished)
@@ -61,12 +71,20 @@ func set_character_model(model_key: String) -> void:
 		return
 		
 	if model_3d:
+		if is_instance_valid(model_3d) and model_3d.get_parent() == self:
+			remove_child(model_3d)
 		model_3d.queue_free()
+		model_3d = null
 		
 	var scene = MODEL_PRESETS[model_key]
 	model_3d = scene.instantiate()
 	model_3d.name = "Model3D"
 	add_child(model_3d)
+	
+	_clean_and_setup_model_accessories()
+	_apply_lineage2_heroic_proportions()
+	_apply_lineage2_pbr_materials()
+	
 	model_anim_player = model_3d.find_child("AnimationPlayer", true, false)
 	if model_anim_player:
 		model_anim_player.animation_finished.connect(_on_model_anim_finished)
@@ -77,6 +95,112 @@ func set_character_model(model_key: String) -> void:
 		
 	play_anim("idle")
 
+## Remove armas/escudos embutidos duplicados e ativa capa medieval com física visual
+func _clean_and_setup_model_accessories() -> void:
+	if not model_3d:
+		return
+		
+	var built_in_weapons = [
+		"1H_Sword", "2H_Sword", "1H_Sword_Offhand",
+		"Badge_Shield", "Rectangle_Shield", "Round_Shield", "Spike_Shield",
+		"Spellbook", "Spellbook_open", "1H_Wand", "2H_Staff",
+		"Knife_Offhand", "1H_Crossbow", "2H_Crossbow", "Knife", "Throwable",
+		"1H_Axe_Offhand", "Barbarian_Round_Shield", "1H_Axe", "2H_Axe", "Mug"
+	]
+	
+	for w_name in built_in_weapons:
+		var node = model_3d.find_child(w_name, true, false)
+		if node:
+			node.visible = false
+			
+	# Mantém capa ativada e imponente
+	for cape_name in ["Knight_Cape", "Mage_Cape", "Rogue_Cape", "Barbarian_Cape"]:
+		var cape = model_3d.find_child(cape_name, true, false)
+		if cape:
+			cape.visible = true
+
+## Elimina a proporção chibi/cartoon e aplica anatomia heroica canônica Lineage II (8 cabeças)
+func _apply_lineage2_heroic_proportions() -> void:
+	if not model_3d:
+		return
+		
+	var head_scale_factor = Vector3(0.68, 0.68, 0.68)
+	
+	# 1. Ajusta o capacete / elmo
+	for helm_name in ["Knight_Helmet", "Mage_Hat", "Barbarian_Hat"]:
+		var helm = model_3d.find_child(helm_name, true, false)
+		if helm:
+			helm.scale = head_scale_factor
+			
+	# 2. Ajusta o osso da cabeça no Skeleton3D
+	var skel: Skeleton3D = model_3d.find_child("Skeleton3D", true, false)
+	if not skel:
+		skel = model_3d.find_child("GeneralSkeleton", true, false)
+	if skel:
+		var head_idx = skel.find_bone("head")
+		if head_idx != -1:
+			skel.set_bone_pose_scale(head_idx, head_scale_factor)
+			
+	# 3. Reescala os keyframes de escala da cabeça em todas as animações para não estufar a cabeça ao tocar animação
+	var aplayer: AnimationPlayer = model_3d.find_child("AnimationPlayer", true, false)
+	if aplayer:
+		for lib_name in aplayer.get_animation_library_list():
+			var lib = aplayer.get_animation_library(lib_name)
+			if not lib:
+				continue
+			for anim_name in lib.get_animation_list():
+				var anim = lib.get_animation(anim_name)
+				if not anim:
+					continue
+				for track_idx in range(anim.get_track_count()):
+					var path_str = str(anim.track_get_path(track_idx)).to_lower()
+					if path_str.ends_with(":head") or path_str.ends_with("/head"):
+						if anim.track_get_type(track_idx) == Animation.TYPE_SCALE_3D:
+							for k in range(anim.track_get_key_count(track_idx)):
+								var original_scale: Vector3 = anim.track_get_key_value(track_idx, k)
+								# Garante proporção reduzida sem sobrescrever múltiplas vezes
+								if original_scale.x > 0.8:
+									anim.track_set_key_value(track_idx, k, original_scale * head_scale_factor)
+
+## Aplica materiais PBR realistas de metal forjado, ouro nobre e veludo medieval
+func _apply_lineage2_pbr_materials() -> void:
+	if not model_3d:
+		return
+		
+	# 1. Material da Capa Nobre (Veludo carmesim / azul imperial com reflexo de borda)
+	var cape_mat = StandardMaterial3D.new()
+	match current_model_type:
+		"mage":
+			cape_mat.albedo_color = Color(0.1, 0.22, 0.58, 1) # Azul Real dos Magos de marfim
+		"rogue":
+			cape_mat.albedo_color = Color(0.22, 0.1, 0.32, 1) # Roxo Sombrio dos Elfos Negros
+		"barbarian":
+			cape_mat.albedo_color = Color(0.48, 0.16, 0.08, 1) # Couro de Guerra Orc
+		_:
+			cape_mat.albedo_color = Color(0.68, 0.08, 0.12, 1) # Carmesim clássico de Aden
+			
+	cape_mat.roughness = 0.82
+	cape_mat.rim_enabled = true
+	cape_mat.rim = 0.75
+	cape_mat.rim_tint = 0.4
+	cape_mat.cull_mode = BaseMaterial3D.CULL_DISABLED # Renderiza ambos os lados da capa
+	
+	for cape_name in ["Knight_Cape", "Mage_Cape", "Rogue_Cape", "Barbarian_Cape"]:
+		var cape_mesh: MeshInstance3D = model_3d.find_child(cape_name, true, false)
+		if cape_mesh:
+			cape_mesh.material_override = cape_mat
+			
+	# 2. Material do Elmo de Aço Polido
+	var helm_mesh: MeshInstance3D = model_3d.find_child("Knight_Helmet", true, false)
+	if helm_mesh:
+		var helm_mat = StandardMaterial3D.new()
+		helm_mat.albedo_color = Color(0.85, 0.88, 0.92, 1)
+		helm_mat.metallic = 0.95
+		helm_mat.roughness = 0.22
+		helm_mat.clearcoat_enabled = true
+		helm_mat.clearcoat = 0.3
+		helm_mesh.material_override = helm_mat
+
 func play_anim(anim_name: String, custom_speed: float = 1.0) -> void:
 	# Não interrompe postura sentada a menos que explicitamente levantado
 	if is_sitting_mode and anim_name != "sit_shop":
@@ -86,7 +210,7 @@ func play_anim(anim_name: String, custom_speed: float = 1.0) -> void:
 	if current_action_lock != "" and anim_name in ["idle", "run", "sit_shop"]:
 		return
 		
-	if anim_name in ["attack", "cast"]:
+	if anim_name in ["attack", "attack_2h", "cast"]:
 		current_action_lock = anim_name
 		if anim_player and anim_player.has_animation(anim_name):
 			anim_player.play(anim_name, -1, custom_speed)
@@ -98,7 +222,7 @@ func play_anim(anim_name: String, custom_speed: float = 1.0) -> void:
 	if model_anim_player:
 		var target_anim = ANIMATION_MAP.get(anim_name, anim_name)
 		if model_anim_player.has_animation(target_anim):
-			if anim_name in ["attack", "cast"]:
+			if anim_name in ["attack", "attack_2h", "cast"]:
 				model_anim_player.play(target_anim, -1, custom_speed)
 			elif model_anim_player.current_animation != target_anim:
 				model_anim_player.play(target_anim, 0.2, custom_speed)

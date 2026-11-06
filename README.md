@@ -37,8 +37,8 @@ Um MMORPG 3D medieval clássico inspirado nos pilares de jogabilidade, progress�
 | **Crônica 1: Camada Visual (Etapas 1 a 5)** | **100% Concluída ✅** | Shaders de Terreno, Grama, Água, Vila PBR, Cripta Gótica, Rig Animado e Partículas VFX. |
 | **Crônica 2: Sprint 6 (Porto & Rota Marítima)** | **100% Concluída ✅** | Porto de Highstone, Caravela "Vento de Aden", Travessia do Oceano e Porto Imperial de Giran. |
 | **Crônica 2: Sprint 7 (Metrópole de Giran & Private Stores)** | **100% Concluída ✅** | Praça comercial livre, sistema de Private Store (Venda/Compra) com plaquinha 3D e itens Grau D. |
-| **Modelos 3D Reais (.glb) & Rigs Esqueletais** | **100% Concluída ✅** | Modelos poligonais (Knight, Mage, Rogue, Barbarian, Skeleton), armas e monstros integrados. |
-| **Refatoração Geral de Gráficos (3D, Natureza, SSR, UI)** | **100% Concluída ✅** | Cenários 3D (Highstone, Cripta, Giran), florestas densas, iluminação SSR/Fog e UI Lineage II. |
+| **Refatoração Visual Realista Lineage II (8 Cabeças, PBR & Capas)** | **100% Concluída ✅** | Anatomia heroica esbelta (sem aspecto chibi), materiais PBR de aço/ouro, capas nobres e shaders de Aden. |
+| **Estabilidade de Scripts & Transição de Cenas** | **100% Concluída ✅** | Transição limpa via `change_scene_to_file`, recálculo exato de `load_steps` em 24 `.tscn` e zero warnings. |
 | **Crônica 2: Sprint 8 (1ª Mudança de Classe - Nv. 20)** | **Próxima Missão 🚀** | Quests de graduação de classe com os Mestres de Giran, novas skills e proficiência Grau D. |
 
 ---

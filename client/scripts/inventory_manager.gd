@@ -42,6 +42,12 @@ func _setup_starter_items() -> void:
 	add_item("leather_tunic", 1)
 	add_item("soulshot_none", 150)
 	add_item("lesser_healing_potion", 5)
+	
+	# Auto-equipa arma e armadura iniciais para o aventureiro
+	if slots[0] != null:
+		_toggle_equip_weapon(0)
+	if slots[1] != null:
+		_toggle_equip_armor(1)
 
 func add_item(item_id: String, count: int = 1) -> bool:
 	var item_info = GameData.get_item(item_id) if GameData else {}

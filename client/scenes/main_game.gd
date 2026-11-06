@@ -10,6 +10,13 @@ const SOULSHOT_BURST_SCENE = preload("res://client/scenes/vfx/soulshot_particles
 @onready var hotbar: Hotbar = $HUD/Hotbar
 
 func _ready() -> void:
+	if player:
+		if GameData:
+			if GameData.selected_character_name != "":
+				player.character_name = GameData.selected_character_name
+			if GameData.selected_race_id != "" and player.has_method("apply_race_data"):
+				player.apply_race_data(GameData.selected_race_id)
+
 	if player and hud:
 		player.stats_updated.connect(hud.update_player_status)
 		player.target_changed.connect(hud.update_target)

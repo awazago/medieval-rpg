@@ -5,13 +5,13 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_grass_shader")
-shader_parameter/color_root = Color(0.12, 0.28, 0.08, 1)
-shader_parameter/color_tip = Color(0.38, 0.68, 0.22, 1)
-shader_parameter/color_highlight = Color(0.65, 0.78, 0.3, 1)
+shader_parameter/color_root = Color(0.12, 0.24, 0.09, 1)
+shader_parameter/color_tip = Color(0.25, 0.44, 0.18, 1)
+shader_parameter/color_highlight = Color(0.38, 0.56, 0.24, 1)
 shader_parameter/wind_direction = Vector2(1, 0.5)
 shader_parameter/wind_speed = 1.6
 shader_parameter/wind_strength = 0.28
 shader_parameter/wind_gust_frequency = 0.8
 shader_parameter/roughness = 0.65
 shader_parameter/specular = 0.25
-shader_parameter/transmission_color = Color(0.25, 0.45, 0.12, 1)
+shader_parameter/transmission_color = Color(0.2, 0.38, 0.14, 1)

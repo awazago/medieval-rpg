@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b6g78p31m9q4w"]
+[gd_scene load_steps=14 format=3 uid="uid://b6g78p31m9q4w"]
 
 [ext_resource type="Material" uid="uid://c1g2s3t4cryptstone" path="res://client/shaders/materials/crypt_gothic_stone_mat.tres" id="1_crypt_stone"]
 [ext_resource type="Material" uid="uid://s2f3m4p5spectralflame" path="res://client/shaders/materials/spectral_flame_mat.tres" id="2_spectral_flame"]

@@ -96,29 +96,23 @@ func _update_preview_silhouette(race_key: String) -> void:
 		
 	match race_key:
 		"orc":
-			preview_model.scale = Vector3(1.3, 1.15, 1.3)
+			preview_model.scale = Vector3(1.22, 1.42, 1.22)
 		"light_elf":
-			preview_model.scale = Vector3(0.9, 1.12, 0.9)
+			preview_model.scale = Vector3(0.80, 1.38, 0.80)
 		"dark_elf":
-			preview_model.scale = Vector3(0.92, 1.08, 0.92)
+			preview_model.scale = Vector3(0.82, 1.35, 0.82)
 		"dwarf":
-			preview_model.scale = Vector3(1.22, 0.78, 1.22)
+			preview_model.scale = Vector3(1.15, 0.98, 1.15)
 		_: # Humano
-			preview_model.scale = Vector3(1.0, 1.0, 1.0)
+			preview_model.scale = Vector3(0.86, 1.32, 0.86)
 
 func _on_enter_world_pressed() -> void:
 	var final_name = input_name.text.strip_edges() if input_name and input_name.text.strip_edges() != "" else "Valente"
 	print("[Criação] Personagem criado: ", final_name, " | Raça: ", selected_race)
 	
-	# Transição para o mundo de jogo
-	var main_scene = load("res://client/scenes/main_game.tscn").instantiate()
-	get_tree().root.add_child(main_scene)
-	
-	# Configura dados raciais no jogador
-	var player = main_scene.get_node_or_null("Player")
-	if player and player.has_method("apply_race_data"):
-		player.character_name = final_name
-		player.apply_race_data(selected_race)
+	if GameData:
+		GameData.selected_character_name = final_name
+		GameData.selected_race_id = selected_race
 		
-	# Libera a tela de criação
-	queue_free()
+	# Transição limpa e oficial do Godot 4 evitando conflito de cenas no root
+	get_tree().change_scene_to_file("res://client/scenes/main_game.tscn")

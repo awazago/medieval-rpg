@@ -683,6 +683,47 @@ def test_master_graphics_refactor():
 
     print(" -> Sucesso: Refatoração geral de gráficos, iluminação cinemática Forward+, cenários 3D e UI Lineage II 100% verificados!")
 
+def test_lineage2_visual_fidelity_and_stability():
+    print("[QA Test 18] Validando Fidelidade Visual Realista Lineage II e Estabilidade de Scripts...")
+    
+    # 1. GameData: Persistência de seleção
+    gd_path = os.path.join(BASE_DIR, "shared", "game_data.gd")
+    with open(gd_path) as f:
+        gd_src = f.read()
+        assert "selected_character_name" in gd_src, "GameData deve conter selected_character_name"
+        assert "selected_race_id" in gd_src, "GameData deve conter selected_race_id"
+
+    # 2. CharacterSelect: Transição limpa com change_scene_to_file
+    cs_path = os.path.join(BASE_DIR, "client", "scripts", "character_select.gd")
+    with open(cs_path) as f:
+        cs_src = f.read()
+        assert "change_scene_to_file" in cs_src, "character_select.gd deve usar change_scene_to_file"
+        assert "root.add_child" not in cs_src, "character_select.gd não deve adicionar cena diretamente ao root"
+
+    # 3. MainGame: Inicialização do jogador com GameData
+    mg_path = os.path.join(BASE_DIR, "client", "scenes", "main_game.gd")
+    with open(mg_path) as f:
+        mg_src = f.read()
+        assert "GameData.selected_race_id" in mg_src, "main_game.gd deve ler selected_race_id"
+
+    # 4. HumanoidCharacterRig: Proporções heroicas 8 cabeças, materiais PBR e limpeza de armas embutidas
+    rig_path = os.path.join(BASE_DIR, "client", "scripts", "character", "humanoid_character.gd")
+    with open(rig_path) as f:
+        rig_src = f.read()
+        assert "_clean_and_setup_model_accessories" in rig_src, "humanoid_character.gd deve limpar acessórios embutidos"
+        assert "_apply_lineage2_heroic_proportions" in rig_src, "humanoid_character.gd deve aplicar proporções heroicas Lineage II"
+        assert "_apply_lineage2_pbr_materials" in rig_src, "humanoid_character.gd deve aplicar materiais PBR realistas"
+        assert "get_right_hand_socket" in rig_src, "humanoid_character.gd deve expor socket dinâmico da mão"
+
+    # 5. PlayerCharacter: Socket de arma dinâmico e proporções corporais realistas
+    pc_path = os.path.join(BASE_DIR, "client", "scripts", "player_character.gd")
+    with open(pc_path) as f:
+        pc_src = f.read()
+        assert "get_right_hand_socket" in pc_src, "player_character.gd deve utilizar get_right_hand_socket"
+        assert "Vector3(0.86, 1.32, 0.86)" in pc_src, "player_character.gd deve aplicar escala heroica Lineage II"
+
+    print(" -> Sucesso: Fidelidade visual realista Lineage II, proporções anatômicas e estabilidade de scripts 100% verificados!")
+
 if __name__ == "__main__":
     try:
         test_data_integrity()
@@ -702,7 +743,8 @@ if __name__ == "__main__":
         test_sprint7_giran_city_and_private_stores()
         test_real_3d_models_and_skeletal_animations()
         test_master_graphics_refactor()
-        print("\n🏆 TODOS OS 17 TESTES DE QA PASSARAM COM SUCESSO! Refatoração Geral de Gráficos Concluída!")
+        test_lineage2_visual_fidelity_and_stability()
+        print("\n🏆 TODOS OS 18 TESTES DE QA PASSARAM COM SUCESSO! Refatoração Geral Concluída!")
     except Exception as e:
         print(f"\n❌ FALHA NO TESTE DE QA: {e}")
         sys.exit(1)

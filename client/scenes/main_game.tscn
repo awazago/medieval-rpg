@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bvyek38k7qmlw"]
+[gd_scene load_steps=37 format=3 uid="uid://bvyek38k7qmlw"]
 
 [ext_resource type="Script" path="res://client/scripts/player_character.gd" id="1_player"]
 [ext_resource type="Script" path="res://client/scenes/main_game.gd" id="1_maingame"]

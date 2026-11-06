@@ -7,6 +7,8 @@ var items: Dictionary = {}
 var monsters: Dictionary = {}
 var skills: Dictionary = {}
 var quests: Array = []
+var selected_character_name: String = "Valente"
+var selected_race_id: String = "human"
 
 func _ready() -> void:
 	load_all_data()
