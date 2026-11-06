@@ -42,7 +42,7 @@ transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, 0, 0, 0)
 
 [node name="Model3D" parent="VisualMesh" instance=ExtResource("2_skel_model")]
 
-[node name="BodyMesh" type="CSGCapsule3D" parent="VisualMesh"]
+[node name="BodyMesh" type="Node3D" parent="VisualMesh"]
 visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
 radius = 0.45

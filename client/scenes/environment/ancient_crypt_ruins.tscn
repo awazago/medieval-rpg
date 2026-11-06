@@ -206,9 +206,6 @@ light_color = Color(0.18, 0.95, 0.62, 1)
 light_energy = 3.6
 omni_range = 11.0
 
-# ==============================================================================
-# ELEMENTOS ARQUITETÔNICOS GÓTICOS 3D POLIGONAIS
-# ==============================================================================
 [node name="CryptArchitecture" type="Node3D" parent="."]
 
 [node name="GothicPillarLeft" parent="CryptArchitecture" instance=ExtResource("4_model_pillar")]

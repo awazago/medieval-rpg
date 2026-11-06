@@ -120,18 +120,13 @@ shadow_enabled = true
 [node name="PrivateStoreManager" type="Node" parent="." groups=["private_store_manager"]]
 script = ExtResource("12_ps_mgr")
 
-# ==============================================================================
-# 1. ARQUITETURA: PRAÇA DO MERCADO DE GIRAN, FONTE IMPERIAL E MURALHAS
-# ==============================================================================
 [node name="MarketPlaza" type="Node3D" parent="."]
 
-# Piso lajeado imperial da praça central (80m x 80m)
 [node name="PlazaFloor" type="CSGBox3D" parent="MarketPlaza"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 size = Vector3(80, 0.5, 80)
 material = SubResource("Mat_ImperialPaver")
 
-# Círculo decorativo central em mármore
 [node name="PlazaCenterRing" type="CSGCylinder3D" parent="MarketPlaza"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
 radius = 16.0
@@ -139,7 +134,6 @@ height = 0.05
 sides = 32
 material = SubResource("Mat_FountainMarble")
 
-# --- Grande Fonte Monumental Imperial ---
 [node name="ImperialFountain" type="Node3D" parent="MarketPlaza"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
@@ -186,28 +180,23 @@ height = 0.2
 sides = 16
 material = SubResource("Mat_FountainWater")
 
-# --- Muralhas Fortificadas e Portão Sul ---
 [node name="CityWalls" type="Node3D" parent="."]
 
-# Muralha Norte
 [node name="WallNorth" type="CSGBox3D" parent="CityWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -40)
 size = Vector3(80, 8, 3)
 material = SubResource("Mat_ImperialWall")
 
-# Muralha Leste
 [node name="WallEast" type="CSGBox3D" parent="CityWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 4, 0)
 size = Vector3(3, 8, 80)
 material = SubResource("Mat_ImperialWall")
 
-# Muralha Oeste
 [node name="WallWest" type="CSGBox3D" parent="CityWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 4, 0)
 size = Vector3(3, 8, 80)
 material = SubResource("Mat_ImperialWall")
 
-# Muralha Sul (com vão do Portão de 10m)
 [node name="WallSouthLeft" type="CSGBox3D" parent="CityWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 4, 40)
 size = Vector3(35, 8, 3)
@@ -223,28 +212,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 40)
 size = Vector3(10, 2, 3)
 material = SubResource("Mat_ImperialWall")
 
-# ==============================================================================
-# EDIFÍCIOS MONUMENTAIS 3D DA METRÓPOLE DE GIRAN
-# ==============================================================================
 [node name="GiranArchitecture" type="Node3D" parent="."]
 
-# Castelo Imperial de Giran ao Norte
 [node name="CastleKeep" parent="GiranArchitecture" instance=ExtResource("19_model_castle")]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 0, 0, -48)
 
-# Templo de Einhasad ao Leste
 [node name="TempleEinhasad" parent="GiranArchitecture" instance=ExtResource("20_model_church")]
 transform = Transform3D(0, 0, 2.4, 0, 2.4, 0, -2.4, 0, 0, 28, 0, -18)
 
-# Guilda dos Aventureiros e Taberna ao Oeste
 [node name="GuildHallTavern" parent="GiranArchitecture" instance=ExtResource("22_model_tavern")]
 transform = Transform3D(0, 0, -2.4, 0, 2.4, 0, 2.4, 0, 0, -28, 0, -18)
 
-# Pavilhão Comercial da Feira ao Sul
 [node name="MarketPavilion" parent="GiranArchitecture" instance=ExtResource("21_model_market")]
 transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, 0, 0, 28)
 
-# Colunata da Praça Central
 [node name="PlazaColonnade" type="Node3D" parent="GiranArchitecture"]
 
 [node name="Column_1" parent="GiranArchitecture/PlazaColonnade" instance=ExtResource("24_model_column")]
@@ -259,7 +240,6 @@ transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -11, 0, 11)
 [node name="Column_4" parent="GiranArchitecture/PlazaColonnade" instance=ExtResource("24_model_column")]
 transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 11, 0, 11)
 
-# Estandartes Imperiais Vermelhos do Portão Sul
 [node name="BannerSouthLeft" parent="GiranArchitecture" instance=ExtResource("23_model_banner_red")]
 transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -5.5, 4.5, 40)
 
@@ -267,10 +247,8 @@ transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -5.5, 4.5, 40)
 transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 5.5, 4.5, 40)
 
 
-# --- Bancas e Tendas da Feira Livre (Bazaar Stalls) ---
 [node name="MarketStalls" type="Node3D" parent="."]
 
-# Banca 1: Equipamentos D-Grade (Valeria)
 [node name="StallValeria" type="Node3D" parent="MarketStalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 6)
 
@@ -284,7 +262,6 @@ transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 2.5, 0)
 size = Vector3(4.0, 0.1, 2.4)
 material = SubResource("Mat_RedCanopy")
 
-# Banca 2: Feira Livre dos Feirantes (Dummy Goran)
 [node name="StallGoran" type="Node3D" parent="MarketStalls"]
 transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, 8, 0, -10)
 
@@ -293,7 +270,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
 size = Vector3(2.5, 0.02, 2.5)
 material = SubResource("Mat_RedCanopy")
 
-# Banca 3: Feira Livre Compradora (Dummy Lyra)
 [node name="StallLyra" type="Node3D" parent="MarketStalls"]
 transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, -8, 0, -10)
 
@@ -302,12 +278,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
 size = Vector3(2.5, 0.02, 2.5)
 material = SubResource("Mat_BlueCanopy")
 
-# ==============================================================================
-# 2. NPCS DE GIRAN
-# ==============================================================================
 [node name="NPCs" type="Node3D" parent="."]
 
-# NPC Mercadora Valeria (D-Grade)
 [node name="NPC_GiranTraderValeria" type="CharacterBody3D" parent="NPCs"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 0, 7.5)
 script = ExtResource("13_trader")
@@ -320,7 +292,6 @@ shape = SubResource("Capsule_char")
 
 [node name="HumanoidCharacterRig" parent="NPCs/NPC_GiranTraderValeria/VisualMesh" instance=ExtResource("17_rig")]
 
-# NPC Grão-Mestre Kallum (Classes e Ordens)
 [node name="NPC_GrandMasterKallum" type="CharacterBody3D" parent="NPCs"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -16, 0, 8)
 script = ExtResource("14_master")
@@ -333,7 +304,6 @@ shape = SubResource("Capsule_char")
 
 [node name="HumanoidCharacterRig" parent="NPCs/NPC_GrandMasterKallum/VisualMesh" instance=ExtResource("17_rig")]
 
-# NPC Chefe Moke (Armazém Imperial)
 [node name="NPC_WarehouseChiefMoke" type="CharacterBody3D" parent="NPCs"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -16, 0, -8)
 script = ExtResource("15_wh_chief")
@@ -346,7 +316,6 @@ shape = SubResource("Capsule_char")
 
 [node name="HumanoidCharacterRig" parent="NPCs/NPC_WarehouseChiefMoke/VisualMesh" instance=ExtResource("17_rig")]
 
-# NPC Feirante Goran (Anão Vendedor - Private Store Sell)
 [node name="NPC_StoreSellerGoran" type="CharacterBody3D" parent="NPCs"]
 transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 8, 0, -10)
 script = ExtResource("16_dummy")
@@ -367,7 +336,6 @@ transform = Transform3D(1.15, 0, 0, 0, 0.8, 0, 0, 0, 1.15, 0, 0, 0)
 [node name="PrivateStoreSign3D" parent="NPCs/NPC_StoreSellerGoran" instance=ExtResource("18_sign")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0)
 
-# NPC Feirante Lyra (Elfa Compradora - Private Store Buy)
 [node name="NPC_StoreBuyerLyra" type="CharacterBody3D" parent="NPCs"]
 transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, -8, 0, -10)
 script = ExtResource("16_dummy")
@@ -388,9 +356,6 @@ transform = Transform3D(0.9, 0, 0, 0, 1.05, 0, 0, 0, 0.9, 0, 0, 0)
 [node name="PrivateStoreSign3D" parent="NPCs/NPC_StoreBuyerLyra" instance=ExtResource("18_sign")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
 
-# ==============================================================================
-# 3. JOGADOR, CÂMERA E INVENTÁRIO
-# ==============================================================================
 [node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
 script = ExtResource("2_player")
@@ -413,9 +378,6 @@ script = ExtResource("3_camera")
 [node name="InventoryManager" type="Node" parent="Player"]
 script = ExtResource("4_inv")
 
-# ==============================================================================
-# 4. HUD E JANELAS DE INTERFACE
-# ==============================================================================
 [node name="HUD" type="Control" parent="." groups=["hud"]]
 layout_mode = 3
 anchors_preset = 15
@@ -579,7 +541,6 @@ columns = 4
 layout_mode = 2
 text = "Fechar"
 
-# Janela de Loja D-Grade (Mercadora Valeria)
 [node name="ShopWindow" type="PanelContainer" parent="HUD" groups=["shop_window"]]
 visible = false
 anchors_preset = 8
@@ -633,7 +594,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Fechar Comércio"
 
-# Janela de Armazém Imperial (Chefe Moke)
 [node name="WarehouseWindow" type="PanelContainer" parent="HUD" groups=["warehouse_window"]]
 visible = false
 anchors_preset = 8
@@ -707,7 +667,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Fechar Armazém"
 
-# Janela de Loja Pessoal (Private Store Window - Sell / Buy)
 [node name="PrivateStoreWindow" type="PanelContainer" parent="HUD" groups=["private_store_window"]]
 visible = false
 anchors_preset = 8

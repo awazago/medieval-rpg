@@ -62,9 +62,9 @@ var soulshots_enabled: bool = false
 var selected_target: Node3D = null
 
 @onready var visual_mesh: Node3D = $VisualMesh
-@onready var body_mesh: Node3D = get_node_or_null("VisualMesh/BodyMesh")
-@onready var shoulder_pads: Node3D = get_node_or_null("VisualMesh/ShoulderPads")
-@onready var right_hand_socket: Node3D = get_node_or_null("VisualMesh/RightHandSocket")
+@onready var body_mesh: Node = get_node_or_null("VisualMesh/BodyMesh")
+@onready var shoulder_pads: Node = get_node_or_null("VisualMesh/ShoulderPads")
+@onready var right_hand_socket: Node = get_node_or_null("VisualMesh/RightHandSocket")
 @onready var rig: HumanoidCharacterRig = get_node_or_null("VisualMesh/HumanoidCharacterRig")
 @onready var camera_pivot: SpringArm3D = $CameraPivot
 @onready var inventory: InventoryManager = $InventoryManager
@@ -215,11 +215,13 @@ func _update_armor_mesh(item_data: Dictionary) -> void:
 			mat.albedo_color = Color(0.5, 0.52, 0.55)
 			mat.roughness = 0.7
 			
-	if body_mesh:
+	if body_mesh and "material" in body_mesh:
 		body_mesh.material = mat
 	if shoulder_pads:
-		shoulder_pads.size = pads_sz
-		shoulder_pads.material = mat
+		if "size" in shoulder_pads:
+			shoulder_pads.size = pads_sz
+		if "material" in shoulder_pads:
+			shoulder_pads.material = mat
 	if rig:
 		rig.update_armor(mat, pads_sz)
 

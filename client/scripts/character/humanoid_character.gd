@@ -5,13 +5,24 @@ extends Node3D
 
 signal animation_finished(anim_name: String)
 
-const MODEL_PRESETS = {
-	"knight": preload("res://client/assets/models/characters/Knight.glb"),
-	"mage": preload("res://client/assets/models/characters/Mage.glb"),
-	"rogue": preload("res://client/assets/models/characters/Rogue.glb"),
-	"barbarian": preload("res://client/assets/models/characters/Barbarian.glb"),
-	"skeleton": preload("res://client/assets/models/characters/Skeleton_Warrior.glb")
-}
+var MODEL_PRESETS: Dictionary = {}
+
+func _init() -> void:
+	_init_model_presets()
+
+func _init_model_presets() -> void:
+	var paths = {
+		"knight": "res://client/assets/models/characters/Knight.glb",
+		"mage": "res://client/assets/models/characters/Mage.glb",
+		"rogue": "res://client/assets/models/characters/Rogue.glb",
+		"barbarian": "res://client/assets/models/characters/Barbarian.glb",
+		"skeleton": "res://client/assets/models/characters/Skeleton_Warrior.glb"
+	}
+	for k in paths:
+		if ResourceLoader.exists(paths[k]):
+			var res = load(paths[k])
+			if res:
+				MODEL_PRESETS[k] = res
 
 const ANIMATION_MAP = {
 	"idle": "Idle",
@@ -25,8 +36,8 @@ const ANIMATION_MAP = {
 
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 
-var torso_mesh: CSGBox3D = null
-var shoulder_pads: CSGBox3D = null
+var torso_mesh: Node3D = null
+var shoulder_pads: Node3D = null
 var right_hand_socket: Node3D = null
 
 var model_3d: Node3D = null
@@ -76,6 +87,8 @@ func _setup_model_reference() -> void:
 
 func set_character_model(model_key: String) -> void:
 	current_model_type = model_key
+	if MODEL_PRESETS.is_empty() or not MODEL_PRESETS.has(model_key):
+		_init_model_presets()
 	if not MODEL_PRESETS.has(model_key):
 		print("[HumanoidRig] Preset não encontrado: ", model_key)
 		return

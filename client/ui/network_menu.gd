@@ -3,11 +3,11 @@
 class_name NetworkMenu
 extends PanelContainer
 
-@onready var input_ip: LineEdit = $Margin/VBox/InputIP
-@onready var input_port: LineEdit = $Margin/VBox/InputPort
-@onready var btn_host: Button = $Margin/VBox/BtnHost
-@onready var btn_join: Button = $Margin/VBox/BtnJoin
-@onready var label_status: Label = $Margin/VBox/LabelStatus
+@onready var input_ip: LineEdit = get_node_or_null("Margin/VBox/InputIP")
+@onready var input_port: LineEdit = get_node_or_null("Margin/VBox/InputPort")
+@onready var btn_host: Button = get_node_or_null("Margin/VBox/HBox/BtnHost") if has_node("Margin/VBox/HBox/BtnHost") else get_node_or_null("Margin/VBox/BtnHost")
+@onready var btn_join: Button = get_node_or_null("Margin/VBox/HBox/BtnJoin") if has_node("Margin/VBox/HBox/BtnJoin") else get_node_or_null("Margin/VBox/BtnJoin")
+@onready var label_status: Label = get_node_or_null("Margin/VBox/LabelStatus")
 
 func _ready() -> void:
 	if btn_host:

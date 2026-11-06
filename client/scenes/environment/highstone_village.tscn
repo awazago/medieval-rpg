@@ -322,9 +322,6 @@ transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -4.5, 3.5, 0.8)
 [node name="BannerRight" parent="VillagePalisadeGate" instance=ExtResource("13_model_banner")]
 transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 4.5, 3.5, 0.8)
 
-# ==============================================================================
-# EDIFÍCIOS E PROPS POLIGONAIS 3D DA VILA DE HIGHSTONE
-# ==============================================================================
 [node name="VillageWell" parent="." instance=ExtResource("9_model_well")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 3)
 
@@ -337,9 +334,6 @@ transform = Transform3D(0, 0, -1.8, 0, 1.8, 0, 1.8, 0, 0, 15, 0, 8)
 [node name="VillageHouse_North" parent="." instance=ExtResource("6_model_home_a")]
 transform = Transform3D(-1.8, 0, 0, 0, 1.8, 0, 0, 0, -1.8, -12, 0, -14)
 
-# ==============================================================================
-# VEGETAÇÃO E ROCHAS MEDIEVAIS POLIGONAIS
-# ==============================================================================
 [node name="Nature" type="Node3D" parent="."]
 
 [node name="TreeGrove_West" parent="Nature" instance=ExtResource("15_model_tree_grove")]

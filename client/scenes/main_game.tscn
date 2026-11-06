@@ -150,12 +150,8 @@ transform = Transform3D(1.3, 0, 0, 0, 1.2, 0, 0, 0, 1.3, 0.0, 0, -35.0)
 [node name="GrassPatch_12" parent="FoliageField" instance=ExtResource("21_grass_patch")]
 transform = Transform3D(1.2, 0, 0, 0, 1.1, 0, 0, 0, 1.2, -6.0, 0, -48.0)
 
-# ==============================================================================
-# VEGETAÇÃO E NATUREZA DENSA DA ILHA DO ALVORECER (3D GLTF)
-# ==============================================================================
 [node name="IslandNature" type="Node3D" parent="."]
 
-# Bosques Densos de Carvalhos Medievais
 [node name="ForestGrove_NW" parent="IslandNature" instance=ExtResource("26_tree_grove")]
 transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, -35, 0, -25)
 
@@ -168,7 +164,6 @@ transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, -40, 0, 15)
 [node name="ForestGrove_SE" parent="IslandNature" instance=ExtResource("26_tree_grove")]
 transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, 40, 0, 15)
 
-# Árvores Isoladas na Estrada para a Cripta Ancestral
 [node name="TreeRoad_1" parent="IslandNature" instance=ExtResource("27_tree_single")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -15, 0, -42)
 
@@ -181,7 +176,6 @@ transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, -22, 0, -58)
 [node name="TreeRoad_4" parent="IslandNature" instance=ExtResource("28_tree_b")]
 transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, 22, 0, -62)
 
-# Formações Rochosas da Cripta e Perímetro
 [node name="CryptRock_Left" parent="IslandNature" instance=ExtResource("29_rock_b")]
 transform = Transform3D(3.0, 0, 0, 0, 3.0, 0, 0, 0, 3.0, -18, 0, -52)
 
@@ -220,7 +214,7 @@ script = ExtResource("15_blacksmith")
 
 [node name="HumanoidCharacterRig" parent="NPC_BlacksmithTorvald" instance=ExtResource("22_humanoid_rig")]
 
-[node name="BodyMesh" type="CSGCapsule3D" parent="NPC_BlacksmithTorvald"]
+[node name="BodyMesh" type="Node3D" parent="NPC_BlacksmithTorvald"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 visible = false
 radius = 0.45
@@ -249,7 +243,7 @@ script = ExtResource("16_warehouse_npc")
 
 [node name="HumanoidCharacterRig" parent="NPC_WarehouseRandall" instance=ExtResource("22_humanoid_rig")]
 
-[node name="BodyMesh" type="CSGCapsule3D" parent="NPC_WarehouseRandall"]
+[node name="BodyMesh" type="Node3D" parent="NPC_WarehouseRandall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 visible = false
 radius = 0.4
@@ -287,13 +281,13 @@ script = ExtResource("5_inventory")
 
 [node name="HumanoidCharacterRig" parent="Player/VisualMesh" instance=ExtResource("22_humanoid_rig")]
 
-[node name="BodyMesh" type="CSGCapsule3D" parent="Player/VisualMesh"]
+[node name="BodyMesh" type="Node3D" parent="Player/VisualMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
 visible = false
 radius = 0.4
 height = 1.8
 
-[node name="ShoulderPads" type="CSGBox3D" parent="Player/VisualMesh"]
+[node name="ShoulderPads" type="Node3D" parent="Player/VisualMesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
 visible = false
 size = Vector3(1.1, 0.2, 0.5)
@@ -318,7 +312,7 @@ monster_name = "Raposa Jovem"
 level = 1
 max_hp = 45
 
-[node name="MeshInstance3D" type="CSGBox3D" parent="Monster_YoungFox"]
+[node name="MeshInstance3D" type="Node3D" parent="Monster_YoungFox"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 size = Vector3(0.8, 0.8, 1.2)
 
@@ -332,7 +326,7 @@ script = ExtResource("7_npc")
 
 [node name="HumanoidCharacterRig" parent="NPC_SentinelMarcus" instance=ExtResource("22_humanoid_rig")]
 
-[node name="BodyMesh" type="CSGCapsule3D" parent="NPC_SentinelMarcus"]
+[node name="BodyMesh" type="Node3D" parent="NPC_SentinelMarcus"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 visible = false
 radius = 0.4
