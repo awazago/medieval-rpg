@@ -23,14 +23,18 @@ var target_player: Node3D = null
 var spawn_position: Vector3
 var move_speed: float = 3.5
 
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
 func _ready() -> void:
 	add_to_group("monsters")
 	spawn_position = global_position
 	current_hp = max_hp
 	
 	# Carrega dados do JSON se disponível
-	if GameData:
-		var mob_data = GameData.get_monster(monster_id)
+	var gd = _get_game_data()
+	if gd:
+		var mob_data = gd.get_monster(monster_id)
 		if not mob_data.is_empty():
 			monster_name = mob_data.get("name", monster_name)
 			level = mob_data.get("level", level)
@@ -128,7 +132,8 @@ func _die() -> void:
 
 func _reward_player() -> void:
 	if target_player and is_instance_valid(target_player) and target_player.has_method("add_exp_and_sp"):
-		var mob_data = GameData.get_monster(monster_id) if GameData else {}
+		var gd = _get_game_data()
+		var mob_data = gd.get_monster(monster_id) if gd else {}
 		var exp_reward = mob_data.get("exp_reward", 35)
 		var sp_reward = mob_data.get("sp_reward", 5)
 		target_player.add_exp_and_sp(exp_reward, sp_reward)
@@ -138,9 +143,10 @@ func _reward_player() -> void:
 			hud.add_combat_log("Você ganhou [color=yellow]" + str(exp_reward) + " XP[/color] e [color=aqua]" + str(sp_reward) + " SP[/color].")
 
 func _spawn_loot_drops() -> void:
-	if not GameData:
+	var gd = _get_game_data()
+	if not gd:
 		return
-	var mob_data = GameData.get_monster(monster_id)
+	var mob_data = gd.get_monster(monster_id)
 	var drops: Array = mob_data.get("drops", [])
 	
 	for drop_entry in drops:

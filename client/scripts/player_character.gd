@@ -70,6 +70,12 @@ var selected_target: Node3D = null
 @onready var camera_pivot: SpringArm3D = $CameraPivot
 @onready var inventory: InventoryManager = $InventoryManager
 
+func _get_audio_manager() -> Node:
+	return get_node_or_null("/root/AudioManager")
+
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
 func _ready() -> void:
 	current_hp = max_hp
 	current_mp = max_mp
@@ -119,8 +125,9 @@ func add_exp_and_sp(exp_gain: int, sp_gain: int) -> void:
 		add_child(burst)
 		burst.global_position = global_position
 		
-		if AudioManager:
-			AudioManager.play_sfx("level_up")
+		var am = _get_audio_manager()
+		if am:
+			am.play_sfx("level_up")
 		
 		leveled_up.emit(level)
 		stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
@@ -229,7 +236,8 @@ func _update_armor_mesh(item_data: Dictionary) -> void:
 ## Aplica os dados, atributos e silhueta 3D da Raça escolhida
 func apply_race_data(race_key: String) -> void:
 	race_id = race_key
-	var race_data = GameData.get_race(race_key) if GameData else {}
+	var gd = _get_game_data()
+	var race_data = gd.get_race(race_key) if gd else {}
 	if race_data.is_empty():
 		return
 		
@@ -441,8 +449,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func toggle_soulshots() -> void:
 	soulshots_enabled = not soulshots_enabled
 	soulshot_toggled.emit(soulshots_enabled)
-	if soulshots_enabled and AudioManager:
-		AudioManager.play_sfx("soulshot_activate")
+	var am = _get_audio_manager()
+	if soulshots_enabled and am:
+		am.play_sfx("soulshot_activate")
 	print("[Combate] Soulshots ativados: ", soulshots_enabled)
 
 func _cycle_target() -> void:

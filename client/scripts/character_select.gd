@@ -1,34 +1,34 @@
 # res://client/scripts/character_select.gd
 # Tela de Criação e Seleção das 5 Raças Clássicas e Classes de Aethelgard (Lineage II Style)
 class_name CharacterSelect
-extends Control
+extends Node3D
 
 signal character_created(char_name: String, race_id: String, archetype: String)
 
-@onready var input_name: LineEdit = get_node_or_null("Panel/VBox/InputName")
-@onready var label_race_name: Label = get_node_or_null("PanelStats/VBox/LabelRaceTitle")
-@onready var label_race_desc: Label = get_node_or_null("PanelStats/VBox/LabelRaceDesc")
+var input_name: LineEdit = null
+var label_race_name: Label = null
+var label_race_desc: Label = null
 
-@onready var btn_warrior: Button = get_node_or_null("Panel/VBox/HBoxClass/BtnWarrior")
-@onready var btn_mage: Button = get_node_or_null("Panel/VBox/HBoxClass/BtnMage")
+var btn_warrior: Button = null
+var btn_mage: Button = null
 
-@onready var bar_str: ProgressBar = get_node_or_null("PanelStats/VBox/StatsGrid/BarSTR")
-@onready var bar_dex: ProgressBar = get_node_or_null("PanelStats/VBox/StatsGrid/BarDEX")
-@onready var bar_con: ProgressBar = get_node_or_null("PanelStats/VBox/StatsGrid/BarCON")
-@onready var bar_int: ProgressBar = get_node_or_null("PanelStats/VBox/StatsGrid/BarINT")
-@onready var bar_wit: ProgressBar = get_node_or_null("PanelStats/VBox/StatsGrid/BarWIT")
-@onready var bar_men: ProgressBar = get_node_or_null("PanelStats/VBox/StatsGrid/BarMEN")
+var bar_str: ProgressBar = null
+var bar_dex: ProgressBar = null
+var bar_con: ProgressBar = null
+var bar_int: ProgressBar = null
+var bar_wit: ProgressBar = null
+var bar_men: ProgressBar = null
 
-@onready var label_str: Label = get_node_or_null("PanelStats/VBox/StatsGrid/LabelSTR")
-@onready var label_dex: Label = get_node_or_null("PanelStats/VBox/StatsGrid/LabelDEX")
-@onready var label_con: Label = get_node_or_null("PanelStats/VBox/StatsGrid/LabelCON")
-@onready var label_int: Label = get_node_or_null("PanelStats/VBox/StatsGrid/LabelINT")
-@onready var label_wit: Label = get_node_or_null("PanelStats/VBox/StatsGrid/LabelWIT")
-@onready var label_men: Label = get_node_or_null("PanelStats/VBox/StatsGrid/LabelMEN")
+var label_str: Label = null
+var label_dex: Label = null
+var label_con: Label = null
+var label_int: Label = null
+var label_wit: Label = null
+var label_men: Label = null
 
-@onready var label_derived: Label = get_node_or_null("PanelStats/VBox/LabelDerivedStats")
-@onready var preview_model: Node3D = get_node_or_null("SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh")
-@onready var btn_enter_world: Button = get_node_or_null("Panel/VBox/BtnEnterWorld")
+var label_derived: Label = null
+var preview_model: Node3D = null
+var btn_enter_world: Button = null
 
 var selected_race: String = "human"
 var selected_archetype: String = "warrior"
@@ -39,8 +39,26 @@ func _get_game_data() -> Node:
 func _ready() -> void:
 	print("[CharacterSelect] Inicializando tela de criação de personagem e classes...")
 	
-	if not preview_model:
-		preview_model = get_node_or_null("SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh")
+	input_name = find_child("InputName", true, false)
+	label_race_name = find_child("LabelRaceTitle", true, false)
+	label_race_desc = find_child("LabelRaceDesc", true, false)
+	btn_warrior = find_child("BtnWarrior", true, false)
+	btn_mage = find_child("BtnMage", true, false)
+	bar_str = find_child("BarSTR", true, false)
+	bar_dex = find_child("BarDEX", true, false)
+	bar_con = find_child("BarCON", true, false)
+	bar_int = find_child("BarINT", true, false)
+	bar_wit = find_child("BarWIT", true, false)
+	bar_men = find_child("BarMEN", true, false)
+	label_str = find_child("LabelSTR", true, false)
+	label_dex = find_child("LabelDEX", true, false)
+	label_con = find_child("LabelCON", true, false)
+	label_int = find_child("LabelINT", true, false)
+	label_wit = find_child("LabelWIT", true, false)
+	label_men = find_child("LabelMEN", true, false)
+	label_derived = find_child("LabelDerivedStats", true, false)
+	preview_model = find_child("VisualMesh", true, false)
+	btn_enter_world = find_child("BtnEnterWorld", true, false)
 	
 	# 1. Conecta o botão de Despertar prioritariamente
 	if btn_enter_world and not btn_enter_world.pressed.is_connected(_on_enter_world_pressed):
@@ -48,11 +66,11 @@ func _ready() -> void:
 		print("[CharacterSelect] Botão Despertar conectado com sucesso.")
 		
 	# 2. Conecta os botões de raça
-	_connect_race_button("Panel/VBox/BtnHuman", "human")
-	_connect_race_button("Panel/VBox/BtnLightElf", "light_elf")
-	_connect_race_button("Panel/VBox/BtnDarkElf", "dark_elf")
-	_connect_race_button("Panel/VBox/BtnOrc", "orc")
-	_connect_race_button("Panel/VBox/BtnDwarf", "dwarf")
+	_connect_race_button("BtnHuman", "human")
+	_connect_race_button("BtnLightElf", "light_elf")
+	_connect_race_button("BtnDarkElf", "dark_elf")
+	_connect_race_button("BtnOrc", "orc")
+	_connect_race_button("BtnDwarf", "dwarf")
 
 	# 3. Conecta os botões de classe / arquétipo
 	if btn_warrior and not btn_warrior.pressed.is_connected(select_archetype):
@@ -64,8 +82,8 @@ func _ready() -> void:
 	select_race("human")
 	select_archetype("warrior")
 
-func _connect_race_button(button_path: String, race_key: String) -> void:
-	var btn = get_node_or_null(button_path)
+func _connect_race_button(button_name: String, race_key: String) -> void:
+	var btn = find_child(button_name, true, false)
 	if btn and not btn.pressed.is_connected(select_race):
 		btn.pressed.connect(func(): select_race(race_key))
 
@@ -168,11 +186,13 @@ func _set_stat(bar: ProgressBar, lbl: Label, stat_name: String, val: int) -> voi
 
 func _update_preview_silhouette(race_key: String) -> void:
 	if not preview_model:
-		preview_model = get_node_or_null("SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh")
+		preview_model = find_child("VisualMesh", true, false)
 	if not preview_model:
 		return
 		
 	var rig = preview_model.get_node_or_null("HumanoidCharacterRig")
+	if not rig:
+		rig = preview_model.find_child("HumanoidCharacterRig", true, false)
 	if rig and rig.has_method("set_character_model"):
 		var is_mystic = (selected_archetype == "mystic" or selected_archetype == "mage")
 		if is_mystic:
@@ -196,15 +216,15 @@ func _update_preview_silhouette(race_key: String) -> void:
 		
 	match race_key:
 		"orc":
-			preview_model.scale = Vector3(1.22, 1.42, 1.22)
+			preview_model.scale = Vector3(1.15, 1.15, 1.15)
 		"light_elf":
-			preview_model.scale = Vector3(0.80, 1.38, 0.80)
+			preview_model.scale = Vector3(0.92, 1.05, 0.92)
 		"dark_elf":
-			preview_model.scale = Vector3(0.82, 1.35, 0.82)
+			preview_model.scale = Vector3(0.92, 1.02, 0.92)
 		"dwarf":
-			preview_model.scale = Vector3(1.15, 0.98, 1.15)
+			preview_model.scale = Vector3(1.12, 0.85, 1.12)
 		_: # Humano
-			preview_model.scale = Vector3(0.86, 1.32, 0.86)
+			preview_model.scale = Vector3(1.0, 1.0, 1.0)
 
 func _on_enter_world_pressed() -> void:
 	var final_name = input_name.text.strip_edges() if input_name and input_name.text.strip_edges() != "" else "Valente"

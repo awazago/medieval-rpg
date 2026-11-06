@@ -52,12 +52,16 @@ func _get_player_adena() -> int:
 			return slot["count"]
 	return 1500 # Saldo inicial concedido para testes de comércio
 
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
 func _build_catalog() -> void:
 	for child in items_container.get_children():
 		child.queue_free()
 		
+	var gd = _get_game_data()
 	for item_id in SHOP_CATALOG:
-		var item_data = GameData.get_item(item_id) if GameData else {}
+		var item_data = gd.get_item(item_id) if gd else {}
 		if item_data.is_empty():
 			continue
 			
@@ -84,7 +88,8 @@ func _on_buy_clicked(item_id: String, price: int) -> void:
 	var success = player_character.inventory.add_item(item_id, 1)
 	if success:
 		var hud = get_tree().get_first_node_in_group("hud")
-		var item_data = GameData.get_item(item_id) if GameData else {}
+		var gd = _get_game_data()
+		var item_data = gd.get_item(item_id) if gd else {}
 		var item_name = item_data.get("name", item_id)
 		if hud and hud.has_method("add_system_message"):
 			hud.add_system_message("🪙 Você comprou [color=gold]" + item_name + "[/color] por " + str(price) + " Adena!")

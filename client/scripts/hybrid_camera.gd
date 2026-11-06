@@ -26,6 +26,8 @@ var is_cursor_captured: bool = true
 
 func _ready() -> void:
 	spring_length = current_target_distance
+	if get_parent() is CollisionObject3D:
+		add_excluded_object(get_parent().get_rid())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_update_perspective_mode(false)
 

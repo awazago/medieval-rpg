@@ -55,8 +55,9 @@ func _on_board_ship(_player: CharacterBody3D) -> void:
 		hud.get_node("DialogWindow").hide()
 		
 	# Toca som de partida ou transição
-	if AudioManager:
-		AudioManager.play_sfx("coins_pickup") # placeholder de transição
+	var am = get_node_or_null("/root/AudioManager")
+	if am:
+		am.play_sfx("coins_pickup") # placeholder de transição
 		
 	# Inicia cena de viagem marítima
 	get_tree().change_scene_to_file("res://client/scenes/environment/ocean_voyage.tscn")

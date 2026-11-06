@@ -1,279 +1,325 @@
-[gd_scene load_steps=4 format=3 uid="uid://c6v2n8pm7x5cs"]
+[gd_scene load_steps=8 format=3 uid="uid://c6v2n8pm7x5cs"]
 
 [ext_resource type="Script" path="res://client/scripts/character_select.gd" id="1_select"]
 [ext_resource type="PackedScene" uid="uid://h1m2c3r4rig" path="res://client/scenes/character/humanoid_character.tscn" id="2_humanoid_rig"]
+[ext_resource type="PackedScene" path="res://client/assets/models/environment/architecture/pillar_decorated.gltf.glb" id="3_pillar"]
 
 [sub_resource type="Environment" id="Environment_preview"]
+background_mode = 1
+background_color = Color(0.04, 0.05, 0.08, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.35, 0.38, 0.45, 1)
+ambient_light_color = Color(0.35, 0.4, 0.5, 1)
+ambient_light_energy = 0.45
 tonemap_mode = 3
 glow_enabled = true
-glow_intensity = 0.4
+glow_intensity = 0.6
+glow_bloom = 0.2
+fog_enabled = true
+fog_light_color = Color(0.06, 0.08, 0.14, 1)
+fog_density = 0.012
 
-[node name="CharacterSelect" type="Control"]
+[sub_resource type="StandardMaterial3D" id="Mat_StonePlinth"]
+albedo_color = Color(0.12, 0.13, 0.16, 1)
+metallic = 0.1
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="Mat_RunicGlow"]
+albedo_color = Color(0.15, 0.65, 0.95, 1)
+emission_enabled = true
+emission = Color(0.2, 0.7, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_GoldAccent"]
+albedo_color = Color(0.85, 0.7, 0.2, 1)
+metallic = 0.85
+roughness = 0.35
+
+[node name="CharacterSelect" type="Node3D"]
+script = ExtResource("1_select")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_preview")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 6, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.3
+shadow_enabled = true
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, 0.433, -0.75, 0, 4, -4)
+light_color = Color(0.45, 0.7, 1, 1)
+light_energy = 1.5
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.45, 4.4)
+current = true
+fov = 38.0
+
+[node name="TempleDais" type="Node3D" parent="."]
+
+[node name="LowerStep" type="CSGCylinder3D" parent="TempleDais"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+radius = 2.8
+height = 0.2
+material = SubResource("Mat_StonePlinth")
+
+[node name="UpperStep" type="CSGCylinder3D" parent="TempleDais"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+radius = 2.3
+height = 0.15
+material = SubResource("Mat_StonePlinth")
+
+[node name="RunicRing" type="CSGTorus3D" parent="TempleDais"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+inner_radius = 1.95
+outer_radius = 2.05
+material = SubResource("Mat_RunicGlow")
+
+[node name="RunicInnerRing" type="CSGTorus3D" parent="TempleDais"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+inner_radius = 0.95
+outer_radius = 1.02
+material = SubResource("Mat_GoldAccent")
+
+[node name="LeftPillar" parent="TempleDais" instance=ExtResource("3_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -1.2)
+
+[node name="LeftTorch" type="OmniLight3D" parent="TempleDais/LeftPillar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0.4)
+light_color = Color(1, 0.65, 0.25, 1)
+light_energy = 2.2
+omni_range = 8.0
+
+[node name="RightPillar" parent="TempleDais" instance=ExtResource("3_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0, -1.2)
+
+[node name="RightTorch" type="OmniLight3D" parent="TempleDais/RightPillar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0.4)
+light_color = Color(1, 0.65, 0.25, 1)
+light_energy = 2.2
+omni_range = 8.0
+
+[node name="AltarGlow" type="OmniLight3D" parent="TempleDais"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+light_color = Color(0.2, 0.6, 1, 1)
+light_energy = 0.5
+omni_range = 4.0
+
+[node name="PreviewCharacter" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 0)
+
+[node name="VisualMesh" type="Node3D" parent="PreviewCharacter"]
+
+[node name="HumanoidCharacterRig" parent="PreviewCharacter/VisualMesh" instance=ExtResource("2_humanoid_rig")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UI"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_select")
+mouse_filter = 2
 
-[node name="BackgroundDark" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.08, 0.09, 0.11, 1)
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -250.0
-offset_right = 200.0
-offset_bottom = 250.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-own_world_3d = true
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(400, 500)
-render_target_update_mode = 4
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
-environment = SubResource("Environment_preview")
-
-[node name="PreviewCamera" type="Camera3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.2, 3.2)
-current = true
-
-[node name="PreviewLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 5, 0)
-light_color = Color(1, 0.95, 0.88, 1)
-light_energy = 1.6
-
-[node name="PreviewRimLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(-0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, 0.433, -0.75, 0, 3, -3)
-light_color = Color(0.65, 0.82, 1, 1)
-light_energy = 2.2
-
-[node name="PreviewCharacter" type="Node3D" parent="SubViewportContainer/SubViewport"]
-
-[node name="VisualMesh" type="Node3D" parent="SubViewportContainer/SubViewport/PreviewCharacter"]
-
-[node name="HumanoidCharacterRig" parent="SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh" instance=ExtResource("2_humanoid_rig")]
-
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="UI/Control"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 30.0
-offset_top = -270.0
-offset_right = 300.0
-offset_bottom = 270.0
+offset_top = -280.0
+offset_right = 310.0
+offset_bottom = 280.0
 grow_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="VBox" type="VBoxContainer" parent="UI/Control/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="LabelTitle" type="Label" parent="Panel/VBox"]
+[node name="LabelTitle" type="Label" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "1. ESCOLHA SUA RAÇA"
 horizontal_alignment = 1
 
-[node name="BtnHuman" type="Button" parent="Panel/VBox"]
+[node name="BtnHuman" type="Button" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 text = "⚔ Humano"
 
-[node name="BtnLightElf" type="Button" parent="Panel/VBox"]
+[node name="BtnLightElf" type="Button" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 text = "🏹 Elfo da Luz"
 
-[node name="BtnDarkElf" type="Button" parent="Panel/VBox"]
+[node name="BtnDarkElf" type="Button" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 text = "🗡 Elfo Negro"
 
-[node name="BtnOrc" type="Button" parent="Panel/VBox"]
+[node name="BtnOrc" type="Button" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 text = "🪓 Orc"
 
-[node name="BtnDwarf" type="Button" parent="Panel/VBox"]
+[node name="BtnDwarf" type="Button" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 text = "🔨 Anão"
 
-[node name="HSeparatorClass" type="HSeparator" parent="Panel/VBox"]
+[node name="HSeparatorClass" type="HSeparator" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 
-[node name="LabelClassTitle" type="Label" parent="Panel/VBox"]
+[node name="LabelClassTitle" type="Label" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "2. ESCOLHA SUA CLASSE"
 horizontal_alignment = 1
 
-[node name="HBoxClass" type="HBoxContainer" parent="Panel/VBox"]
+[node name="HBoxClass" type="HBoxContainer" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="BtnWarrior" type="Button" parent="Panel/VBox/HBoxClass"]
+[node name="BtnWarrior" type="Button" parent="UI/Control/Panel/VBox/HBoxClass"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "⚔ Guerreiro"
 
-[node name="BtnMage" type="Button" parent="Panel/VBox/HBoxClass"]
+[node name="BtnMage" type="Button" parent="UI/Control/Panel/VBox/HBoxClass"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "🔮 Místico"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/VBox"]
+[node name="HSeparator" type="HSeparator" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 
-[node name="LabelName" type="Label" parent="Panel/VBox"]
+[node name="LabelName" type="Label" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 text = "3. NOME DO HERÓI:"
 
-[node name="InputName" type="LineEdit" parent="Panel/VBox"]
+[node name="InputName" type="LineEdit" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
 placeholder_text = "Seu nome..."
 
-[node name="BtnEnterWorld" type="Button" parent="Panel/VBox"]
+[node name="BtnEnterWorld" type="Button" parent="UI/Control/Panel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
 text = "⚡ Despertar em Aethelgard"
 
-[node name="PanelStats" type="PanelContainer" parent="."]
+[node name="PanelStats" type="PanelContainer" parent="UI/Control"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -330.0
-offset_top = -240.0
+offset_left = -340.0
+offset_top = -280.0
 offset_right = -30.0
-offset_bottom = 240.0
+offset_bottom = 280.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="PanelStats"]
+[node name="VBox" type="VBoxContainer" parent="UI/Control/PanelStats"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
-[node name="LabelRaceTitle" type="Label" parent="PanelStats/VBox"]
+[node name="LabelRaceTitle" type="Label" parent="UI/Control/PanelStats/VBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
 theme_override_font_sizes/font_size = 18
-text = "Humano"
+text = "Guerreiro Humano"
 horizontal_alignment = 1
 
-[node name="LabelRaceDesc" type="Label" parent="PanelStats/VBox"]
-custom_minimum_size = Vector2(0, 70)
+[node name="LabelRaceDesc" type="Label" parent="UI/Control/PanelStats/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Especialista em combate corpo-a-corpo, armaduras pesadas e corte marcial."
+autowrap_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="UI/Control/PanelStats/VBox"]
+layout_mode = 2
+
+[node name="StatsGrid" type="VBoxContainer" parent="UI/Control/PanelStats/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LabelSTR" type="Label" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "STR: 35"
+
+[node name="BarSTR" type="ProgressBar" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 50.0
+value = 35.0
+show_percentage = false
+
+[node name="LabelDEX" type="Label" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "DEX: 32"
+
+[node name="BarDEX" type="ProgressBar" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 50.0
+value = 32.0
+show_percentage = false
+
+[node name="LabelCON" type="Label" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "CON: 34"
+
+[node name="BarCON" type="ProgressBar" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 50.0
+value = 34.0
+show_percentage = false
+
+[node name="LabelINT" type="Label" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "INT: 15"
+
+[node name="BarINT" type="ProgressBar" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 50.0
+value = 15.0
+show_percentage = false
+
+[node name="LabelWIT" type="Label" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "WIT: 10"
+
+[node name="BarWIT" type="ProgressBar" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 50.0
+value = 10.0
+show_percentage = false
+
+[node name="LabelMEN" type="Label" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "MEN: 23"
+
+[node name="BarMEN" type="ProgressBar" parent="UI/Control/PanelStats/VBox/StatsGrid"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 50.0
+value = 23.0
+show_percentage = false
+
+[node name="HSeparator2" type="HSeparator" parent="UI/Control/PanelStats/VBox"]
+layout_mode = 2
+
+[node name="LabelDerivedStats" type="Label" parent="UI/Control/PanelStats/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 12
-text = "Descrição da raça e especializações de combate..."
-autowrap_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="PanelStats/VBox"]
-layout_mode = 2
-
-[node name="StatsGrid" type="VBoxContainer" parent="PanelStats/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 4
-
-[node name="LabelSTR" type="Label" parent="PanelStats/VBox/StatsGrid"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "STR: 40"
-
-[node name="BarSTR" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
-modulate = Color(1, 0.3, 0.3, 1)
-layout_mode = 2
-max_value = 50.0
-value = 40.0
-show_percentage = false
-
-[node name="LabelDEX" type="Label" parent="PanelStats/VBox/StatsGrid"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "DEX: 30"
-
-[node name="BarDEX" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
-modulate = Color(0.3, 1, 0.4, 1)
-layout_mode = 2
-max_value = 50.0
-value = 30.0
-show_percentage = false
-
-[node name="LabelCON" type="Label" parent="PanelStats/VBox/StatsGrid"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "CON: 43"
-
-[node name="BarCON" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
-modulate = Color(1, 0.6, 0.1, 1)
-layout_mode = 2
-max_value = 50.0
-value = 43.0
-show_percentage = false
-
-[node name="LabelINT" type="Label" parent="PanelStats/VBox/StatsGrid"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "INT: 21"
-
-[node name="BarINT" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
-modulate = Color(0.3, 0.6, 1, 1)
-layout_mode = 2
-max_value = 50.0
-value = 21.0
-show_percentage = false
-
-[node name="LabelWIT" type="Label" parent="PanelStats/VBox/StatsGrid"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "WIT: 11"
-
-[node name="BarWIT" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
-modulate = Color(0.7, 0.4, 1, 1)
-layout_mode = 2
-max_value = 50.0
-value = 11.0
-show_percentage = false
-
-[node name="LabelMEN" type="Label" parent="PanelStats/VBox/StatsGrid"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "MEN: 25"
-
-[node name="BarMEN" type="ProgressBar" parent="PanelStats/VBox/StatsGrid"]
-modulate = Color(0.3, 0.9, 0.9, 1)
-layout_mode = 2
-max_value = 50.0
-value = 25.0
-show_percentage = false
-
-[node name="LabelDerivedStats" type="Label" parent="PanelStats/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "HP Base: 120 | MP Base: 80 | Velocidade: 125"
+text = "HP: 150  |  MP: 64  |  Velocidade: 125"
 horizontal_alignment = 1
-
-[connection signal="pressed" from="Panel/VBox/BtnHuman" to="." method="select_race" binds= ["human"]]
-[connection signal="pressed" from="Panel/VBox/BtnLightElf" to="." method="select_race" binds= ["light_elf"]]
-[connection signal="pressed" from="Panel/VBox/BtnDarkElf" to="." method="select_race" binds= ["dark_elf"]]
-[connection signal="pressed" from="Panel/VBox/BtnOrc" to="." method="select_race" binds= ["orc"]]
-[connection signal="pressed" from="Panel/VBox/BtnDwarf" to="." method="select_race" binds= ["dwarf"]]
-[connection signal="pressed" from="Panel/VBox/HBoxClass/BtnWarrior" to="." method="select_archetype" binds= ["warrior"]]
-[connection signal="pressed" from="Panel/VBox/HBoxClass/BtnMage" to="." method="select_archetype" binds= ["mystic"]]
-[connection signal="pressed" from="Panel/VBox/BtnEnterWorld" to="." method="_on_enter_world_pressed"]
-

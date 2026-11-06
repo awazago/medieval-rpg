@@ -26,13 +26,17 @@ func _ready() -> void:
 	if label_prompt:
 		label_prompt.visible = false
 
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
 func init_drop(id: String, amount: int, custom_name: String = "") -> void:
 	item_id = id
 	count = amount
 	if custom_name != "":
 		item_name = custom_name
 	else:
-		var item_data = GameData.get_item(id) if GameData else {}
+		var gd = _get_game_data()
+		var item_data = gd.get_item(id) if gd else {}
 		item_name = item_data.get("name", id)
 
 func _update_label() -> void:
@@ -68,8 +72,9 @@ func _collect(player: PlayerCharacter) -> void:
 	if player and player.inventory:
 		var added = player.inventory.add_item(item_id, count)
 		if added:
-			if AudioManager:
-				AudioManager.play_sfx("coins_pickup")
+			var am = get_node_or_null("/root/AudioManager")
+			if am:
+				am.play_sfx("coins_pickup")
 			var msg = "Você pegou: " + item_name
 			if count > 1:
 				msg += " (" + str(count) + ")"

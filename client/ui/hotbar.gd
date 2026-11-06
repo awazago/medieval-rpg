@@ -109,7 +109,8 @@ func start_casting_skill(skill_id: String) -> void:
 	if is_casting:
 		return
 		
-	var skill_data = GameData.get_skill(skill_id) if GameData else {}
+	var gd = get_node_or_null("/root/GameData")
+	var skill_data = gd.get_skill(skill_id) if gd else {}
 	if skill_data.is_empty():
 		return
 		

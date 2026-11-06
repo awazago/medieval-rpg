@@ -45,9 +45,6 @@ transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, 0, 0, 0)
 [node name="BodyMesh" type="Node3D" parent="VisualMesh"]
 visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
-radius = 0.45
-height = 1.9
-material = SubResource("Mat_DarkObsidian")
 
 [node name="GreatShoulderPads" type="CSGBox3D" parent="VisualMesh"]
 visible = false

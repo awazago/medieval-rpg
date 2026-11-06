@@ -49,8 +49,12 @@ func _setup_starter_items() -> void:
 	if slots[1] != null:
 		_toggle_equip_armor(1)
 
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
 func add_item(item_id: String, count: int = 1) -> bool:
-	var item_info = GameData.get_item(item_id) if GameData else {}
+	var gd = _get_game_data()
+	var item_info = gd.get_item(item_id) if gd else {}
 	if item_info.is_empty():
 		push_warning("[Inventário] Item desconhecido: " + item_id)
 		return false
