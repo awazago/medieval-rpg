@@ -31,15 +31,35 @@ var selected_race: String = "human"
 var selected_archetype: String = "warrior"
 
 func _ready() -> void:
-	# Seleção inicial padrão
-	select_race("human")
-	if btn_enter_world:
+	print("[CharacterSelect] Inicializando tela de criação de personagem...")
+	
+	# 1. Conecta o botão de Despertar imediatamente
+	if btn_enter_world and not btn_enter_world.pressed.is_connected(_on_enter_world_pressed):
 		btn_enter_world.pressed.connect(_on_enter_world_pressed)
+		print("[CharacterSelect] Botão Despertar conectado com sucesso.")
+		
+	# 2. Conecta explicitamente os botões de raça
+	_connect_race_button("Panel/VBox/BtnHuman", "human")
+	_connect_race_button("Panel/VBox/BtnLightElf", "light_elf")
+	_connect_race_button("Panel/VBox/BtnDarkElf", "dark_elf")
+	_connect_race_button("Panel/VBox/BtnOrc", "orc")
+	_connect_race_button("Panel/VBox/BtnDwarf", "dwarf")
+
+	# 3. Seleção inicial da raça padrão
+	select_race("human")
+
+func _connect_race_button(button_path: String, race_key: String) -> void:
+	var btn = get_node_or_null(button_path)
+	if btn and not btn.pressed.is_connected(select_race):
+		btn.pressed.connect(func(): select_race(race_key))
 
 func select_race(race_key: String) -> void:
 	selected_race = race_key
+	print("[CharacterSelect] Raça selecionada: ", race_key)
+	
 	var race_data = GameData.get_race(race_key) if GameData else {}
 	if race_data.is_empty():
+		push_warning("[CharacterSelect] Dados da raça não encontrados: " + race_key)
 		return
 		
 	var stats = race_data.get("base_stats", {})
@@ -76,6 +96,7 @@ func _set_stat(bar: ProgressBar, lbl: Label, stat_name: String, val: int) -> voi
 
 func _update_preview_silhouette(race_key: String) -> void:
 	if not preview_model:
+		push_warning("[CharacterSelect] preview_model é nulo no viewport!")
 		return
 		
 	var rig = preview_model.get_node_or_null("HumanoidCharacterRig")
@@ -108,11 +129,13 @@ func _update_preview_silhouette(race_key: String) -> void:
 
 func _on_enter_world_pressed() -> void:
 	var final_name = input_name.text.strip_edges() if input_name and input_name.text.strip_edges() != "" else "Valente"
-	print("[Criação] Personagem criado: ", final_name, " | Raça: ", selected_race)
+	print("[CharacterSelect] Botão Despertar clicado! Herói: ", final_name, " | Raça: ", selected_race)
 	
 	if GameData:
 		GameData.selected_character_name = final_name
 		GameData.selected_race_id = selected_race
 		
-	# Transição limpa e oficial do Godot 4 evitando conflito de cenas no root
-	get_tree().change_scene_to_file("res://client/scenes/main_game.tscn")
+	# Transição limpa e oficial do Godot 4
+	var err = get_tree().change_scene_to_file("res://client/scenes/main_game.tscn")
+	if err != OK:
+		push_error("[CharacterSelect] Erro na transição de cena: " + str(err))

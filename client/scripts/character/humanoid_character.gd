@@ -36,6 +36,10 @@ var current_action_lock: String = ""
 var is_sitting_mode: bool = false
 var current_model_type: String = "knight"
 
+var head_bone_idx: int = -1
+var skel_node: Skeleton3D = null
+var head_scale_factor: Vector3 = Vector3(0.68, 0.68, 0.68)
+
 func _ready() -> void:
 	torso_mesh = get_node_or_null("RootNode/Torso/ChestMesh")
 	shoulder_pads = get_node_or_null("RootNode/Torso/ShoulderPads")
@@ -44,7 +48,7 @@ func _ready() -> void:
 	if anim_player:
 		anim_player.animation_finished.connect(_on_animation_finished)
 		
-	# Inicializa modelo 3D
+	# Inicializa modelo 3D se já existir na árvore
 	_setup_model_reference()
 	
 	# Oculta blocos CSG caso haja modelo 3D ativo
@@ -53,6 +57,11 @@ func _ready() -> void:
 		csg_root.visible = false
 		
 	play_anim("idle")
+
+func _process(_delta: float) -> void:
+	# Mantém a proporção da cabeça elegante e realista (8 cabeças) em cada frame de animação
+	if head_bone_idx != -1 and is_instance_valid(skel_node):
+		skel_node.set_bone_pose_scale(head_bone_idx, head_scale_factor)
 
 func _setup_model_reference() -> void:
 	if has_node("Model3D"):
@@ -68,6 +77,7 @@ func _setup_model_reference() -> void:
 func set_character_model(model_key: String) -> void:
 	current_model_type = model_key
 	if not MODEL_PRESETS.has(model_key):
+		print("[HumanoidRig] Preset não encontrado: ", model_key)
 		return
 		
 	if model_3d:
@@ -75,6 +85,8 @@ func set_character_model(model_key: String) -> void:
 			remove_child(model_3d)
 		model_3d.queue_free()
 		model_3d = null
+		head_bone_idx = -1
+		skel_node = null
 		
 	var scene = MODEL_PRESETS[model_key]
 	model_3d = scene.instantiate()
@@ -94,8 +106,9 @@ func set_character_model(model_key: String) -> void:
 		csg_root.visible = false
 		
 	play_anim("idle")
+	print("[HumanoidRig] Modelo 3D carregado com sucesso: ", model_key)
 
-## Remove armas/escudos embutidos duplicados e ativa capa medieval com física visual
+## Remove armas/escudos embutidos duplicados e ativa capa medieval
 func _clean_and_setup_model_accessories() -> void:
 	if not model_3d:
 		return
@@ -110,13 +123,13 @@ func _clean_and_setup_model_accessories() -> void:
 	
 	for w_name in built_in_weapons:
 		var node = model_3d.find_child(w_name, true, false)
-		if node:
+		if node and "visible" in node:
 			node.visible = false
 			
-	# Mantém capa ativada e imponente
+	# Mantém capa nobre ativada
 	for cape_name in ["Knight_Cape", "Mage_Cape", "Rogue_Cape", "Barbarian_Cape"]:
 		var cape = model_3d.find_child(cape_name, true, false)
-		if cape:
+		if cape and "visible" in cape:
 			cape.visible = true
 
 ## Elimina a proporção chibi/cartoon e aplica anatomia heroica canônica Lineage II (8 cabeças)
@@ -124,45 +137,22 @@ func _apply_lineage2_heroic_proportions() -> void:
 	if not model_3d:
 		return
 		
-	var head_scale_factor = Vector3(0.68, 0.68, 0.68)
-	
 	# 1. Ajusta o capacete / elmo
 	for helm_name in ["Knight_Helmet", "Mage_Hat", "Barbarian_Hat"]:
 		var helm = model_3d.find_child(helm_name, true, false)
-		if helm:
+		if helm and "scale" in helm:
 			helm.scale = head_scale_factor
 			
-	# 2. Ajusta o osso da cabeça no Skeleton3D
-	var skel: Skeleton3D = model_3d.find_child("Skeleton3D", true, false)
-	if not skel:
-		skel = model_3d.find_child("GeneralSkeleton", true, false)
-	if skel:
-		var head_idx = skel.find_bone("head")
-		if head_idx != -1:
-			skel.set_bone_pose_scale(head_idx, head_scale_factor)
-			
-	# 3. Reescala os keyframes de escala da cabeça em todas as animações para não estufar a cabeça ao tocar animação
-	var aplayer: AnimationPlayer = model_3d.find_child("AnimationPlayer", true, false)
-	if aplayer:
-		for lib_name in aplayer.get_animation_library_list():
-			var lib = aplayer.get_animation_library(lib_name)
-			if not lib:
-				continue
-			for anim_name in lib.get_animation_list():
-				var anim = lib.get_animation(anim_name)
-				if not anim:
-					continue
-				for track_idx in range(anim.get_track_count()):
-					var path_str = str(anim.track_get_path(track_idx)).to_lower()
-					if path_str.ends_with(":head") or path_str.ends_with("/head"):
-						if anim.track_get_type(track_idx) == Animation.TYPE_SCALE_3D:
-							for k in range(anim.track_get_key_count(track_idx)):
-								var original_scale: Vector3 = anim.track_get_key_value(track_idx, k)
-								# Garante proporção reduzida sem sobrescrever múltiplas vezes
-								if original_scale.x > 0.8:
-									anim.track_set_key_value(track_idx, k, original_scale * head_scale_factor)
+	# 2. Localiza o osso da cabeça no Skeleton3D para aplicar a pose de cabeça reduzida
+	skel_node = model_3d.find_child("Skeleton3D", true, false)
+	if not skel_node:
+		skel_node = model_3d.find_child("GeneralSkeleton", true, false)
+	if skel_node and skel_node is Skeleton3D:
+		head_bone_idx = skel_node.find_bone("head")
+		if head_bone_idx != -1:
+			skel_node.set_bone_pose_scale(head_bone_idx, head_scale_factor)
 
-## Aplica materiais PBR realistas de metal forjado, ouro nobre e veludo medieval
+## Aplica materiais PBR realistas de metal forjado, ouro nobre e veludo medieval com segurança de nós
 func _apply_lineage2_pbr_materials() -> void:
 	if not model_3d:
 		return
@@ -183,23 +173,32 @@ func _apply_lineage2_pbr_materials() -> void:
 	cape_mat.rim_enabled = true
 	cape_mat.rim = 0.75
 	cape_mat.rim_tint = 0.4
-	cape_mat.cull_mode = BaseMaterial3D.CULL_DISABLED # Renderiza ambos os lados da capa
+	cape_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	
 	for cape_name in ["Knight_Cape", "Mage_Cape", "Rogue_Cape", "Barbarian_Cape"]:
-		var cape_mesh: MeshInstance3D = model_3d.find_child(cape_name, true, false)
-		if cape_mesh:
-			cape_mesh.material_override = cape_mat
+		var cape_node = model_3d.find_child(cape_name, true, false)
+		if cape_node:
+			_apply_material_to_node_or_children(cape_node, cape_mat)
 			
 	# 2. Material do Elmo de Aço Polido
-	var helm_mesh: MeshInstance3D = model_3d.find_child("Knight_Helmet", true, false)
-	if helm_mesh:
+	var helm_node = model_3d.find_child("Knight_Helmet", true, false)
+	if helm_node:
 		var helm_mat = StandardMaterial3D.new()
 		helm_mat.albedo_color = Color(0.85, 0.88, 0.92, 1)
 		helm_mat.metallic = 0.95
 		helm_mat.roughness = 0.22
 		helm_mat.clearcoat_enabled = true
 		helm_mat.clearcoat = 0.3
-		helm_mesh.material_override = helm_mat
+		_apply_material_to_node_or_children(helm_node, helm_mat)
+
+func _apply_material_to_node_or_children(target: Node, mat: Material) -> void:
+	if not target or not mat:
+		return
+	if target is MeshInstance3D:
+		target.material_override = mat
+	for child in target.get_children():
+		if child is MeshInstance3D:
+			child.material_override = mat
 
 func play_anim(anim_name: String, custom_speed: float = 1.0) -> void:
 	# Não interrompe postura sentada a menos que explicitamente levantado
@@ -265,7 +264,7 @@ func _on_model_anim_finished(anim_name: String) -> void:
 func get_right_hand_socket() -> Node3D:
 	if model_3d:
 		var s = model_3d.find_child("handslot.r", true, false)
-		if s:
+		if s and s is Node3D:
 			return s
 	return right_hand_socket
 

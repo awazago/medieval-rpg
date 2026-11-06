@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c6v2n8pm7x5cs"]
+[gd_scene load_steps=5 format=3 uid="uid://c6v2n8pm7x5cs"]
 
 [ext_resource type="Script" path="res://client/scripts/character_select.gd" id="1_select"]
 [ext_resource type="PackedScene" uid="uid://h1m2c3r4rig" path="res://client/scenes/character/humanoid_character.tscn" id="2_humanoid_rig"]
@@ -14,9 +14,6 @@ ambient_light_color = Color(0.35, 0.38, 0.45, 1)
 tonemap_mode = 3
 glow_enabled = true
 glow_intensity = 0.4
-
-[sub_resource type="World3D" id="World3D_preview"]
-environment = SubResource("Environment_preview")
 
 [node name="CharacterSelect" type="Control"]
 layout_mode = 3
@@ -52,14 +49,17 @@ grow_vertical = 2
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 own_world_3d = true
-world_3d = SubResource("World3D_preview")
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(400, 500)
 render_target_update_mode = 4
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_preview")
+
 [node name="PreviewCamera" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.2, 3.2)
+current = true
 
 [node name="PreviewLight" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 5, 0)
@@ -268,3 +268,5 @@ horizontal_alignment = 1
 [connection signal="pressed" from="Panel/VBox/BtnDarkElf" to="." method="select_race" binds= ["dark_elf"]]
 [connection signal="pressed" from="Panel/VBox/BtnOrc" to="." method="select_race" binds= ["orc"]]
 [connection signal="pressed" from="Panel/VBox/BtnDwarf" to="." method="select_race" binds= ["dwarf"]]
+[connection signal="pressed" from="Panel/VBox/BtnEnterWorld" to="." method="_on_enter_world_pressed"]
+
