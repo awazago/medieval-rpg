@@ -57,18 +57,23 @@ func _apply_lineage2_theme() -> void:
 		if p is PanelContainer:
 			_style_panel(p)
 
-func _style_bar(bar: ProgressBar, fill_color: Color, bg_color: Color, border_color: Color = Color(0.3, 0.32, 0.36)) -> void:
+func _style_bar(bar: ProgressBar, fill_color: Color, bg_color: Color, border_color: Color = Color(0.48, 0.40, 0.25, 1.0)) -> void:
 	if not bar:
 		return
+	bar.modulate = Color.WHITE
 	var bg = StyleBoxFlat.new()
-	bg.bg_color = bg_color
+	bg.bg_color = Color(0.08, 0.09, 0.11, 0.92)
 	bg.border_color = border_color
-	bg.set_border_width_all(1)
-	bg.set_corner_radius_all(2)
+	bg.set_border_width_all(2)
+	bg.set_corner_radius_all(3)
+	bg.shadow_color = Color(0, 0, 0, 0.5)
+	bg.shadow_size = 3
 	bar.add_theme_stylebox_override("background", bg)
 	
 	var fg = StyleBoxFlat.new()
 	fg.bg_color = fill_color
+	fg.border_color = Color(1.0, 1.0, 1.0, 0.25)
+	fg.border_width_top = 1
 	fg.set_corner_radius_all(2)
 	bar.add_theme_stylebox_override("fill", fg)
 

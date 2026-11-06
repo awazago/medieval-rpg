@@ -5,12 +5,12 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_stone_shader")
-shader_parameter/stone_color_base = Color(0.44, 0.43, 0.4, 1)
-shader_parameter/stone_color_dark = Color(0.28, 0.27, 0.25, 1)
-shader_parameter/stone_roughness = 0.88
+shader_parameter/stone_color_base = Color(0.28, 0.28, 0.27, 1)
+shader_parameter/stone_color_dark = Color(0.16, 0.16, 0.15, 1)
+shader_parameter/stone_roughness = 0.92
 shader_parameter/stone_scale = 4.0
-shader_parameter/moss_color_base = Color(0.18, 0.35, 0.12, 1)
-shader_parameter/moss_color_bright = Color(0.32, 0.52, 0.18, 1)
-shader_parameter/moss_amount = 0.45
+shader_parameter/moss_color_base = Color(0.12, 0.20, 0.08, 1)
+shader_parameter/moss_color_bright = Color(0.18, 0.28, 0.12, 1)
+shader_parameter/moss_amount = 0.35
 shader_parameter/moss_height_bias = 2.5
 shader_parameter/moss_roughness = 0.95

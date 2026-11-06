@@ -12,10 +12,10 @@ func _init() -> void:
 
 func _init_model_presets() -> void:
 	var paths = {
-		"knight": "res://client/assets/models/characters/Knight.glb",
-		"mage": "res://client/assets/models/characters/Mage.glb",
-		"rogue": "res://client/assets/models/characters/Rogue.glb",
-		"barbarian": "res://client/assets/models/characters/Barbarian.glb",
+		"knight": "res://client/assets/models/realistic/characters/character_knight.glb",
+		"mage": "res://client/assets/models/realistic/characters/character_knight.glb",
+		"rogue": "res://client/assets/models/realistic/characters/character_knight.glb",
+		"barbarian": "res://client/assets/models/realistic/characters/character_knight.glb",
 		"skeleton": "res://client/assets/models/characters/Skeleton_Warrior.glb"
 	}
 	for k in paths:
@@ -76,6 +76,45 @@ func _process(_delta: float) -> void:
 	if head_bone_idx != -1 and is_instance_valid(skel_node):
 		skel_node.set_bone_pose_scale(head_bone_idx, head_scale_factor)
 
+const REALISTIC_ANIMS = {
+	"idle": "res://client/assets/models/realistic/characters/anim_idle.glb",
+	"run": "res://client/assets/models/realistic/characters/anim_run.glb",
+	"walk": "res://client/assets/models/realistic/characters/anim_walk.glb",
+	"attack": "res://client/assets/models/realistic/characters/anim_attack.glb",
+	"cast": "res://client/assets/models/realistic/characters/anim_cast.glb",
+	"death": "res://client/assets/models/realistic/characters/anim_death.glb",
+	"sit_shop": "res://client/assets/models/realistic/characters/anim_sit.glb"
+}
+
+func _load_realistic_animations() -> void:
+	if not model_3d or not model_anim_player:
+		return
+	var skel: Skeleton3D = model_3d.find_child("Skeleton3D", true, false)
+	if not skel or skel.find_bone("mixamorig_Hips") == -1:
+		return
+		
+	var lib = model_anim_player.get_animation_library("")
+	if not lib:
+		lib = AnimationLibrary.new()
+		model_anim_player.add_animation_library("", lib)
+		
+	for a_key in REALISTIC_ANIMS:
+		if lib.has_animation(a_key):
+			continue
+		var a_path = REALISTIC_ANIMS[a_key]
+		if ResourceLoader.exists(a_path):
+			var a_scene = load(a_path)
+			if a_scene:
+				var inst = a_scene.instantiate()
+				var p = inst.find_child("AnimationPlayer", true, false)
+				if p and p.has_animation("Armature|mixamo_com|Layer0"):
+					var anim = p.get_animation("Armature|mixamo_com|Layer0")
+					var dup = anim.duplicate()
+					if a_key in ["idle", "run", "walk", "sit_shop"]:
+						dup.loop_mode = Animation.LOOP_LINEAR
+					lib.add_animation(a_key, dup)
+				inst.queue_free()
+
 func _setup_model_reference() -> void:
 	if has_node("Model3D"):
 		model_3d = $Model3D
@@ -84,8 +123,10 @@ func _setup_model_reference() -> void:
 		_apply_lineage2_pbr_materials()
 		
 		model_anim_player = model_3d.find_child("AnimationPlayer", true, false)
-		if model_anim_player and not model_anim_player.animation_finished.is_connected(_on_model_anim_finished):
-			model_anim_player.animation_finished.connect(_on_model_anim_finished)
+		if model_anim_player:
+			_load_realistic_animations()
+			if not model_anim_player.animation_finished.is_connected(_on_model_anim_finished):
+				model_anim_player.animation_finished.connect(_on_model_anim_finished)
 
 func set_character_model(model_key: String) -> void:
 	current_model_type = model_key
@@ -114,6 +155,7 @@ func set_character_model(model_key: String) -> void:
 	
 	model_anim_player = model_3d.find_child("AnimationPlayer", true, false)
 	if model_anim_player:
+		_load_realistic_animations()
 		model_anim_player.animation_finished.connect(_on_model_anim_finished)
 		
 	var csg_root = get_node_or_null("RootNode")
@@ -234,7 +276,9 @@ func play_anim(anim_name: String, custom_speed: float = 1.0) -> void:
 			
 	# Reproduz no modelo 3D real
 	if model_anim_player:
-		var target_anim = ANIMATION_MAP.get(anim_name, anim_name)
+		var target_anim = anim_name
+		if not model_anim_player.has_animation(target_anim):
+			target_anim = ANIMATION_MAP.get(anim_name, anim_name)
 		if model_anim_player.has_animation(target_anim):
 			if anim_name in ["attack", "attack_2h", "cast"]:
 				model_anim_player.play(target_anim, -1, custom_speed)
@@ -246,8 +290,11 @@ func play_sit_shop() -> void:
 	current_action_lock = ""
 	if anim_player and anim_player.has_animation("sit_shop"):
 		anim_player.play("sit_shop", 0.25)
-	if model_anim_player and model_anim_player.has_animation("Sit_Floor_Idle"):
-		model_anim_player.play("Sit_Floor_Idle", 0.3)
+	if model_anim_player:
+		if model_anim_player.has_animation("sit_shop"):
+			model_anim_player.play("sit_shop", 0.3)
+		elif model_anim_player.has_animation("Sit_Floor_Idle"):
+			model_anim_player.play("Sit_Floor_Idle", 0.3)
 
 func stop_sit() -> void:
 	is_sitting_mode = false
@@ -278,6 +325,20 @@ func _on_model_anim_finished(anim_name: String) -> void:
 
 func get_right_hand_socket() -> Node3D:
 	if model_3d:
+		var existing_socket = model_3d.find_child("RightHandSocket", true, false)
+		if existing_socket and existing_socket is Node3D:
+			return existing_socket
+			
+		var skel: Skeleton3D = model_3d.find_child("Skeleton3D", true, false)
+		if skel:
+			var bone_idx = skel.find_bone("mixamorig_RightHand")
+			if bone_idx != -1:
+				var attachment = BoneAttachment3D.new()
+				attachment.name = "RightHandSocket"
+				attachment.bone_name = "mixamorig_RightHand"
+				skel.add_child(attachment)
+				return attachment
+				
 		var s = model_3d.find_child("handslot.r", true, false)
 		if s and s is Node3D:
 			return s
