@@ -16,6 +16,14 @@ func _ready() -> void:
 				player.character_name = GameData.selected_character_name
 			if GameData.selected_race_id != "" and player.has_method("apply_race_data"):
 				player.apply_race_data(GameData.selected_race_id)
+			if GameData.selected_archetype != "" and player.has_method("apply_archetype"):
+				player.apply_archetype(GameData.selected_archetype)
+				
+		var race_id = GameData.selected_race_id if GameData else "human"
+		var arch_id = GameData.selected_archetype if GameData else "warrior"
+		var class_title = GameData.get_class_display_name(race_id, arch_id) if GameData and GameData.has_method("get_class_display_name") else "Guerreiro"
+		if hud and hud.has_method("set_player_info"):
+			hud.set_player_info(player.character_name, class_title, player.level if "level" in player else 1)
 
 	if player and hud:
 		player.stats_updated.connect(hud.update_player_status)

@@ -39,6 +39,28 @@ func _ready() -> void:
 			p_atk = mob_data.get("p_atk", p_atk)
 			p_def = mob_data.get("p_def", p_def)
 			is_aggressive = mob_data.get("aggro", is_aggressive)
+			
+	var lbl = get_node_or_null("LabelName")
+	if not lbl:
+		lbl = Label3D.new()
+		lbl.name = "LabelName"
+		lbl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		lbl.font_size = 20
+		lbl.position = Vector3(0, 1.9, 0)
+		lbl.outline_render_priority = 1
+		lbl.outline_size = 4
+		lbl.outline_modulate = Color.BLACK
+		add_child(lbl)
+	var col = Color(1.0, 0.4, 0.2) if is_aggressive else Color(0.4, 1.0, 0.4)
+	lbl.modulate = col
+	lbl.text = "[Nv. %d] %s" % [level, monster_name]
+	
+	var anim = find_child("AnimationPlayer", true, false)
+	if anim:
+		if anim.has_animation("Idle"):
+			anim.play("Idle")
+		elif anim.has_animation("idle"):
+			anim.play("idle")
 
 func _physics_process(delta: float) -> void:
 	if current_state == State.DEAD:

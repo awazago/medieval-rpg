@@ -9,6 +9,26 @@ var skills: Dictionary = {}
 var quests: Array = []
 var selected_character_name: String = "Valente"
 var selected_race_id: String = "human"
+var selected_archetype: String = "warrior"
+
+func get_class_display_name(r_id: String, arch: String) -> String:
+	match arch:
+		"mystic", "mage":
+			match r_id:
+				"human": return "Místico Humano"
+				"light_elf": return "Mago Élfico"
+				"dark_elf": return "Mago Sombrio"
+				"orc": return "Xamã Orc"
+				"dwarf": return "Caçador de Espólios"
+				_: return "Místico"
+		_:
+			match r_id:
+				"human": return "Guerreiro Humano"
+				"light_elf": return "Guerreiro Élfico"
+				"dark_elf": return "Paladino Sombrio"
+				"orc": return "Guerreiro Orc"
+				"dwarf": return "Artífice Anão"
+				_: return "Guerreiro"
 
 func _ready() -> void:
 	load_all_data()

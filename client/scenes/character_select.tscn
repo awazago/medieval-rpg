@@ -78,19 +78,19 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 30.0
-offset_top = -240.0
-offset_right = 290.0
-offset_bottom = 240.0
+offset_top = -270.0
+offset_right = 300.0
+offset_bottom = 270.0
 grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
 [node name="LabelTitle" type="Label" parent="Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "ESCOLHA SUA RAÇA"
+theme_override_font_sizes/font_size = 13
+text = "1. ESCOLHA SUA RAÇA"
 horizontal_alignment = 1
 
 [node name="BtnHuman" type="Button" parent="Panel/VBox"]
@@ -113,12 +113,35 @@ text = "🪓 Orc"
 layout_mode = 2
 text = "🔨 Anão"
 
+[node name="HSeparatorClass" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="LabelClassTitle" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "2. ESCOLHA SUA CLASSE"
+horizontal_alignment = 1
+
+[node name="HBoxClass" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BtnWarrior" type="Button" parent="Panel/VBox/HBoxClass"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "⚔ Guerreiro"
+
+[node name="BtnMage" type="Button" parent="Panel/VBox/HBoxClass"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🔮 Místico"
+
 [node name="HSeparator" type="HSeparator" parent="Panel/VBox"]
 layout_mode = 2
 
 [node name="LabelName" type="Label" parent="Panel/VBox"]
 layout_mode = 2
-text = "Nome do Herói:"
+text = "3. NOME DO HERÓI:"
 
 [node name="InputName" type="LineEdit" parent="Panel/VBox"]
 layout_mode = 2
@@ -250,5 +273,7 @@ horizontal_alignment = 1
 [connection signal="pressed" from="Panel/VBox/BtnDarkElf" to="." method="select_race" binds= ["dark_elf"]]
 [connection signal="pressed" from="Panel/VBox/BtnOrc" to="." method="select_race" binds= ["orc"]]
 [connection signal="pressed" from="Panel/VBox/BtnDwarf" to="." method="select_race" binds= ["dwarf"]]
+[connection signal="pressed" from="Panel/VBox/HBoxClass/BtnWarrior" to="." method="select_archetype" binds= ["warrior"]]
+[connection signal="pressed" from="Panel/VBox/HBoxClass/BtnMage" to="." method="select_archetype" binds= ["mystic"]]
 [connection signal="pressed" from="Panel/VBox/BtnEnterWorld" to="." method="_on_enter_world_pressed"]
 

@@ -288,3 +288,26 @@ func update_armor(material: Material, pads_size: Vector3 = Vector3(1.1, 0.2, 0.5
 		shoulder_pads.size = pads_size
 		if material:
 			shoulder_pads.material = material
+
+func equip_weapon(weapon_type: String) -> void:
+	var socket = get_right_hand_socket()
+	if not socket:
+		return
+	for child in socket.get_children():
+		if child.name.begins_with("Equipped_"):
+			child.queue_free()
+			
+	var weapon_scenes = {
+		"sword": "res://client/scenes/weapons/sword_1h.tscn",
+		"staff": "res://client/scenes/weapons/staff_2h.tscn",
+		"dagger": "res://client/scenes/weapons/dagger_1h.tscn",
+		"bow": "res://client/scenes/weapons/bow_2h.tscn",
+		"axe": "res://client/scenes/weapons/sword_1h.tscn"
+	}
+	var path = weapon_scenes.get(weapon_type, weapon_scenes["sword"])
+	if ResourceLoader.exists(path):
+		var w_scene = load(path)
+		if w_scene:
+			var w_inst = w_scene.instantiate()
+			w_inst.name = "Equipped_" + weapon_type
+			socket.add_child(w_inst)

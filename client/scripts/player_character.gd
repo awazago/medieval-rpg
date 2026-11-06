@@ -25,6 +25,7 @@ var active_store_sign: Node3D = null
 @export_category("Identidade")
 @export var character_name: String = "Guerreiro"
 @export var race_id: String = "human"
+@export var archetype: String = "warrior"
 @export var level: int = 1
 
 @export_category("Movimento")
@@ -284,6 +285,46 @@ func apply_race_data(race_key: String) -> void:
 			
 	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
 	print("[Raça] Raça aplicada ao personagem: ", race_data.get("name"), " | HP: ", max_hp, " | Velocidade: ", walk_speed)
+
+## Aplica os dados da Classe / Arquétipo (Guerreiro vs Místico)
+func apply_archetype(arch_key: String) -> void:
+	archetype = arch_key
+	var is_mystic = (arch_key == "mystic" or arch_key == "mage")
+	if is_mystic:
+		max_mp = int(base_mp * 1.6)
+		current_mp = max_mp
+		max_hp = int(base_hp * 0.85)
+		current_hp = max_hp
+		m_atk = 28.0
+		p_atk = 14.0
+		if rig and rig.has_method("set_character_model"):
+			rig.set_character_model("mage")
+			if rig.has_method("equip_weapon"):
+				rig.equip_weapon("staff")
+	else:
+		max_hp = int(base_hp * 1.25)
+		current_hp = max_hp
+		max_mp = int(base_mp * 0.8)
+		current_mp = max_mp
+		p_atk = 28.0
+		m_atk = 12.0
+		if rig and rig.has_method("set_character_model"):
+			match race_id:
+				"orc":
+					rig.set_character_model("barbarian")
+					if rig.has_method("equip_weapon"):
+						rig.equip_weapon("axe")
+				"dark_elf":
+					rig.set_character_model("rogue")
+					if rig.has_method("equip_weapon"):
+						rig.equip_weapon("dagger")
+				_:
+					rig.set_character_model("knight")
+					if rig.has_method("equip_weapon"):
+						rig.equip_weapon("sword")
+						
+	stats_updated.emit(current_hp, max_hp, current_mp, max_mp, current_cp, max_cp)
+	print("[Classe] Classe aplicada ao personagem: ", arch_key, " | HP: ", max_hp, " | MP: ", max_mp)
 
 func _on_item_used(item_data: Dictionary) -> void:
 	if item_data.get("effect") == "heal_over_time":

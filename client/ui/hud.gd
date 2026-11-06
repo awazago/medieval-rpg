@@ -153,6 +153,20 @@ func update_exp(current: int, required: int, pct: float, sp: int) -> void:
 	if label_xp:
 		label_xp.text = "XP: %.2f%% (%d / %d) | SP: %d" % [pct, current, required, sp]
 
+var current_char_name: String = "Valente"
+var current_class_title: String = "Guerreiro Humano"
+var current_level: int = 1
+
+func set_player_info(p_name: String, c_title: String, p_lvl: int = 1) -> void:
+	current_char_name = p_name
+	current_class_title = c_title
+	current_level = p_lvl
+	_refresh_player_header()
+
 func update_level_display(new_level: int) -> void:
+	current_level = new_level
+	_refresh_player_header()
+
+func _refresh_player_header() -> void:
 	if label_name:
-		label_name.text = "Aventureiro (Nv. " + str(new_level) + ")"
+		label_name.text = "%s - [%s Nv. %d]" % [current_char_name, current_class_title, current_level]
