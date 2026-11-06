@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://src/scripts/main.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://dungeon_scene" path="res://src/scenes/dungeon.tscn" id="2_dungeon"]
+[ext_resource type="PackedScene" uid="uid://player_scene" path="res://src/scenes/player.tscn" id="3_player"]
+[ext_resource type="PackedScene" uid="uid://hud_scene" path="res://src/scenes/ui/hud.tscn" id="4_hud"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.48, 0.44, 0.52, 1)
+
+[node name="Dungeon" parent="." instance=ExtResource("2_dungeon")]
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(672, 1152)
+
+[node name="HUD" parent="." instance=ExtResource("4_hud")]

@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://prop_chest_scene"]
+
+[ext_resource type="Script" path="res://src/scripts/prop_chest.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props_spritesheet.png" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chest"]
+size = Vector2(16, 14)
+
+[node name="PropChest" type="StaticBody2D" groups=["destructible"]]
+collision_layer = 2
+collision_mask = 7
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_chest")

@@ -1,37 +1,36 @@
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
-; but it can be also edited, and the config will be preserved.
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
 [application]
 
-config/name="Project Chronicles: Aethelgard"
-config/description="3D Medieval MMORPG with Hybrid 1st/3rd Person Camera, Lineage II-inspired mechanics and authoritative client-server architecture."
-run/main_scene="res://client/scenes/character_select.tscn"
+config/name="Aethelgard: Dungeon of Shadows"
+config/description="2D Top-Down Pixel Action RPG & Dungeon Crawler with fluid combat, dash dodge, procedural loot and responsive controls."
+run/main_scene="res://src/scenes/main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-GameData="*res://shared/game_data.gd"
-NetworkManager="*res://shared/network_manager.gd"
-AudioManager="*res://shared/audio_manager.gd"
+AudioManager="*res://src/scripts/audio_manager.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/size/mode=0
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/vram_compression/import_s3tc_bptc=true
-textures/vram_compression/import_etc2_astc=true
-anti_aliasing/quality/msaa_3d=2
-lights_and_shadows/directional_shadow/size=4096
-lights_and_shadows/positional_shadow/soft_shadow_filter_quality=3
+environment/defaults/default_clear_color=Color(0.06, 0.05, 0.08, 1)
