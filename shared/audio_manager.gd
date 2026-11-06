@@ -2,20 +2,8 @@
 # Gerenciador Global de Áudio, Trilha Sonora Adaptativa e Efeitos Sonoros (SFX)
 extends Node
 
-const MUSIC_TRACKS = {
-	"village": preload("res://audio/music/dawn_isle_village.wav"),
-	"crypt": preload("res://audio/music/ancient_crypt.wav"),
-	"boss": preload("res://audio/music/boss_valthor_battle.wav")
-}
-
-const SFX_STREAMS = {
-	"soulshot_activate": preload("res://audio/sfx/soulshot_activate.wav"),
-	"soulshot_hit": preload("res://audio/sfx/soulshot_hit.wav"),
-	"level_up": preload("res://audio/sfx/level_up.wav"),
-	"sword_swing": preload("res://audio/sfx/sword_swing.wav"),
-	"magic_cast": preload("res://audio/sfx/magic_cast.wav"),
-	"coins_pickup": preload("res://audio/sfx/coins_pickup.wav")
-}
+var MUSIC_TRACKS: Dictionary = {}
+var SFX_STREAMS: Dictionary = {}
 
 var current_music_track: String = ""
 var music_player_a: AudioStreamPlayer
@@ -27,6 +15,7 @@ const SFX_POOL_SIZE: int = 8
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_init_audio_streams()
 	
 	# Inicializa reprodutores de música para crossfade suave
 	music_player_a = AudioStreamPlayer.new()
@@ -89,3 +78,28 @@ func play_sfx(sfx_key: String, volume_offset_db: float = 0.0) -> void:
 	sfx_pool[0].stream = stream
 	sfx_pool[0].volume_db = volume_offset_db
 	sfx_pool[0].play()
+
+func _init_audio_streams() -> void:
+	var music_files = {
+		"village": "res://audio/music/dawn_isle_village.wav",
+		"crypt": "res://audio/music/ancient_crypt.wav",
+		"boss": "res://audio/music/boss_valthor_battle.wav"
+	}
+	for k in music_files:
+		var path = music_files[k]
+		if ResourceLoader.exists(path):
+			MUSIC_TRACKS[k] = load(path)
+			
+	var sfx_files = {
+		"soulshot_activate": "res://audio/sfx/soulshot_activate.wav",
+		"soulshot_hit": "res://audio/sfx/soulshot_hit.wav",
+		"level_up": "res://audio/sfx/level_up.wav",
+		"sword_swing": "res://audio/sfx/sword_swing.wav",
+		"magic_cast": "res://audio/sfx/magic_cast.wav",
+		"coins_pickup": "res://audio/sfx/coins_pickup.wav"
+	}
+	for k in sfx_files:
+		var path = sfx_files[k]
+		if ResourceLoader.exists(path):
+			SFX_STREAMS[k] = load(path)
+

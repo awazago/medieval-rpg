@@ -1,12 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6v2n8pm7x5cs"]
+[gd_scene load_steps=4 format=3 uid="uid://c6v2n8pm7x5cs"]
 
 [ext_resource type="Script" path="res://client/scripts/character_select.gd" id="1_select"]
 [ext_resource type="PackedScene" uid="uid://h1m2c3r4rig" path="res://client/scenes/character/humanoid_character.tscn" id="2_humanoid_rig"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_PreviewArmor"]
-albedo_color = Color(0.85, 0.88, 0.9, 1)
-metallic = 0.9
-roughness = 0.25
 
 [sub_resource type="Environment" id="Environment_preview"]
 ambient_light_source = 2
@@ -76,19 +71,6 @@ light_energy = 2.2
 [node name="VisualMesh" type="Node3D" parent="SubViewportContainer/SubViewport/PreviewCharacter"]
 
 [node name="HumanoidCharacterRig" parent="SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh" instance=ExtResource("2_humanoid_rig")]
-
-[node name="BodyMesh" type="CSGCapsule3D" parent="SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
-visible = false
-radius = 0.4
-height = 1.8
-material = SubResource("Mat_PreviewArmor")
-
-[node name="ShoulderPads" type="CSGBox3D" parent="SubViewportContainer/SubViewport/PreviewCharacter/VisualMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
-visible = false
-size = Vector3(1.1, 0.2, 0.5)
-material = SubResource("Mat_PreviewArmor")
 
 [node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 1

@@ -30,10 +30,13 @@ signal character_created(char_name: String, race_id: String, archetype: String)
 var selected_race: String = "human"
 var selected_archetype: String = "warrior"
 
+func _get_game_data() -> Node:
+	return get_node_or_null("/root/GameData")
+
 func _ready() -> void:
 	print("[CharacterSelect] Inicializando tela de criação de personagem...")
 	
-	# 1. Conecta o botão de Despertar imediatamente
+	# 1. Conecta o botão de Despertar prioritariamente
 	if btn_enter_world and not btn_enter_world.pressed.is_connected(_on_enter_world_pressed):
 		btn_enter_world.pressed.connect(_on_enter_world_pressed)
 		print("[CharacterSelect] Botão Despertar conectado com sucesso.")
@@ -57,10 +60,15 @@ func select_race(race_key: String) -> void:
 	selected_race = race_key
 	print("[CharacterSelect] Raça selecionada: ", race_key)
 	
-	var race_data = GameData.get_race(race_key) if GameData else {}
-	if race_data.is_empty():
-		push_warning("[CharacterSelect] Dados da raça não encontrados: " + race_key)
-		return
+	var gd = _get_game_data()
+	var race_data: Dictionary = {}
+	if gd and gd.has_method("get_race"):
+		race_data = gd.get_race(race_key)
+	elif FileAccess.file_exists("res://data/races.json"):
+		var f = FileAccess.open("res://data/races.json", FileAccess.READ)
+		var j = JSON.new()
+		if j.parse(f.get_as_text()) == OK and j.data is Dictionary:
+			race_data = j.data.get(race_key, {})
 		
 	var stats = race_data.get("base_stats", {})
 	var r_name = race_data.get("name", "Raça")
@@ -131,9 +139,10 @@ func _on_enter_world_pressed() -> void:
 	var final_name = input_name.text.strip_edges() if input_name and input_name.text.strip_edges() != "" else "Valente"
 	print("[CharacterSelect] Botão Despertar clicado! Herói: ", final_name, " | Raça: ", selected_race)
 	
-	if GameData:
-		GameData.selected_character_name = final_name
-		GameData.selected_race_id = selected_race
+	var gd = _get_game_data()
+	if gd:
+		gd.selected_character_name = final_name
+		gd.selected_race_id = selected_race
 		
 	# Transição limpa e oficial do Godot 4
 	var err = get_tree().change_scene_to_file("res://client/scenes/main_game.tscn")

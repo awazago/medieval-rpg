@@ -40,6 +40,9 @@ var current_mp: int = 90
 @export var max_cp: int = 100 # Combat Points (Escudo de PVP/Combate clássico do L2)
 var current_cp: int = 100
 
+var base_hp: int = 150
+var base_mp: int = 90
+
 var base_walk_speed: float = 5.0
 var base_p_atk: float = 24.0
 var base_p_def: float = 20.0
@@ -59,10 +62,10 @@ var soulshots_enabled: bool = false
 var selected_target: Node3D = null
 
 @onready var visual_mesh: Node3D = $VisualMesh
-@onready var body_mesh: CSGCapsule3D = $VisualMesh/BodyMesh if has_node("VisualMesh/BodyMesh") else null
-@onready var shoulder_pads: CSGBox3D = $VisualMesh/ShoulderPads if has_node("VisualMesh/ShoulderPads") else null
-@onready var right_hand_socket: Node3D = $VisualMesh/RightHandSocket if has_node("VisualMesh/RightHandSocket") else null
-@onready var rig: HumanoidCharacterRig = $VisualMesh/HumanoidCharacterRig if has_node("VisualMesh/HumanoidCharacterRig") else null
+@onready var body_mesh: Node3D = get_node_or_null("VisualMesh/BodyMesh")
+@onready var shoulder_pads: Node3D = get_node_or_null("VisualMesh/ShoulderPads")
+@onready var right_hand_socket: Node3D = get_node_or_null("VisualMesh/RightHandSocket")
+@onready var rig: HumanoidCharacterRig = get_node_or_null("VisualMesh/HumanoidCharacterRig")
 @onready var camera_pivot: SpringArm3D = $CameraPivot
 @onready var inventory: InventoryManager = $InventoryManager
 
